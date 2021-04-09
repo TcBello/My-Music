@@ -634,4 +634,9 @@ class SongModel extends ChangeNotifier {
     dragSliderValue = value;
     notifyListeners();
   }
+
+  void setPlayerExpandBool(bool value){
+    isPlayerExpand = value;
+    notifyListeners();
+  }
 }

@@ -11,7 +11,6 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/albums.dart';
 import 'package:my_music/artists.dart';
-import 'package:my_music/mini_player.dart';
 import 'package:my_music/now_playing.dart';
 import 'package:my_music/playlists.dart';
 import 'package:my_music/search.dart';
@@ -19,9 +18,12 @@ import 'package:my_music/song_model.dart';
 import 'package:my_music/songs.dart';
 import 'package:my_music/style.dart';
 import 'package:my_music/themes/themes.dart';
+import 'package:my_music/mini_player.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:provider/provider.dart';
 import 'package:rubber/rubber.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:miniplayer/miniplayer.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -120,8 +122,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   Future<bool> onWillScope(){
-    if(_isPlayerExpand){
-      _controller.collapse();
+    if(_songModel.isPlayerExpand){
+      miniPlayerController.animateToHeight(state: PanelState.MIN);
     }
     return Future.value(false);
   }
@@ -845,7 +847,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             selector: (context, notifier) => notifier.isPlayOnce,
             builder: (context, data, child) {
               if(data){
-                return MiniPlayer();
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: MiniPlayer(),
+                );
               }
 
               return Container();

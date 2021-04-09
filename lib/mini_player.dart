@@ -9,9 +9,9 @@ import 'package:my_music/now_playing.dart';
 import 'package:my_music/song_model.dart';
 import 'package:my_music/style.dart';
 import 'package:my_music/utils.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:provider/provider.dart';
-
-final MiniplayerController controller = MiniplayerController();
+import 'package:equalizer/equalizer.dart';
 
 class MiniPlayer extends StatelessWidget {
   // final AudioObject audioObject;
@@ -85,6 +85,15 @@ class MiniPlayer extends StatelessWidget {
     }
   }
 
+  void expandMiniPlayer(){
+    miniPlayerController.animateToHeight(state: PanelState.MAX);
+    
+  }
+
+  void collapseMiniPlayer(){
+    miniPlayerController.animateToHeight(state: PanelState.MIN);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -104,10 +113,11 @@ class MiniPlayer extends StatelessWidget {
         valueNotifier: playerExpandProgress,
         minHeight: playerMinHeight,
         maxHeight: playerMaxHeight,
-        controller: controller,
+        controller: miniPlayerController,
         elevation: 4,
         onDismissed: () {
           notifier.dismissMiniPlayer();
+          notifier.stopPlayer();
         },
         curve: Curves.easeOut,
         builder: (height, percentage) {
@@ -187,9 +197,10 @@ class MiniPlayer extends StatelessWidget {
                                 color: Colors.pinkAccent,
                                 size: 30,
                               ),
-                              onPressed: () {
-                                // _controller.collapse();
-                              },
+                              onPressed: (){
+                                collapseMiniPlayer();
+                                notifier.setPlayerExpandBool(false);
+                              }
                             ),
                             Expanded(
                               child: Container(
@@ -204,7 +215,7 @@ class MiniPlayer extends StatelessWidget {
                                 Icons.equalizer,
                                 color: Colors.pinkAccent,
                               ),
-                              // onPressed: () => Equalizer.open(0),
+                              onPressed: () => Equalizer.open(0),
                             ),
                             // PopupMenu(_songModel.index)
                           ],
@@ -233,250 +244,248 @@ class MiniPlayer extends StatelessWidget {
                           child: SizedBox(height: imageSize),
                         ),
                       ),
+                      // padding: const EdgeInsets.symmetric(horizontal: 33),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 33),
-                          child: Opacity(
-                            opacity: opacityPercentageExpandedPlayer,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                // text,
-                                // Row(
-                                //   mainAxisAlignment: MainAxisAlignment.center,
-                                //   children: [
-                                //     buttonSkipBackwards,
-                                //     buttonPlayExpanded,
-                                //     buttonSkipForward
-                                //   ],
-                                // ),
-                                // progressIndicator,
-                                // Container(),
-                                // Container(),
+                        child: Opacity(
+                          opacity: opacityPercentageExpandedPlayer,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              // text,
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: [
+                              //     buttonSkipBackwards,
+                              //     buttonPlayExpanded,
+                              //     buttonSkipForward
+                              //   ],
+                              // ),
+                              // progressIndicator,
+                              // Container(),
+                              // Container(),
 
-                                Container(
-                                  height: 50,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 20.0, right: 20.0),
-                                        child: Text(
-                                          songTitle,
-                                          style: rubberTextStyle,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                        ),
+                              Container(
+                                height: 50,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Text(
+                                        songTitle,
+                                        style: rubberTextStyle,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 20.0, right: 20.0),
-                                        child: Text(
-                                          artistName,
-                                          style: defTextStyle,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Text(
+                                        artistName,
+                                        style: defTextStyle,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                StreamBuilder<PlaybackDisposition>(
-                                  initialData: PlaybackDisposition.zero(),
-                                  stream: notifier.audioPlayer.onProgress
-                                      .asBroadcastStream(
-                                          onListen: notifier.onStreamDuration(),
-                                          onCancel:
-                                              notifier.onStreamDurationCancel()),
-                                  builder: (context, snapshot) {
-                                    // String position = snapshot.data.position
-                                    //     .toString()
-                                    //     .split('.')
-                                    //     .first;
-                                    // String duration = snapshot.data.duration
-                                    //     .toString()
-                                    //     .split('.')
-                                    //     .first;
-                                    String position = notifier.isDrag
-                                        ? toMinSecFormatWhileDragging(
-                                            notifier.dragSliderValue,
-                                            snapshot.data.position)
-                                        : toMinSecFormat(snapshot.data.position);
+                              ),
+                              StreamBuilder<PlaybackDisposition>(
+                                initialData: PlaybackDisposition.zero(),
+                                stream: notifier.audioPlayer.onProgress
+                                    .asBroadcastStream(
+                                        onListen: notifier.onStreamDuration(),
+                                        onCancel:
+                                            notifier.onStreamDurationCancel()),
+                                builder: (context, snapshot) {
+                                  // String position = snapshot.data.position
+                                  //     .toString()
+                                  //     .split('.')
+                                  //     .first;
+                                  // String duration = snapshot.data.duration
+                                  //     .toString()
+                                  //     .split('.')
+                                  //     .first;
+                                  String position = notifier.isDrag
+                                      ? toMinSecFormatWhileDragging(
+                                          notifier.dragSliderValue,
+                                          snapshot.data.position)
+                                      : toMinSecFormat(snapshot.data.position);
 
-                                    String duration =
-                                        toMinSecFormat(snapshot.data.duration);
+                                  String duration =
+                                      toMinSecFormat(snapshot.data.duration);
 
-                                    double durationMin = snapshot
-                                        .data.position.inMilliseconds
-                                        .toDouble();
-                                    double durationMax = snapshot
-                                        .data.duration.inMilliseconds
-                                        .toDouble();
+                                  double durationMin = snapshot
+                                      .data.position.inMilliseconds
+                                      .toDouble();
+                                  double durationMax = snapshot
+                                      .data.duration.inMilliseconds
+                                      .toDouble();
 
-                                    if (snapshot.hasData) {
-                                      return Column(
+                                  if (snapshot.hasData) {
+                                    return Column(
+                                      children: [
+                                        Container(
+                                          height: 70,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                width: size.width,
+                                                child: Slider(
+                                                  activeColor:
+                                                      Colors.pinkAccent,
+                                                  inactiveColor:
+                                                      Colors.pink[100],
+                                                  value: notifier.isDrag
+                                                      ? notifier.dragSliderValue
+                                                      : durationMin,
+                                                  min: 0.0,
+                                                  max: durationMax,
+                                                  onChanged:
+                                                      (double duration) async {
+                                                    if (notifier.isDrag) {
+                                                      notifier
+                                                          .setDragSliderValue(
+                                                              duration);
+                                                    }
+                                                  },
+                                                  onChangeStart: (value) {
+                                                    notifier.setDragBool(true);
+                                                  },
+                                                  onChangeEnd: (double
+                                                      finalDuration) async {
+                                                    notifier.setDragBool(false);
+
+                                                    if (!notifier.isDrag) {
+                                                      await notifier.seekPlayer(
+                                                          finalDuration);
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                      margin:
+                                                          EdgeInsets.fromLTRB(
+                                                              20, 0, 0, 0),
+                                                      child: Text(
+                                                        // _songModel.currentPosition,
+                                                        position,
+                                                        style: defTextStyle,
+                                                      )),
+                                                  Container(
+                                                      margin:
+                                                          EdgeInsets.fromLTRB(
+                                                              0, 0, 20, 0),
+                                                      child: Text(
+                                                        // _songModel.songDuration,
+                                                        duration,
+                                                        style: defTextStyle,
+                                                      ))
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      icon: repeatIcon,
+                                      onPressed: () {
+                                        notifier.changeRepeatMode();
+                                        Fluttertoast.showToast(
+                                            msg: notifier.repeatModeMessage,
+                                            gravity: ToastGravity.BOTTOM,
+                                            toastLength: Toast.LENGTH_SHORT);
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.skip_previous,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                      onPressed: () {
+                                        notifier.onSkipPrev();
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    ClipOval(
+                                      child: Stack(
                                         children: [
                                           Container(
-                                            height: 70,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  width: size.width,
-                                                  child: Slider(
-                                                    activeColor:
-                                                        Colors.pinkAccent,
-                                                    inactiveColor:
-                                                        Colors.pink[100],
-                                                    value: notifier.isDrag
-                                                        ? notifier.dragSliderValue
-                                                        : durationMin,
-                                                    min: 0.0,
-                                                    max: durationMax,
-                                                    onChanged:
-                                                        (double duration) async {
-                                                      if (notifier.isDrag) {
-                                                        notifier
-                                                            .setDragSliderValue(
-                                                                duration);
-                                                      }
-                                                    },
-                                                    onChangeStart: (value) {
-                                                      notifier.setDragBool(true);
-                                                    },
-                                                    onChangeEnd: (double
-                                                        finalDuration) async {
-                                                      notifier.setDragBool(false);
-
-                                                      if (!notifier.isDrag) {
-                                                        await notifier.seekPlayer(
-                                                            finalDuration);
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                        margin:
-                                                            EdgeInsets.fromLTRB(
-                                                                20, 0, 0, 0),
-                                                        child: Text(
-                                                          // _songModel.currentPosition,
-                                                          position,
-                                                          style: defTextStyle,
-                                                        )),
-                                                    Container(
-                                                        margin:
-                                                            EdgeInsets.fromLTRB(
-                                                                0, 0, 20, 0),
-                                                        child: Text(
-                                                          // _songModel.songDuration,
-                                                          duration,
-                                                          style: defTextStyle,
-                                                        ))
-                                                  ],
-                                                ),
-                                              ],
+                                            height: 80,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.pinkAccent,
+                                                    width: 6)),
+                                          ),
+                                          Positioned.fill(
+                                            child: IconButton(
+                                              icon: notifier.playPause2,
+                                              onPressed: notifier.onPauseResume,
                                             ),
-                                          )
+                                          ),
                                         ],
-                                      );
-                                    } else {
-                                      return Container();
-                                    }
-                                  },
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.skip_next,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                      onPressed: () {
+                                        notifier.onSkipNext();
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.queue_music,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    NowPlaying()));
+                                      },
+                                    )
+                                  ],
                                 ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        icon: repeatIcon,
-                                        onPressed: () {
-                                          notifier.changeRepeatMode();
-                                          Fluttertoast.showToast(
-                                              msg: notifier.repeatModeMessage,
-                                              gravity: ToastGravity.BOTTOM,
-                                              toastLength: Toast.LENGTH_SHORT);
-                                        },
-                                      ),
-                                      SizedBox(width: 10),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.skip_previous,
-                                          color: Colors.white,
-                                          size: 40,
-                                        ),
-                                        onPressed: () {
-                                          notifier.onSkipPrev();
-                                        },
-                                      ),
-                                      SizedBox(width: 10),
-                                      ClipOval(
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              height: 80,
-                                              width: 80,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.pinkAccent,
-                                                      width: 6)),
-                                            ),
-                                            Positioned.fill(
-                                              child: IconButton(
-                                                icon: notifier.playPause2,
-                                                onPressed: notifier.onPauseResume,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 10),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.skip_next,
-                                          color: Colors.white,
-                                          size: 40,
-                                        ),
-                                        onPressed: () {
-                                          notifier.onSkipNext();
-                                        },
-                                      ),
-                                      SizedBox(width: 10),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.queue_music,
-                                          color: Colors.white,
-                                          size: 40,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                      NowPlaying()));
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -491,6 +500,7 @@ class MiniPlayer extends StatelessWidget {
                           bottom: paddingVertical * 1.5),
                       child: SizedBox(
                         height: imageSize,
+                        width: imageSize,
                         child: albumImage,
                       ),
                     ),
@@ -534,8 +544,9 @@ class MiniPlayer extends StatelessWidget {
                         child: Opacity(
                           opacity: elementOpacity,
                           child: InkWell(
-                            onTap: () {
-                              controller.animateToHeight(state: PanelState.MAX);
+                            onTap: (){
+                              expandMiniPlayer();
+                              notifier.setPlayerExpandBool(true);
                             },
                             child: Container(
                               height: 70,
