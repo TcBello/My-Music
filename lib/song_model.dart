@@ -71,6 +71,7 @@ class SongModel extends ChangeNotifier {
 
   int index = 0;
   int currentRepeatMode = 0;
+  double dragSliderValue = 0.0;
   SongInfo get audioItem => _nowPlayingSongs[index];
   bool get hasNext => index + 1 < _nowPlayingSongs.length;
   bool get hasPrev => index > 0;
@@ -81,6 +82,7 @@ class SongModel extends ChangeNotifier {
   bool isRepeatAll = true;
   bool isRepeatOne = false;
   bool isShuffle = false;
+  bool isDrag = false;
 
 
   Icon playPause = Icon(Icons.pause, color: Colors.pinkAccent,);
@@ -615,6 +617,26 @@ class SongModel extends ChangeNotifier {
   void addToQueuePlaylist(List<SongInfo> playlistSong){
     int lastIndex = _nowPlayingSongs.length;
     _nowPlayingSongs.insertAll(lastIndex, playlistSong);
+    notifyListeners();
+  }
+
+  void dismissMiniPlayer(){
+    isPlayOnce = false;
+    notifyListeners();
+  }
+
+  void setDragBool(bool value){
+    isDrag = value;
+    notifyListeners();
+  }
+
+  void setDragSliderValue(double value){
+    dragSliderValue = value;
+    notifyListeners();
+  }
+
+  void setPlayerExpandBool(bool value){
+    isPlayerExpand = value;
     notifyListeners();
   }
 }

@@ -18,9 +18,12 @@ import 'package:my_music/song_model.dart';
 import 'package:my_music/songs.dart';
 import 'package:my_music/style.dart';
 import 'package:my_music/themes/themes.dart';
+import 'package:my_music/mini_player.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:provider/provider.dart';
 import 'package:rubber/rubber.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:miniplayer/miniplayer.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -119,8 +122,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   Future<bool> onWillScope(){
-    if(_isPlayerExpand){
-      _controller.collapse();
+    if(_songModel.isPlayerExpand){
+      miniPlayerController.animateToHeight(state: PanelState.MIN);
     }
     return Future.value(false);
   }
@@ -337,6 +340,67 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     });
   }
 
+  Widget screen(){
+    return Scaffold(
+          drawerEnableOpenDragGesture: !_songModel.isPlayerExpand,
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          body: NestedScrollView(
+              controller: _scrollController,
+              headerSliverBuilder:
+                  (BuildContext context, bool isScreenScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    backgroundColor: Colors.transparent,
+                    forceElevated: true,
+                    title: Text("Music"),
+                    leading: IconButton(
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      icon: Icon(Icons.menu),
+                    ),
+                    actions: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          if (_songModel.isConvertToStringOnce) {
+                            _songModel.songInfo.forEach((element) {
+                              _songModel.stringSongs.add(element.title);
+                            });
+                            print(_songModel.stringSongs);
+                            _songModel.isConvertToStringOnce = false;
+                          }
+                          showSearch(context: context, delegate: Search());
+                        },
+                      )
+                    ],
+                    bottom: TabBar(
+                      controller: _tabController,
+                      indicatorColor: Colors.pinkAccent,
+                      tabs: <Widget>[
+                        Tab(
+                          text: "Songs",
+                        ),
+                        Tab(
+                          text: "Artists",
+                        ),
+                        Tab(
+                          text: "Albums",
+                        ),
+                        Tab(
+                          text: "Playlists",
+                        )
+                      ],
+                    ),
+                  )
+                ];
+              },
+              body: TabBarView(controller: _tabController, children: _myTabs)),
+          drawer: MyDrawer(),
+        );
+  }
+
   Widget _rubberWidget() {
     return RubberBottomSheet(
         animationController: _controller,
@@ -403,597 +467,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             return Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                // child: StreamBuilder<PlaybackDisposition>(
-                //   initialData: PlaybackDisposition(position: Duration.zero, duration: Duration.zero),
-                //   stream: _songModel.audioPlayer.onProgress.asBroadcastStream(
-                //       onListen: _songModel.onStreamDuration(),
-                //       onCancel: _songModel.onStreamDuration()),
-                //   builder: (context, _) {
-                //     return _songModel.isPlayOnce
-                //         ? Container(
-                //       height: MediaQuery.of(context).size.height,
-                //       constraints: BoxConstraints.expand(),
-                //       color: Colors.black, //bluegrey[800]
-                //       child: Column(
-                //         mainAxisAlignment: MainAxisAlignment.start,
-                //         crossAxisAlignment: CrossAxisAlignment.center,
-                //         children: [
-                //           !_songModel.isPlayerExpand
-                //               ? Row(
-                //             mainAxisAlignment:
-                //             MainAxisAlignment.spaceEvenly,
-                //             crossAxisAlignment:
-                //             CrossAxisAlignment.center,
-                //             children: [
-                //               SizedBox(
-                //                 width: 5,
-                //               ),
-                //               CircleAvatar(
-                //                 backgroundColor: Colors.white,
-                //                 child: Icon(
-                //                   Icons.music_note,
-                //                   color: Colors.pinkAccent,
-                //                 ),
-                //               ),
-                //               Expanded(
-                //                 //asdasdadadadasddas
-                //                 child: InkWell(
-                //                   onTap: () {
-                //                     _controller.expand();
-                //                   },
-                //                   child: Container(
-                //                     height: 70,
-                //                     padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                //             //  color: Colors.yellow,
-                //                     child: Center(
-                //                         child: _songModel.isPlayAllSongs
-                //                           ? Text(_songModel.audioItem.title, style: rubberTextStyle, overflow: TextOverflow.ellipsis,)
-                //                           : Text(_songModel.audioItem2.title, style: rubberTextStyle, overflow: TextOverflow.ellipsis,)
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //               Container(
-                //                 height: 50,
-                //                 width: 50,
-                //                 margin:
-                //                 EdgeInsets.fromLTRB(0, 0, 5, 0),
-                //                 child: ClipOval(
-                //                   child: FlatButton(
-                //                     onPressed: () {
-                //                       _songModel.onPauseResume();
-                //                     },
-                //                     child: _songModel.playPause,
-                //                   ),
-                //                 ),
-                //               ),
-                //             ],
-                //           )
-                //               : Row(
-                //             mainAxisAlignment:
-                //             MainAxisAlignment.start,
-                //             crossAxisAlignment:
-                //             CrossAxisAlignment.center,
-                //             children: [
-                //               IconButton(
-                //                 icon: Icon(
-                //                   Icons.keyboard_arrow_down,
-                //                   color: Colors.pinkAccent,
-                //                   size: 30,
-                //                 ),
-                //                 onPressed: () {
-                //                   _controller.collapse();
-                //                 },
-                //               ),
-                //               Expanded(
-                //                   child: Container(
-                //                       height: 70,
-                //                       child: Center(
-                //                           child: Text(
-                //                             "Now Playing",
-                //                             style: rubberTextStyle,
-                //                           )))),
-                //               IconButton(
-                //                 icon: Icon(
-                //                   Icons.equalizer,
-                //                   color: Colors.pinkAccent,
-                //                 ),
-                //                 onPressed: () {},
-                //               ),
-                //               PopupMenu()
-                //             ],
-                //           ),
-                //           Container(
-                //             width: MediaQuery.of(context).size.width,
-                //             height: 450.0,
-                //             child: _carouselBuilder(),
-                //           ),
-                //           _songModel.isPlayAllSongs ? Text(
-                //             _songModel.audioItem.title.length < 27
-                //                 ? _songModel.audioItem.title
-                //                 : "${_songModel.audioItem.title.substring(0, 20)}...${_songModel.audioItem.title.substring(_songModel.audioItem.title.length - 16, _songModel.audioItem.title.length)}",
-                //             style: rubberTextStyle,
-                //           ) : Text(
-                //             _songModel.audioItem2.title.length < 27
-                //                 ? _songModel.audioItem2.title
-                //                 : "${_songModel.audioItem2.title.substring(0, 20)}...${_songModel.audioItem2.title.substring(_songModel.audioItem2.title.length - 16, _songModel.audioItem2.title.length)}",
-                //             style: rubberTextStyle,
-                //           ),
-                //           _songModel.isPlayAllSongs ? Text(
-                //             _songModel.audioItem.artist == "<unknown>"
-                //                 ? "Unknown Artist"
-                //                 : _songModel.audioItem.artist,
-                //             style: defTextStyle,
-                //           ) : Text(
-                //             _songModel.audioItem2.artist == "<unknown>"
-                //                 ? "Unknown Artist"
-                //                 : _songModel.audioItem2.artist,
-                //             style: defTextStyle,
-                //           ),
-                //           SizedBox(height: 30),
-                //           SizedBox(
-                //             width: MediaQuery.of(context).size.width,
-                //             child: Slider(
-                //               activeColor: Colors.pinkAccent,
-                //               inactiveColor: Colors.pink[100],
-                //               value: min(_songModel.minDuration,
-                //                   _songModel.maxDuration),
-                //               min: 0.0,
-                //               max: _songModel.maxDuration,
-                //               onChanged: (double duration) async {
-                //                 await _songModel.seekPlayer(duration);
-                //               },
-                //             ),
-                //           ),
-                //           Row(
-                //             mainAxisAlignment:
-                //             MainAxisAlignment.spaceBetween,
-                //             crossAxisAlignment: CrossAxisAlignment.center,
-                //             children: [
-                //               Container(
-                //                   margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                //                   child: Text(
-                //                     _songModel.currentPosition,
-                //                     style: defTextStyle,
-                //                   )),
-                //               Container(
-                //                   margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                //                   child: Text(
-                //                     _songModel.songDuration,
-                //                     style: defTextStyle,
-                //                   )),
-                //             ],
-                //           ),
-                //           SizedBox(height: 20),
-                //           Container(
-                //             width: MediaQuery.of(context).size.width,
-                //             child: Row(
-                //               mainAxisAlignment: MainAxisAlignment.center,
-                //               crossAxisAlignment: CrossAxisAlignment.center,
-                //               children: [
-                //                 IconButton(
-                //                   icon: Icon(
-                //                     Icons.shuffle,
-                //                     color: Colors.white,
-                //                     size: 40,
-                //                   ),
-                //                   onPressed: () {},
-                //                 ),
-                //                 SizedBox(width: 10),
-                //                 IconButton(
-                //                   icon: Icon(
-                //                     Icons.skip_previous,
-                //                     color: Colors.white,
-                //                     size: 40,
-                //                   ),
-                //                   onPressed: (){
-                //                     if(_songModel.isPlayAllSongs){
-                //                       _songModel.onSkipPrev();
-                //                     }
-                //                     else{
-                //                       _songModel.onSkipPrev2();
-                //                     }
-                //                   },
-                //                 ),
-                //                 SizedBox(width: 10),
-                //                 ClipOval(
-                //                   child: Stack(
-                //                     children: [
-                //                       Container(
-                //                         height: 80,
-                //                         width: 80,
-                //                         decoration: BoxDecoration(
-                //                             border: Border.all(
-                //                                 color: Colors.pinkAccent,
-                //                                 width: 6)),
-                //                       ),
-                //                       Positioned.fill(
-                //                         child: IconButton(
-                //                           icon: _songModel.playPause2,
-                //                           onPressed:
-                //                           _songModel.onPauseResume,
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ),
-                //                 SizedBox(width: 10),
-                //                 IconButton(
-                //                   icon: Icon(
-                //                     Icons.skip_next,
-                //                     color: Colors.white,
-                //                     size: 40,
-                //                   ),
-                //                   onPressed: (){
-                //                     if(_songModel.isPlayAllSongs){
-                //                       _songModel.onSkipNext();
-                //                     }
-                //                     else{
-                //                       _songModel.onSkipNext2();
-                //                     }
-                //                   },
-                //                 ),
-                //                 SizedBox(width: 10),
-                //                 IconButton(
-                //                   icon: Icon(
-                //                     Icons.queue_music,
-                //                     color: Colors.white,
-                //                     size: 40,
-                //                   ),
-                //                 )
-                //               ],
-                //             ),
-                //           )
-                //         ],
-                //       ),
-                //     )
-                //         : Container();
-                //   },
-                // ),
-
-                ///////////////////////////----MAIN BUILDER----///////////////////
-                // child: StreamBuilder<PlaybackDisposition>(
-                //   // initialData: PlaybackDisposition(
-                //   //     position: Duration.zero, duration: Duration.zero),
-                //   initialData: PlaybackDisposition.zero(),
-                //   stream: _songModel.audioPlayer.onProgress.asBroadcastStream(
-                //       onListen: _songModel.onStreamDuration(),
-                //       onCancel: _songModel.onStreamDurationCancel()),
-                //   builder: (context, snapshot) {
-                //     String position =
-                //         snapshot.data.position.toString().split('.').first;
-                //     String duration =
-                //         snapshot.data.duration.toString().split('.').first;
-                //     double durationMin =
-                //         snapshot.data.position.inMilliseconds.toDouble();
-                //     double durationMax =
-                //         snapshot.data.duration.inMilliseconds.toDouble();
-                
-                //     if (snapshot.hasData) {
-                //       return _songModel.isPlayOnce
-                //           ? Container(
-                //               height: MediaQuery.of(context).size.height,
-                //               // constraints: BoxConstraints.expand(),
-                //               color: Colors.black, //bluegrey[800]
-                //               child: Column(
-                //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //                 crossAxisAlignment: CrossAxisAlignment.center,
-                //                 children: [
-                //                   !_isPlayerExpand
-                //                       ? Row(
-                //                           mainAxisAlignment:
-                //                               MainAxisAlignment.spaceEvenly,
-                //                           crossAxisAlignment:
-                //                               CrossAxisAlignment.center,
-                //                           children: [
-                //                             SizedBox(
-                //                               width: 5,
-                //                             ),
-                //                             CircleAvatar(
-                //                               backgroundColor: Colors.white,
-                //                               child: Icon(
-                //                                 Icons.music_note,
-                //                                 color: Colors.pinkAccent,
-                //                               ),
-                //                             ),
-                //                             Expanded(
-                //                               //asdasdadadadasddas
-                //                               child: InkWell(
-                //                                 onTap: () {
-                //                                   _controller.expand();
-                //                                 },
-                //                                 child: Container(
-                //                                   height: 70,
-                //                                   padding: EdgeInsets.only(
-                //                                       left: 8.0, right: 8.0),
-                //                                   //  color: Colors.yellow,
-                //                                   child: Center(
-                //                                       child: _songModel
-                //                                               .isPlayAllSongs
-                //                                           ? Text(
-                //                                               _songModel.audioItem
-                //                                                   .title,
-                //                                               style:
-                //                                                   rubberTextStyle,
-                //                                               overflow:
-                //                                                   TextOverflow
-                //                                                       .ellipsis,
-                //                                             )
-                //                                           : Text(
-                //                                               _songModel
-                //                                                   .audioItem2
-                //                                                   .title,
-                //                                               style:
-                //                                                   rubberTextStyle,
-                //                                               overflow:
-                //                                                   TextOverflow
-                //                                                       .ellipsis,
-                //                                             )),
-                //                                 ),
-                //                               ),
-                //                             ),
-                //                             Container(
-                //                               height: 50,
-                //                               width: 50,
-                //                               margin:
-                //                                   EdgeInsets.fromLTRB(0, 0, 5, 0),
-                //                               child: ClipOval(
-                //                                 child: FlatButton(
-                //                                   onPressed: () {
-                //                                     _songModel.onPauseResume();
-                //                                   },
-                //                                   child: _songModel.playPause,
-                //                                 ),
-                //                               ),
-                //                             ),
-                //                           ],
-                //                         )
-                //                       : Row(
-                //                           mainAxisAlignment:
-                //                               MainAxisAlignment.start,
-                //                           crossAxisAlignment:
-                //                               CrossAxisAlignment.center,
-                //                           children: [
-                //                             IconButton(
-                //                               icon: Icon(
-                //                                 Icons.keyboard_arrow_down,
-                //                                 color: Colors.pinkAccent,
-                //                                 size: 30,
-                //                               ),
-                //                               onPressed: () {
-                //                                 _controller.collapse();
-                //                               },
-                //                             ),
-                //                             Expanded(
-                //                                 child: Container(
-                //                                     height: 70,
-                //                                     child: Center(
-                //                                         child: Text(
-                //                                       "Now Playing",
-                //                                       style: rubberTextStyle,
-                //                                     )))),
-                //                             IconButton(
-                //                               icon: Icon(
-                //                                 Icons.equalizer,
-                //                                 color: Colors.pinkAccent,
-                //                               ),
-                //                               onPressed: () => Equalizer.open(0),
-                //                             ),
-                //                             PopupMenu()
-                //                           ],
-                //                         ),
-                //                   Container(
-                //                     width: MediaQuery.of(context).size.width,
-                //                     // height: 450.0,
-                //                     child: _carouselBuilder(),
-                //                   ),
-                //                   Container(
-                //                     height: 50,
-                //                     child: Column(
-                //                       mainAxisAlignment:
-                //                           MainAxisAlignment.spaceBetween,
-                //                       crossAxisAlignment:
-                //                           CrossAxisAlignment.center,
-                //                       children: [
-                //                         _songModel.isPlayAllSongs
-                //                             ? Padding(
-                //                                 padding: EdgeInsets.only(
-                //                                     left: 20.0, right: 20.0),
-                //                                 child: Text(
-                //                                   _songModel.audioItem.title,
-                //                                   style: rubberTextStyle,
-                //                                   overflow: TextOverflow.ellipsis,
-                //                                   textAlign: TextAlign.center,
-                //                                 ),
-                //                               )
-                //                             : Padding(
-                //                                 padding: EdgeInsets.only(
-                //                                     left: 20.0, right: 20.0),
-                //                                 child: Text(
-                //                                     _songModel.audioItem2.title,
-                //                                     style: rubberTextStyle,
-                //                                     overflow:
-                //                                         TextOverflow.ellipsis,
-                //                                     textAlign: TextAlign.center),
-                //                               ),
-                //                         _songModel.isPlayAllSongs
-                //                             ? Padding(
-                //                                 padding: EdgeInsets.only(
-                //                                     left: 20.0, right: 20.0),
-                //                                 child: Text(
-                //                                   _songModel.audioItem.artist ==
-                //                                           "<unknown>"
-                //                                       ? "Unknown Artist"
-                //                                       : _songModel
-                //                                           .audioItem.artist,
-                //                                   style: defTextStyle,
-                //                                   overflow: TextOverflow.ellipsis,
-                //                                   textAlign: TextAlign.center,
-                //                                 ),
-                //                               )
-                //                             : Padding(
-                //                                 padding: EdgeInsets.only(
-                //                                     left: 20.0, right: 20.0),
-                //                                 child: Text(
-                //                                   _songModel.audioItem2.artist ==
-                //                                           "<unknown>"
-                //                                       ? "Unknown Artist"
-                //                                       : _songModel
-                //                                           .audioItem2.artist,
-                //                                   style: defTextStyle,
-                //                                   overflow: TextOverflow.ellipsis,
-                //                                   textAlign: TextAlign.center,
-                //                                 ),
-                //                               ),
-                //                       ],
-                //                     ),
-                //                   ),
-                //                   Container(
-                //                     height: 70,
-                //                     child: Column(
-                //                       mainAxisAlignment:
-                //                           MainAxisAlignment.spaceBetween,
-                //                       crossAxisAlignment:
-                //                           CrossAxisAlignment.center,
-                //                       children: [
-                //                         SizedBox(
-                //                           width:
-                //                               MediaQuery.of(context).size.width,
-                //                           child: Slider(
-                //                             activeColor: Colors.pinkAccent,
-                //                             inactiveColor: Colors.pink[100],
-                //                             // value: min(durationMin, durationMax),
-                //                             value: durationMin,
-                //                             min: 0.0,
-                //                             max: durationMax,
-                //                             onChanged: (double duration) async {
-                //                               print(_songModel.audioItem.albumArtwork);
-                //                               print(_songModel.defAlbum);
-                //                               print(_songModel.audioItem);
-                //                               _songModel.seekPlayer(duration);
-                //                             },
-                //                           ),
-                //                         ),
-                //                         Row(
-                //                           mainAxisAlignment:
-                //                               MainAxisAlignment.spaceBetween,
-                //                           crossAxisAlignment:
-                //                               CrossAxisAlignment.center,
-                //                           children: [
-                //                             Container(
-                //                                 margin: EdgeInsets.fromLTRB(
-                //                                     20, 0, 0, 0),
-                //                                 child: Text(
-                //                                   // _songModel.currentPosition,
-                //                                   position,
-                //                                   style: defTextStyle,
-                //                                 )),
-                //                             Container(
-                //                                 margin: EdgeInsets.fromLTRB(
-                //                                     0, 0, 20, 0),
-                //                                 child: Text(
-                //                                   // _songModel.songDuration,
-                //                                   duration,
-                //                                   style: defTextStyle,
-                //                                 )),
-                //                           ],
-                //                         ),
-                //                       ],
-                //                     ),
-                //                   ),
-                //                   Container(
-                //                     width: MediaQuery.of(context).size.width,
-                //                     child: Row(
-                //                       mainAxisAlignment: MainAxisAlignment.center,
-                //                       crossAxisAlignment:
-                //                           CrossAxisAlignment.center,
-                //                       children: [
-                //                         IconButton(
-                //                           icon: _songModel.repeatIcons[
-                //                               _songModel.currentRepeatMode],
-                //                           onPressed: () {
-                //                             _songModel.changeRepeatMode();
-                //                             Fluttertoast.showToast(
-                //                                 msg: _songModel.repeatModeMessage,
-                //                                 gravity: ToastGravity.BOTTOM,
-                //                                 toastLength: Toast.LENGTH_SHORT);
-                //                           },
-                //                         ),
-                //                         SizedBox(width: 10),
-                //                         IconButton(
-                //                           icon: Icon(
-                //                             Icons.skip_previous,
-                //                             color: Colors.white,
-                //                             size: 40,
-                //                           ),
-                //                           onPressed: () {
-                //                             if (_songModel.isPlayAllSongs) {
-                //                               _songModel.onSkipPrev();
-                //                             } else {
-                //                               _songModel.onSkipPrev2();
-                //                             }
-                //                           },
-                //                         ),
-                //                         SizedBox(width: 10),
-                //                         ClipOval(
-                //                           child: Stack(
-                //                             children: [
-                //                               Container(
-                //                                 height: 80,
-                //                                 width: 80,
-                //                                 decoration: BoxDecoration(
-                //                                     border: Border.all(
-                //                                         color: Colors.pinkAccent,
-                //                                         width: 6)),
-                //                               ),
-                //                               Positioned.fill(
-                //                                 child: IconButton(
-                //                                   icon: _songModel.playPause2,
-                //                                   onPressed:
-                //                                       _songModel.onPauseResume,
-                //                                 ),
-                //                               ),
-                //                             ],
-                //                           ),
-                //                         ),
-                //                         SizedBox(width: 10),
-                //                         IconButton(
-                //                           icon: Icon(
-                //                             Icons.skip_next,
-                //                             color: Colors.white,
-                //                             size: 40,
-                //                           ),
-                //                           onPressed: () {
-                //                             if (_songModel.isPlayAllSongs) {
-                //                               _songModel.onSkipNext();
-                //                             } else {
-                //                               _songModel.onSkipNext2();
-                //                             }
-                //                           },
-                //                         ),
-                //                         SizedBox(width: 10),
-                //                         IconButton(
-                //                           icon: Icon(
-                //                             Icons.queue_music,
-                //                             color: Colors.white,
-                //                             size: 40,
-                //                           ),
-                //                           onPressed: showQueueSongs,
-                //                         )
-                //                       ],
-                //                     ),
-                //                   )
-                //                 ],
-                //               ),
-                //             )
-                //           : Container();
-                //     } else {
-                //       return Container();
-                //     }
-                //   },
-                // ));
-
-                //////////////////////// ---- TEST STREAM BUILDER ---- /////////////////////
                 child: _songModel.isPlayOnce
                     ? Container(
                         height: MediaQuery.of(context).size.height,
@@ -1369,7 +842,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               }
             ),
           ),
-          _rubberWidget()
+          screen(),
+          Selector<SongModel, bool>(
+            selector: (context, notifier) => notifier.isPlayOnce,
+            builder: (context, data, child) {
+              if(data){
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: MiniPlayer(),
+                );
+              }
+
+              return Container();
+            },
+          )
         ],
       ),
     );
