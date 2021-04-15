@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:my_music/song_model.dart';
+import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/themes/background_skin.dart';
 import 'package:my_music/themes/text_style.dart';
 import 'package:provider/provider.dart';

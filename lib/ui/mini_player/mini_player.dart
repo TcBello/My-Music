@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:miniplayer/miniplayer.dart';
-import 'package:my_music/now_playing.dart';
-import 'package:my_music/song_model.dart';
-import 'package:my_music/style.dart';
-import 'package:my_music/utils.dart';
+import 'package:my_music/ui/now_playing/now_playing.dart';
+import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/components/style.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:provider/provider.dart';
 import 'package:equalizer/equalizer.dart';
@@ -22,68 +22,6 @@ class MiniPlayer extends StatelessWidget {
   ValueNotifier<double> get playerExpandProgress =>
       ValueNotifier(playerMinHeight);
   final Color backgroundColor = Colors.black;
-
-  String toMinSecFormat(Duration duration) {
-    if (duration.inMinutes < 60) {
-      String minutes = (duration.inSeconds / 60).truncate().toString();
-      String seconds =
-          (duration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-      return "$minutes:$seconds";
-    } else {
-      String hours = (duration.inMinutes / 60).truncate().toString();
-      String minutes =
-          (duration.inMinutes % 60).truncate().toString().padLeft(2, '0');
-      String seconds =
-          (duration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-      return "$hours:$minutes:$seconds";
-    }
-  }
-
-  String toMinSecFormatWhileDragging(double dragPosition, Duration duration) {
-    if ((Duration(milliseconds: dragPosition.toInt()).inMinutes) < 60) {
-      if (duration.inSeconds.toDouble() > dragPosition) {
-        double newDouble = duration.inSeconds.toDouble() - dragPosition;
-        Duration newDuration = Duration(milliseconds: newDouble.toInt());
-        String minutes = (newDuration.inSeconds / 60).truncate().toString();
-        String seconds =
-            (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-        return "$minutes:$seconds";
-      } else {
-        double newDouble = duration.inSeconds.toDouble() + dragPosition;
-        Duration newDuration = Duration(milliseconds: newDouble.toInt());
-        String minutes = (newDuration.inSeconds / 60).truncate().toString();
-        String seconds =
-            (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-        return "$minutes:$seconds";
-      }
-    } else {
-      if (duration.inSeconds.toDouble() > dragPosition) {
-        double newDouble = duration.inSeconds.toDouble() - dragPosition;
-        Duration newDuration = Duration(milliseconds: newDouble.toInt());
-        String hours = (newDuration.inMinutes / 60).truncate().toString();
-        String minutes =
-            (newDuration.inMinutes % 60).truncate().toString().padLeft(2, '0');
-        String seconds =
-            (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-        return "$hours:$minutes:$seconds";
-      } else {
-        double newDouble = duration.inSeconds.toDouble() + dragPosition;
-        Duration newDuration = Duration(milliseconds: newDouble.toInt());
-        String hours = (newDuration.inMinutes / 60).truncate().toString();
-        String minutes =
-            (newDuration.inMinutes % 60).truncate().toString().padLeft(2, '0');
-        String seconds =
-            (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-        return "$hours:$minutes:$seconds";
-      }
-    }
-  }
 
   void expandMiniPlayer(){
     miniPlayerController.animateToHeight(state: PanelState.MAX);
@@ -115,9 +53,9 @@ class MiniPlayer extends StatelessWidget {
         maxHeight: playerMaxHeight,
         controller: miniPlayerController,
         elevation: 4,
-        onDismissed: () {
+        onDismissed: () async{
+          await notifier.stopPlayer();
           notifier.dismissMiniPlayer();
-          notifier.stopPlayer();
         },
         curve: Curves.easeOut,
         builder: (height, percentage) {

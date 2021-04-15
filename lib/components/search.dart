@@ -8,9 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:my_music/song_info.dart';
-import 'package:my_music/song_model.dart';
-import 'package:my_music/style.dart';
+import 'package:my_music/tempfile/song_info.dart';
+import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/components/style.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -103,7 +103,8 @@ class Search extends SearchDelegate<SongInfo>{
                       FlatButton(
                         onPressed: () async {
                           // await _songModel.addSongAndCreatePlaylist(_songModel.songInfo[index], _getText.text);
-                          await _songModel.createPlaylist(_getText.text);
+                          // TODO: FIX PLAYLSIT
+                          // await _songModel.createPlaylist(_getText.text);
                           await _songModel.getDataSong();
                           Fluttertoast.showToast(
                               msg: "${_getText.text} created successfully",

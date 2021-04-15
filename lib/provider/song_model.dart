@@ -165,8 +165,8 @@ class SongModel extends ChangeNotifier {
     if(!isExist){
       ByteData byteData = await rootBundle.load('assets/imgs/asd.png');
       file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> getDataSong() async {
@@ -179,8 +179,15 @@ class SongModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createPlaylist(String name) async {
+  Future<void> createPlaylist(String name, SongInfo songInfo) async {
     await FlutterAudioQuery.createPlaylist(playlistName: name);
+    await getDataSong();
+
+    _playlistInfo.forEach((element) {
+      if(element.name == name){
+        element.addSong(song: songInfo);
+      }
+    });
   }
 
   Future<void> addSongToPlaylist(SongInfo song, int index) async {
@@ -442,14 +449,14 @@ class SongModel extends ChangeNotifier {
       await _audioPlayer.pausePlayer();
       playPause = Icon(Icons.play_arrow, color: Colors.pinkAccent,);
       playPause2 = Icon(Icons.play_arrow, color: Colors.white, size: 60,);
-      _playerStream.pause();
+      // _playerStream.pause();
     }
     else{
       isPlaying = true;
       await _audioPlayer.resumePlayer();
       playPause = Icon(Icons.pause, color: Colors.pinkAccent,);
       playPause2 = Icon(Icons.pause, color: Colors.white, size: 60,);
-      _playerStream.resume();
+      // _playerStream.resume();
     }
 
 
@@ -638,5 +645,16 @@ class SongModel extends ChangeNotifier {
   void setPlayerExpandBool(bool value){
     isPlayerExpand = value;
     notifyListeners();
+  }
+
+  void initSongSearch(){
+    if (isConvertToStringOnce) {
+      songInfo.forEach((element) {
+        stringSongs.add(element.title);
+      });
+      isConvertToStringOnce = false;
+
+      notifyListeners();
+    }
   }
 }

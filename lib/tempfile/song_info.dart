@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_music/image_album_edit.dart';
-import 'package:my_music/song_model.dart';
-import 'package:my_music/style.dart';
+import 'package:my_music/tempfile/image_album_edit.dart';
+import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/components/style.dart';
 import 'package:provider/provider.dart';
 
 class SongInfoEdit extends StatefulWidget {
