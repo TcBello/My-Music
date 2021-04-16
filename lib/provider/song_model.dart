@@ -61,7 +61,7 @@ class SongModel extends ChangeNotifier {
   // Stream<String> get _bgStream => _streamController.stream;
   String backgroundFilePath = "";
   String defaultBgPath = "assets/imgs/starry.jpg";
-  String defAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/asd.png";
+  String defAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
   String repeatModeMessage = "";
   int textHexColor = 4294967295;
   int textHexColor2 = 4294967295;
@@ -158,12 +158,12 @@ class SongModel extends ChangeNotifier {
   void setDefaultAlbumArt() async {
     final Directory dir = await getApplicationDocumentsDirectory();
     String dirPath = dir.path;
-    String filePath = "$dirPath/asd.png";
+    String filePath = "$dirPath/defalbum.png";
     File file = File(filePath);
     bool isExist = await file.exists();
 
     if(!isExist){
-      ByteData byteData = await rootBundle.load('assets/imgs/asd.png');
+      ByteData byteData = await rootBundle.load('assets/imgs/defalbum.png');
       file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
       notifyListeners();
     }

@@ -1,12 +1,8 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_music/ui/main_screen/main_screen.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 
@@ -73,26 +69,26 @@ class _InitsState extends State<Inits> {
     songModel.setDefaultAlbumArt();
   }
 
-  Future<String> getDir() async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    String dirPath = directory.path;
-    String filePath = "$dirPath/defalbum.png";
+  // Future<String> getDir() async {
+  //   final Directory directory = await getApplicationDocumentsDirectory();
+  //   String dirPath = directory.path;
+  //   String filePath = "$dirPath/defalbum.png";
 
-    return filePath;
-  }
+  //   return filePath;
+  // }
 
-  void saveFile() async {
-    File file = File(await getDir());
+  // void saveFile() async {
+  //   File file = File(await getDir());
 
-    if(await file.exists()){
-      songModel.defAlbum = file.path;
-    }
-    else{
-      ByteData byteData = await rootBundle.load('assets/imgs/defalbum.png');
-      file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-      songModel.defAlbum = file.path;
-    }
-  }
+  //   if(await file.exists()){
+  //     songModel.defAlbum = file.path;
+  //   }
+  //   else{
+  //     ByteData byteData = await rootBundle.load('assets/imgs/defalbum.png');
+  //     file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+  //     songModel.defAlbum = file.path;
+  //   }
+  // }
 
 
   @override
