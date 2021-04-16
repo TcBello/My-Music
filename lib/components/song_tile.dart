@@ -16,6 +16,8 @@ class SongTile extends StatefulWidget {
 }
 
 class _SongTileState extends State<SongTile> {
+  bool isTap = false;
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SongModel>(context);
@@ -27,6 +29,7 @@ class _SongTileState extends State<SongTile> {
 
 
     return ListTile(
+      tileColor: Colors.transparent,
       contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
       title: Container(
         padding: EdgeInsets.only(right: 8.0),
@@ -68,11 +71,8 @@ class SongTile2 extends StatefulWidget {
 class _SongTile2State extends State<SongTile2> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<SongModel>(context);
     final songTitle = widget.songInfo.title;
     
-
-
     return ListTile(
       contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
       title: Container(
@@ -94,10 +94,10 @@ class _SongTile2State extends State<SongTile2> {
 }
 
 class NowPlayingSongTile extends StatefulWidget {
-  NowPlayingSongTile({this.songInfo, this.onTap});
+  const NowPlayingSongTile({this.songInfo, this.onTap});
 
-  SongInfo songInfo;
-  Function onTap;
+  final SongInfo songInfo;
+  final Function onTap;
 
   @override
   _NowPlayingSongTileState createState() => _NowPlayingSongTileState();

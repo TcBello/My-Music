@@ -1,29 +1,15 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:ui';
 
-import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:my_music/ui/albums/albums.dart';
-import 'package:my_music/ui/artists/artists.dart';
-import 'package:my_music/ui/now_playing/now_playing.dart';
-import 'package:my_music/ui/playlists/playlists.dart';
-import 'package:my_music/components/search.dart';
 import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/ui/songs/songs.dart';
-import 'package:my_music/components/style.dart';
-import 'package:my_music/themes/themes.dart';
 import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
 import 'package:my_music/ui/main_screen/components/blur_effect.dart';
 import 'package:my_music/ui/main_screen/components/main_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:miniplayer/miniplayer.dart';
 
 class MainScreen extends StatelessWidget {
@@ -76,7 +62,6 @@ class PopupMenu extends StatefulWidget {
 
 class _PopupMenuState extends State<PopupMenu> {
   final List<String> menu = ["Add to Playlist"];
-  TextEditingController _getText = TextEditingController();
 
   // void showPlaylistDialog(index){
   //   showDialog(

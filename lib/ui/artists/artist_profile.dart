@@ -2,14 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_music/components/image_gridview.dart';
-import 'package:my_music/components/album_card.dart';
 import 'package:my_music/ui/artists/components/artist_library_builder.dart';
-import 'package:my_music/ui/library_song/library_song.dart';
 import 'package:my_music/components/search.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
-import 'package:provider/provider.dart';
 
 class ArtistProfile extends StatelessWidget {
   final String title;

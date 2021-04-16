@@ -1,13 +1,9 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/search.dart';
-import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/ui/library_song/components/header.dart';
 import 'package:my_music/ui/library_song/components/library_song_builder.dart';
 import 'package:provider/provider.dart';

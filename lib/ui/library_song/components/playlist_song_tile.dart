@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:my_music/components/bottom_sheet.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:provider/provider.dart';

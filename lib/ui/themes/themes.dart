@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_music/components/delete_dialog.dart';
 import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/themes/background_skin.dart';
-import 'package:my_music/themes/text_style.dart';
+import 'package:my_music/ui/themes/background_skin.dart';
+import 'package:my_music/ui/themes/text_style.dart';
 import 'package:provider/provider.dart';
 
 class Themes extends StatelessWidget {
@@ -32,23 +32,30 @@ class Themes extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      title: Text("Reset"),
-                      content: Text("Are you sure you want to reset the theme?"),
-                      actions: [
-                        FlatButton(
-                          child: Text("Cancel", style: TextStyle(color: Colors.blue),),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        FlatButton(
-                          child: Text("Reset", style: TextStyle(color: Colors.blue),),
-                          onPressed: () async {
-                            await songModel.resetTheme().then((value) => Navigator.pop(context));
-                          },
-                        )
-                      ],
+                    return DeleteDialog(
+                      title: "Reset",
+                      content: "Are you sure you want to reset the theme?",
+                      onPressedDelete: () async {
+                        await songModel.resetTheme().then((value) => Navigator.pop(context));
+                      },
                     );
+                    // return AlertDialog(
+                    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    //   title: Text("Reset"),
+                    //   content: Text("Are you sure you want to reset the theme?"),
+                    //   actions: [
+                    //     FlatButton(
+                    //       child: Text("Cancel", style: TextStyle(color: Colors.blue),),
+                    //       onPressed: () => Navigator.pop(context),
+                    //     ),
+                    //     FlatButton(
+                    //       child: Text("Reset", style: TextStyle(color: Colors.blue),),
+                    //       onPressed: () async {
+                            
+                    //       },
+                    //     )
+                    //   ],
+                    // );
                   },
                 );
               },

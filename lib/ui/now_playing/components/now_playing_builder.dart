@@ -15,9 +15,7 @@ class NowPlayingBuilder extends StatefulWidget {
 class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final provider = Provider.of<SongModel>(context);
-    // print(provider.nowPlayingSongs.length);
 
     return Container(
         color: Colors.white,

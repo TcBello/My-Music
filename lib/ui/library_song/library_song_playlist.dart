@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/search.dart';
-import 'package:my_music/tempfile/song_info.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/ui/library_song/components/playlist_song_tile.dart';

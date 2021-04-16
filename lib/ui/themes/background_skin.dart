@@ -263,6 +263,7 @@ class _BackgroundSkinState extends State<BackgroundSkin>
             StreamBuilder<List<String>>(
               initialData: [],
               stream: imageStream(),
+              // ignore: missing_return
               builder: (context, snapshot){
                 final x = snapshot.data;
 
@@ -276,16 +277,14 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                           onTap: (){
                             setState(() {
                               _defaultImage = Image.file(File(x[index]), fit: BoxFit.cover,);
-                              _currentBG = x[index];/////////////////
+                              _currentBG = x[index];
                             });
                           },
-
-                          // TODO: UNABLE TO RETREIVE WALLPAPER HISTORY DUE TO CLEAR CACHE LOSS
                           child: Container(
                               margin: EdgeInsets.only(left: 10),
                               width: 100,
                               height: 150,
-                              child: Image.file(File(x[index]), fit: BoxFit.cover,)//////////////////////
+                              child: Image.file(File(x[index]), fit: BoxFit.cover,)
                           ),
                         ),),
                       ); 

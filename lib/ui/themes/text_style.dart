@@ -18,15 +18,8 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     init();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
+    super.initState();
   }
 
   Future<void> init() async {

@@ -56,8 +56,8 @@ class SongModel extends ChangeNotifier {
   double maxDuration = 1.0;
   double minDuration = 0.0;
   double sliderValue;
-  String _defAlbumArt;
-  StreamController<String> _bgStreamController = StreamController<String>();
+
+  // StreamController<String> _bgStreamController = StreamController<String>();
   // Stream<String> get _bgStream => _streamController.stream;
   String backgroundFilePath = "";
   String defaultBgPath = "assets/imgs/starry.jpg";
@@ -158,7 +158,7 @@ class SongModel extends ChangeNotifier {
   void setDefaultAlbumArt() async {
     final Directory dir = await getApplicationDocumentsDirectory();
     String dirPath = dir.path;
-    String filePath = "${dirPath}/asd.png";
+    String filePath = "$dirPath/asd.png";
     File file = File(filePath);
     bool isExist = await file.exists();
 
@@ -439,7 +439,7 @@ class SongModel extends ChangeNotifier {
         _playerStream = null;
       }
     }catch(e){
-      print("ERROR\n${e}");
+      print("ERROR\n$e");
     }
   }
 

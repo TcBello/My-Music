@@ -1,16 +1,13 @@
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/ui/main_screen/main_screen.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 void main() async {
@@ -79,7 +76,7 @@ class _InitsState extends State<Inits> {
   Future<String> getDir() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     String dirPath = directory.path;
-    String filePath = "${dirPath}/defalbum.png";
+    String filePath = "$dirPath/defalbum.png";
 
     return filePath;
   }

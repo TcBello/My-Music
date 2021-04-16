@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/themes/themes.dart';
+import 'package:my_music/ui/themes/themes.dart';
 import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget {
