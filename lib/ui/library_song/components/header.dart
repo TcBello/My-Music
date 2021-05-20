@@ -12,54 +12,44 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SongModel>(builder: (context, notifier, child) {
-      // final albumName = notifier.albumInfo[index].title;
-      // final artistName = notifier.albumInfo[index].artist != '<unknown>'
-      //   ? notifier.albumInfo[index].artist
-      //   : "";
-      
-      // final songNumber = "${notifier.albumInfo[index].numberOfSongs} song";
-      final albumName = albumInfo.title;
-      final artistName = albumInfo.artist != '<unknown>'
-        ? albumInfo.artist
-        : "";
-      
-      final songNumber = "${albumInfo.numberOfSongs} song";
-      
-      return Container(
-        height: 120,
-        width: MediaQuery.of(context).size.width,
-        child: Stack(
-          children: [
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 65, left: 15, right: 15),
-                child: AutoSizeText(
-                  albumName,
-                  maxLines: 2,
-                  style: headerLibrarySongListTextStyle,
-                ),
+    final albumName = albumInfo.title;
+    final artistName = albumInfo.artist != '<unknown>' ? albumInfo.artist : "";
+
+    final songNumber = "${albumInfo.numberOfSongs} song";
+
+    return Container(
+      height: 120,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 65, left: 15, right: 15),
+              child: AutoSizeText(
+                albumName,
+                maxLines: 2,
+                style: headerLibrarySongListTextStyle,
               ),
             ),
-            Positioned.fill(
-              top: 40,
-              child: ListTile(
-                title: Text(
-                  artistName,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Text(songNumber),
-                trailing: IconButton(
-                  icon: Icon(Icons.more_vert),
-                ),
-                leading: CircleAvatar(
-                  child: Icon(Icons.person),
-                ),
+          ),
+          Positioned.fill(
+            top: 40,
+            child: ListTile(
+              title: Text(
+                artistName,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(songNumber),
+              trailing: IconButton(
+                icon: Icon(Icons.more_vert),
+              ),
+              leading: CircleAvatar(
+                child: Icon(Icons.person),
               ),
             ),
-          ],
-        ),
-      );
-    });
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 
 class PlaylistBuilder extends StatelessWidget {
@@ -11,7 +12,7 @@ class PlaylistBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SongModel>(
+    return Consumer<SongQueryProvider>(
       builder: (context, notifier, child) {
         return ListView.builder(
           itemCount: notifier.playlistInfo.length,
@@ -31,7 +32,7 @@ class PlaylistBuilder extends StatelessWidget {
                     fontSize: 16.0
                 );
                 Navigator.pop(context);
-                notifier.getDataSong();
+                notifier.getSongs();
               },
             );
           },

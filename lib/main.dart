@@ -1,5 +1,11 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:my_music/components/audio_player_task/audio_player_task.dart';
+import 'package:my_music/provider/song_player.dart';
+import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/provider/theme.dart';
 import 'package:my_music/ui/main_screen/main_screen.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
@@ -8,9 +14,19 @@ import 'package:splashscreen/splashscreen.dart';
 
 void main() async {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => SongModel(),
-      child: MaterialApp(home: Splash(),)
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => SongQueryProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SongPlayerProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ThemeProvider(),
+        ),
+      ],
+      child: MaterialApp(home: Splash(),),
     )
   );
 }
@@ -45,7 +61,7 @@ class _MainState extends State<Main> {
           textTheme: textStyle,
           fontFamily: "Montserrat",
         ),
-        home: Material(child: Inits())
+        home: AudioServiceWidget(child: Material(child: Inits()),)
     );
   }
 }
@@ -57,39 +73,18 @@ class Inits extends StatefulWidget {
 
 class _InitsState extends State<Inits> {
 
-  SongModel songModel;
+  ThemeProvider _themeProvider;
+  SongQueryProvider songQueryProvider;
 
   @override
   void initState() {
     super.initState();
-    songModel = context.read<SongModel>();
-    songModel.getCurrentBackground();
-    songModel.getDataSong();
-    songModel.myPlayer();
-    songModel.setDefaultAlbumArt();
+    _themeProvider = context.read<ThemeProvider>();
+    songQueryProvider = context.read<SongQueryProvider>();
+    _themeProvider.getCurrentBackground();
+    songQueryProvider.getSongs();
+    songQueryProvider.setDefaultAlbumArt();
   }
-
-  // Future<String> getDir() async {
-  //   final Directory directory = await getApplicationDocumentsDirectory();
-  //   String dirPath = directory.path;
-  //   String filePath = "$dirPath/defalbum.png";
-
-  //   return filePath;
-  // }
-
-  // void saveFile() async {
-  //   File file = File(await getDir());
-
-  //   if(await file.exists()){
-  //     songModel.defAlbum = file.path;
-  //   }
-  //   else{
-  //     ByteData byteData = await rootBundle.load('assets/imgs/defalbum.png');
-  //     file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-  //     songModel.defAlbum = file.path;
-  //   }
-  // }
-
 
   @override
   Widget build(BuildContext context) {

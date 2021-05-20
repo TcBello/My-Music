@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 
 class PlaylistSongTile extends StatefulWidget {
@@ -19,7 +20,7 @@ class PlaylistSongTile extends StatefulWidget {
 class _PlaylistSongTileState extends State<PlaylistSongTile> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<SongModel>(context);
+    final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songTitle = widget.songInfo.title;
     
     return ListTile(
@@ -69,14 +70,14 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                                     ListTile(
                                       title: Text("Play Next"),
                                       onTap: (){
-                                        provider.playNextSong(widget.songInfo);
+                                        songQueryProvider.playNextSong(widget.songInfo);
                                         Navigator.pop(context);
                                       },
                                     ),
                                     ListTile(
                                       title: Text("Add to Queue"),
                                       onTap: (){
-                                        provider.addToQueueSong(widget.songInfo);
+                                        songQueryProvider.addToQueueSong(widget.songInfo);
                                         Navigator.pop(context);
                                       },
                                     ),
@@ -100,9 +101,9 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                                                 FlatButton(
                                                   child: Text("Remove", style: TextStyle(color: Colors.blue),),
                                                   onPressed: () async {
-                                                    await provider.removeSongFromPlaylist(widget.songInfo, widget.index);
-                                                    await provider.getSongFromPlaylist(widget.index);
-                                                    provider.getDataSong().whenComplete(() => Navigator.pop(context));
+                                                    await songQueryProvider.removeSongFromPlaylist(widget.songInfo, widget.index);
+                                                    await songQueryProvider.getSongFromPlaylist(widget.index);
+                                                    songQueryProvider.getSongs().whenComplete(() => Navigator.pop(context));
                                                   },
                                                 )
                                               ],

@@ -9,6 +9,9 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/provider/song_player.dart';
+import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,24 +40,24 @@ class Search extends SearchDelegate<SongInfo>{
 
   @override
   Widget buildResults(BuildContext context) {
-    final _song = context.select((SongModel s) => s.songInfo);
+    final _song = context.select((SongQueryProvider s) => s.songInfo);
     final _songSearchList = _song.where((element) => element.title.toLowerCase().contains(query.toLowerCase())).toList();
     print(_songSearchList);
     
     Widget _backgroundWidget(){
-      return Consumer<SongModel>(
-        builder: (context, x, snapshot) {
+      return Consumer<ThemeProvider>(
+        builder: (context, theme, snapshot) {
           return Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: x.backgroundFilePath == x.defaultBgPath ||
-                      x.backgroundFilePath == "" || !File(x.backgroundFilePath).existsSync()
+            child: theme.backgroundFilePath == theme.defaultBgPath ||
+                      theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
                   ? Image.asset(
                       "assets/imgs/starry.jpg",
                       fit: BoxFit.cover,
                     )
                   : Image.file(
-                      File(x.backgroundFilePath),
+                      File(theme.backgroundFilePath),
                       fit: BoxFit.cover,
                     )
           );
@@ -79,15 +82,16 @@ class Search extends SearchDelegate<SongInfo>{
                 ),
                 child: Text("Songs", style: headerSearchResult,),
               ),
-              Consumer<SongModel>(
-                builder: (context, song, child){
+              Consumer<SongPlayerProvider>(
+                builder: (context, songPlayer, child){
                   return ListBody(
                     children: List.generate(_songSearchList.length, (index) => SongTile(
                       songInfo: _songSearchList[index],
                       onTap: () async{
-                        song.setIndex(index);
-                        await song.playSong(_songSearchList);
-                        print("PLAY STARTED!");
+                        // song.setIndex(index);
+                        // await song.playSong(_songSearchList);
+                        // print("PLAY STARTED!");
+                        songPlayer.playSong(_songSearchList, index);
                       },
                     )),
                   );
@@ -137,7 +141,7 @@ class Search extends SearchDelegate<SongInfo>{
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final _model = context.select((SongModel s) => s.stringSongs);
+    final _model = context.select((SongQueryProvider s) => s.stringSongs);
     final _suggestionList = query.isEmpty ? recent : _model.where((element) => element.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: _suggestionList.length,

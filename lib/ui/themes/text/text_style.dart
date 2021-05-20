@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,7 +68,7 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
   }
 
   void _openColorDialog(BuildContext context){
-    final _model = Provider.of<SongModel>(context, listen: false);
+    final _themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     showDialog(
       context: context,
@@ -85,8 +86,8 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
             FlatButton(
               child: Text("Apply"),
               onPressed: () async {
-                await _model.changeTextColor(pickerColor.value);
-                await _model.getCurrentTextColor();
+                await _themeProvider.changeTextColor(pickerColor.value);
+                await _themeProvider.getCurrentTextColor();
                 setState(() {
                   _hex = pickerColor.value;
                 });
@@ -100,7 +101,7 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
   }
 
   void _openColorDialog2(BuildContext context){
-    final _model = Provider.of<SongModel>(context, listen: false);
+    final _themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     showDialog(
         context: context,
@@ -118,8 +119,8 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
               FlatButton(
                 child: Text("Apply"),
                 onPressed: () async {
-                  await _model.changeTextColor2(pickerColor2.value);
-                  await _model.getCurrentTextColor2();
+                  await _themeProvider.changeTextColor2(pickerColor2.value);
+                  await _themeProvider.getCurrentTextColor2();
                   setState(() {
                     _hex2 = pickerColor2.value;
                   });

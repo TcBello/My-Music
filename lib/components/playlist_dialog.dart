@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/playlist_builder.dart';
 import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 
 class PlaylistDialog extends StatelessWidget {
@@ -45,7 +46,7 @@ class PlaylistDialog extends StatelessWidget {
                     onPressed: (){Navigator.pop(context);},
                     child: Text("Cancel"),
                   ),
-                  Consumer<SongModel>(
+                  Consumer<SongQueryProvider>(
                     builder: (context, notifier, child) {
                       return FlatButton(
                         onPressed: () async {

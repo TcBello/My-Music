@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -315,8 +316,8 @@ class _BackgroundSkinState extends State<BackgroundSkin>
         appBar: AppBar(
           title: Text("Background Skin"),
           actions: [
-            Consumer<SongModel>(
-              builder: (context, data, child) {
+            Consumer<ThemeProvider>(
+              builder: (context, theme, child) {
                 return IconButton(
                   icon: Icon(
                     Icons.check,
@@ -325,15 +326,15 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                   tooltip: "Apply Changes",
                   onPressed: () async {
                     if(_currentBG == "" && _blurValue == 0.0){
-                      await data.updateBG("assets/imgs/starry.jpg", _blurValue);
-                      await data.getCurrentBackground().then((value){
+                      await theme.updateBG("assets/imgs/starry.jpg", _blurValue);
+                      await theme.getCurrentBackground().then((value){
                         Navigator.pop(context);
                         Navigator.pop(context);
                       });
                     }
                     else{
-                      await data.updateBG(_currentBG, _blurValue);
-                      await data.getCurrentBackground().then((value){
+                      await theme.updateBG(_currentBG, _blurValue);
+                      await theme.getCurrentBackground().then((value){
                         Navigator.pop(context);
                         Navigator.pop(context);
                       });

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/provider/song_player.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/albums/albums.dart';
 import 'package:my_music/ui/artists/artists.dart';
 import 'package:my_music/components/controller.dart';
@@ -32,10 +34,11 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<SongModel>(context);
+    final songQueryProvider = Provider.of<SongQueryProvider>(context);
+    final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
 
     return Scaffold(
-      drawerEnableOpenDragGesture: provider.isPlayerExpand,
+      drawerEnableOpenDragGesture: songPlayerProvider.isPlayerExpand,
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: NestedScrollView(
@@ -56,10 +59,10 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
                   IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () {
-                      provider.initSongSearch();
+                      songQueryProvider.initSongSearch();
                       showSearch(context: context, delegate: Search());
                     },
-                  )
+                  ),
                 ],
                 bottom: TabBar(
                   controller: tabController,

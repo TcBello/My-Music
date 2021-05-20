@@ -4,6 +4,8 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/delete_dialog.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/provider/song_player.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 
 class PlaylistBottomSheetOptions extends StatelessWidget {
@@ -14,7 +16,8 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<SongModel>(context);
+    final songQueryProvider = Provider.of<SongQueryProvider>(context);
+    final songPlayerProvider  = Provider.of<SongPlayerProvider>(context);
     final playlistName = playlistInfo.name;
 
     return Container(
@@ -47,18 +50,20 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
           ListTile(
             title: Text("Play Playlist"),
             onTap: () async {
-              await provider.getSongFromPlaylist(index);
-              provider.setIndex(0);
-              await provider
-                  .playSong(provider.songInfoFromPlaylist)
-                  .whenComplete(() => Navigator.pop(context));
+              await songQueryProvider.getSongFromPlaylist(index);
+              // provider.setIndex(0);
+              // await provider
+              //     .playSong(provider.songInfoFromPlaylist)
+              //     .whenComplete(() => Navigator.pop(context));
+              songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist, 0);
+              Navigator.pop(context);
             },
           ),
           ListTile(
             title: Text("Play Next"),
             onTap: () async {
-              provider.getSongFromPlaylist(index).whenComplete(() {
-                provider.playNextPlaylist(provider.songInfoFromPlaylist);
+              songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
+                songQueryProvider.playNextPlaylist(songQueryProvider.songInfoFromPlaylist);
                 Navigator.pop(context);
               });
             },
@@ -66,13 +71,13 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
           ListTile(
             title: Text("Add to Queue"),
             onTap: () {
-              provider.getSongFromPlaylist(index).whenComplete(() {
-                provider.addToQueuePlaylist(provider.songInfoFromPlaylist);
+              songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
+                songQueryProvider.addToQueuePlaylist(songQueryProvider.songInfoFromPlaylist);
                 Navigator.pop(context);
               });
             },
           ),
-          Consumer<SongModel>(
+          Consumer<SongQueryProvider>(
             builder: (context, notifier, child) {
               final playlistName = notifier.playlistInfo[index].name;
 
@@ -89,7 +94,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
                         content: "Are you sure you want to delete this playlist?",
                         onPressedDelete: () async {
                           await notifier.deletePlaylist(index);
-                          await notifier.getDataSong().then((value) {
+                          await notifier.getSongs().then((value) {
                             Navigator.pop(context);
                           });
                         },

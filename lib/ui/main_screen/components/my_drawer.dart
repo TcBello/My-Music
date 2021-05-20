@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/provider/song_player.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/themes/themes.dart';
 import 'package:provider/provider.dart';
 
@@ -29,19 +31,22 @@ class MyDrawer extends StatelessWidget {
             ),
             title: Text("Themes"),
           ),
-          ListTile(
-            // onTap: () {Navigator.push(context, CupertinoPageRoute(builder: (context) => EqualizerScreen()));},
-            onTap: () {
-              Equalizer.open(0);
-            },
-            leading: Icon(
-              Icons.equalizer,
-              color: Colors.white,
-            ),
-            title: Text("Equalizer"),
+          Consumer<SongPlayerProvider>(
+            builder: (context, songPlayer, child) {
+              return ListTile(
+                onTap: () async{
+                  await songPlayer.openEqualizer();
+                },
+                leading: Icon(
+                  Icons.equalizer,
+                  color: Colors.white,
+                ),
+                title: Text("Equalizer"),
+              );
+            }
           ),
-          Selector<SongModel, Future<void>>(
-            selector: (context, notifier) => notifier.getDataSong(),
+          Selector<SongQueryProvider, Future<void>>(
+            selector: (context, notifier) => notifier.getSongs(),
             builder: (context, data, child) {
               return ListTile(
                 onTap: () async {

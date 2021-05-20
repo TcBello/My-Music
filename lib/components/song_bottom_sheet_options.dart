@@ -2,8 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/playlist_dialog.dart';
+import 'package:my_music/main.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 
 class SongBottomSheetOptions extends StatelessWidget {
@@ -20,7 +22,7 @@ class SongBottomSheetOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<SongModel>(context);
+    final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songTitle = songInfo.title;
 
     return Container(
@@ -48,27 +50,24 @@ class SongBottomSheetOptions extends StatelessWidget {
           ListTile(
             title: Text("Play Next"),
             onTap: () {
-              provider.playNextSong(songInfo);
+              songQueryProvider.playNextSong(songInfo);
               Navigator.pop(context);
             },
           ),
           ListTile(
             title: Text("Add to Queue"),
             onTap: () {
-              provider.addToQueueSong(songInfo);
+              songQueryProvider.addToQueueSong(songInfo);
               Navigator.pop(context);
             },
           ),
-          Consumer<SongModel>(
-            builder: (context, notifier, child) {
-              return ListTile(
-                title: Text("Add to playlist"),
-                onTap: () {
-                  Navigator.pop(context);
-                  showPlaylistDialog(context);
-                },
-              );
-          }),
+          ListTile(
+            title: Text("Add to playlist"),
+            onTap: () {
+              Navigator.pop(context);
+              showPlaylistDialog(context);
+            },
+          )
         ],
       ),
     );

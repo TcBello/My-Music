@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/delete_dialog.dart';
 import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/ui/themes/background_skin.dart';
-import 'package:my_music/ui/themes/text_style.dart';
+import 'package:my_music/provider/theme.dart';
+import 'package:my_music/ui/themes/background/background_skin.dart';
+import 'package:my_music/ui/themes/text/text_style.dart';
 import 'package:provider/provider.dart';
 
 class Themes extends StatelessWidget {
@@ -23,8 +24,8 @@ class Themes extends StatelessWidget {
           subtitle: Text("Customize text style"),
           onTap: (){Navigator.push(context, CupertinoPageRoute(builder: (context) => TextStyleTheme()));},
         ),
-        Consumer<SongModel>(
-          builder: (context, songModel, snapshot) {
+        Consumer<ThemeProvider>(
+          builder: (context, theme, snapshot) {
             return ListTile(
               title: Text("Reset Theme"),
               subtitle: Text("Set to default theme"),
@@ -36,7 +37,7 @@ class Themes extends StatelessWidget {
                       title: "Reset",
                       content: "Are you sure you want to reset the theme?",
                       onPressedDelete: () async {
-                        await songModel.resetTheme().then((value) => Navigator.pop(context));
+                        await theme.resetTheme().then((value) => Navigator.pop(context));
                       },
                     );
                     // return AlertDialog(

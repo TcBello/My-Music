@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/image_gridview.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/album_card.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/library_song.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,7 @@ class ArtistLibraryBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SongModel>(
+    return Consumer<SongQueryProvider>(
       builder: (context, notifier, child){
         return Container(
           height: MediaQuery.of(context).size.height,

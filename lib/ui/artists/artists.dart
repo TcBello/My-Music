@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/artists/artist_profile.dart';
 import 'package:my_music/components/image_gridview.dart';
 import 'package:my_music/provider/song_model.dart';
@@ -12,7 +13,7 @@ class Artists extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Consumer<SongModel>(
+    return Consumer<SongQueryProvider>(
       builder: (context, notifier, child){
         return Container(
           width: size.width,

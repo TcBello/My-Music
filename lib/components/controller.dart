@@ -6,6 +6,6 @@ final MiniplayerController miniPlayerController = MiniplayerController();
 
 final ScrollController scrollController = ScrollController();
 
-TabController tabController;
-
 final TextEditingController playlistController = TextEditingController();
+
+TabController tabController;

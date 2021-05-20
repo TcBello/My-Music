@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/components/header.dart';
 import 'package:my_music/ui/library_song/components/library_song_builder.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class LibrarySong extends StatelessWidget {
             pinned: true,
             forceElevated: true,
             actions: [
-              Consumer<SongModel>(builder: (context, notifier, child) {
+              Consumer<SongQueryProvider>(builder: (context, notifier, child) {
                 return IconButton(
                   icon: Icon(
                     Icons.search,
@@ -38,19 +39,8 @@ class LibrarySong extends StatelessWidget {
               })
             ],
             expandedHeight: 350,
-            flexibleSpace: FlexibleSpaceBar(background: Consumer<SongModel>(
-              builder: (context, notifier, child) {
-                // TODO: FIX ALBUM ART FROM PLAYLIST
-                // return notifier.albumInfo[widget.indexFromOutside].albumArt != null
-                //     ? Image.file(
-                //         File(notifier.albumInfo[widget.indexFromOutside].albumArt),
-                //         fit: BoxFit.cover,
-                //       )
-                //     : Image.asset(
-                //         "assets/imgs/defalbum.png",
-                //         fit: BoxFit.cover,
-                //       );
-                return albumInfo.albumArt != null
+            flexibleSpace: FlexibleSpaceBar(
+                background: albumInfo.albumArt != null
                     ? Image.file(
                         File(albumInfo.albumArt),
                         fit: BoxFit.cover,
@@ -58,9 +48,7 @@ class LibrarySong extends StatelessWidget {
                     : Image.asset(
                         "assets/imgs/defalbum.png",
                         fit: BoxFit.cover,
-                      );
-              },
-            )),
+                      )),
           ),
         ];
       },
@@ -70,7 +58,9 @@ class LibrarySong extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Header(albumInfo: albumInfo,),
+              Header(
+                albumInfo: albumInfo,
+              ),
               LibrarySongBuilder(
                 songInfoList: songInfoList,
               )
@@ -79,4 +69,3 @@ class LibrarySong extends StatelessWidget {
     ));
   }
 }
-

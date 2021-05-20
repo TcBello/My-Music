@@ -9,7 +9,7 @@ class NowPlaying extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Now Playing",
+          "Up Next",
           style: headerLibrarySongListTextStyle,
         ),
         centerTitle: true,

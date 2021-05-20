@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/library_song_playlist.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/ui/playlists/components/playlist_card.dart';
@@ -8,7 +9,7 @@ import 'package:provider/provider.dart';
 class Playlists extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<SongModel>(
+    return Consumer<SongQueryProvider>(
       builder: (context, notifier, child){
         return Container(
           width: MediaQuery.of(context).size.width,

@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:my_music/provider/song_model.dart';
+import 'package:my_music/provider/song_player.dart';
+import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
@@ -22,18 +24,18 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<SongModel>(context);
+    final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
     
     return WillPopScope(
       onWillPop: (){
-        return onWillScope(provider.isPlayerExpand);
+        return onWillScope(songPlayerProvider.isPlayerExpand);
       },
       child: Stack(
         children: <Widget>[
           BackgroundWallpaper(),
           BlurEffect(),
           MainUI(),
-          Selector<SongModel, bool>(
+          Selector<SongPlayerProvider, bool>(
             selector: (context, notifier) => notifier.isPlayOnce,
             builder: (context, data, child) {
               if(data){
