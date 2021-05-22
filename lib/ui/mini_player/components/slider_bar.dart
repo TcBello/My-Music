@@ -23,25 +23,60 @@ class _SliderBarState extends State<SliderBar> {
   Widget build(BuildContext context) {
     final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
 
-    return Slider(
-      activeColor:
-          Colors.pinkAccent,
-      inactiveColor:
-          Colors.pink[100],
-      value: dragValue ?? widget.positionValue ?? 0.0,
-      min: 0.0,
-      max: widget.durationValue ?? 0.0,
-      onChanged: (double duration) async {
-        setState(() {
-          dragValue = duration;
-        });
-      },
-      onChangeEnd: (value){
-        songPlayerProvider.seek(Duration(milliseconds: value.round()));
-        setState(() {
-          dragValue = null;
-        });
-      }
-    );
+    // return Slider(
+    //   activeColor:
+    //       Colors.pinkAccent,
+    //   inactiveColor:
+    //       Colors.pink[100],
+    //   value: dragValue ?? widget.positionValue,
+    //   min: 0.0,
+    //   max: widget.durationValue,
+    //   onChanged: (double duration) async {
+    //     setState(() {
+    //       dragValue = duration;
+    //     });
+    //   },
+    //   onChangeEnd: (value){
+    //     songPlayerProvider.seek(Duration(milliseconds: value.round()));
+    //     setState(() {
+    //       dragValue = null;
+    //     });
+    //   }
+    // );
+
+    try{
+      return Slider(
+        activeColor:
+            Colors.pinkAccent,
+        inactiveColor:
+            Colors.pink[100],
+        value: dragValue ?? widget.positionValue,
+        min: 0.0,
+        max: widget.durationValue,
+        onChanged: (double duration) async {
+          setState(() {
+            dragValue = duration;
+          });
+        },
+        onChangeEnd: (value){
+          songPlayerProvider.seek(Duration(milliseconds: value.round()));
+          setState(() {
+            dragValue = null;
+          });
+        }
+      );
+    }
+    catch(e){
+      return Slider(
+        activeColor:
+            Colors.pinkAccent,
+        inactiveColor:
+            Colors.pink[100],
+        value: 1.0,
+        min: 0.0,
+        max: 1.0,
+        onChanged: (double duration){}
+      );
+    }
   }
 }

@@ -70,6 +70,7 @@ class SongPlayerProvider extends ChangeNotifier{
   Stream<bool> get isPlayingStream => AudioPlayerTask().audioPlayer.playingStream;
 
   bool get isBackgroundRunning => AudioService.running;
+  AudioProcessingState get processingState => AudioService.playbackState.processingState;
 
   void playSong(List<SongInfo> songInfoList, int index) async{
     _convertToMediaItemList(songInfoList);
