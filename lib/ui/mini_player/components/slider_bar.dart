@@ -28,15 +28,20 @@ class _SliderBarState extends State<SliderBar> {
           Colors.pinkAccent,
       inactiveColor:
           Colors.pink[100],
-      value: dragValue ?? widget.positionValue,
+      value: dragValue ?? widget.positionValue ?? 0.0,
       min: 0.0,
-      max: widget.durationValue,
+      max: widget.durationValue ?? 0.0,
       onChanged: (double duration) async {
         setState(() {
           dragValue = duration;
         });
       },
-      onChangeEnd: (value) => songPlayerProvider.seek(Duration(milliseconds: value.round()))
+      onChangeEnd: (value){
+        songPlayerProvider.seek(Duration(milliseconds: value.round()));
+        setState(() {
+          dragValue = null;
+        });
+      }
     );
   }
 }

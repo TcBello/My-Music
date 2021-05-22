@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:my_music/main.dart';
 
 void audioPlayerTaskEntrypoint() async{
@@ -20,6 +21,8 @@ class AudioPlayerTask extends BackgroundAudioTask{
   StreamSubscription<PlaybackEvent> eventSubscription;
   bool isDispose = false;
   int audioSourceMode = 0;
+  // bool isPlayOnce = false;
+  // bool isUIConnected = false;
 
   final audioSourceTest = ConcatenatingAudioSource(
     children: []
@@ -37,17 +40,24 @@ class AudioPlayerTask extends BackgroundAudioTask{
         case ProcessingState.completed:
           // In this example, the service stops when reaching the end.
           onStop();
+          // if(isUIConnected){
+          //   audioPlayer.stop();
+          // }
+          // else{
+          //   onStop();
+          // }
           break;
         case ProcessingState.ready:
           // If we just came from skipping between tracks, clear the skip
           // state now that we're ready to play.
           skipState = null;
+          // if(!isPlayOnce){
+          //   isPlayOnce = true;
+          // }
           break;
         default:
           break;
       }
-
-      print(state);
     });
     // playerSubscription = audioPlayer.playerStateStream.listen((state) {
     //   AudioServiceBackground.setState(
@@ -162,6 +172,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
   Future<void> onStop() async {
     await audioPlayer.dispose();
     eventSubscription.cancel();
+    miniPlayerController.dispose();
     await _broadcastState();
     await super.onStop();
   }
@@ -295,12 +306,16 @@ class AudioPlayerTask extends BackgroundAudioTask{
         break;
       case "getAudioSessionId":
         return Future.value(audioPlayer.androidAudioSessionId);
+        break;
       case "getRepeatMode":
         return Future.value(audioPlayer.loopMode);
+        break;
       case "isShuffle":
         return Future.value(audioPlayer.shuffleModeEnabled);
-      // case "isPlayerFinish":
-      //   return Future.value().asStream();
+        break;
+      // case "connectUI":
+      //   isUIConnected = arguments;
+      //   break;
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -59,6 +60,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
                   IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () {
+                      print(AudioService.connected);
                       songQueryProvider.initSongSearch();
                       showSearch(context: context, delegate: Search());
                     },

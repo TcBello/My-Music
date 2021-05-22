@@ -58,6 +58,7 @@ class SongPlayerProvider extends ChangeNotifier{
   Icon get currentShuffleIcon => _shuffleIcons[_shuffleIndex];
 
   Stream<MediaItem> get audioItemStream => AudioService.currentMediaItemStream;
+  Stream<bool> get backgroundRunningStream => AudioService.runningStream;
 
   bool _isPlayOnce = false;
   bool get isPlayOnce => _isPlayOnce;
@@ -66,11 +67,14 @@ class SongPlayerProvider extends ChangeNotifier{
   bool get isPlayerExpand => _isPlayerExpand;
 
   Stream<Duration> get positionStream => AudioService.positionStream;
+  Stream<bool> get isPlayingStream => AudioPlayerTask().audioPlayer.playingStream;
+
+  bool get isBackgroundRunning => AudioService.running;
 
   void playSong(List<SongInfo> songInfoList, int index) async{
     _convertToMediaItemList(songInfoList);
 
-    if(!_isPlayOnce){
+    if(!AudioService.running){
       await AudioService.start(backgroundTaskEntrypoint: audioPlayerTaskEntrypoint);
     }
 
@@ -137,6 +141,7 @@ class SongPlayerProvider extends ChangeNotifier{
 
   void dismissMiniPlayer(){
     _isPlayOnce = false;
+    AudioService.customAction("connectUI", AudioService.connected);
     AudioService.stop();
     notifyListeners();
   }

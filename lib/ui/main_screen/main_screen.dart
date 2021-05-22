@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -35,17 +37,38 @@ class MainScreen extends StatelessWidget {
           BackgroundWallpaper(),
           BlurEffect(),
           MainUI(),
-          Selector<SongPlayerProvider, bool>(
-            selector: (context, notifier) => notifier.isPlayOnce,
-            builder: (context, data, child) {
-              if(data){
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: MiniPlayer(),
-                );
-              }
+          // Consumer<SongPlayerProvider>(
+          //   builder: (context, songPlayer, child) {
+          //     if(songPlayer.isPlayOnce){
+          //       return Container(
+          //         width: MediaQuery.of(context).size.width,
+          //         child: MiniPlayer(),
+          //       );
+          //     }
 
-              return Container();
+          //     return Container();
+          //   },
+          // )
+          Consumer<SongPlayerProvider>(
+            builder: (context, songPlayer, child) {
+              return StreamBuilder<bool>(
+                stream: songPlayer.backgroundRunningStream,
+                builder: (context, snapshot) {
+                  if(snapshot.hasData){
+                    print(snapshot.data);
+                    if(snapshot.data){
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: MiniPlayer(),
+                      );
+                    }
+                    
+                    return Container();
+                  }
+
+                  return Container();
+                },
+              );
             },
           )
         ],

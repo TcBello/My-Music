@@ -55,7 +55,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               // await provider
               //     .playSong(provider.songInfoFromPlaylist)
               //     .whenComplete(() => Navigator.pop(context));
-              songQueryProvider.setQueue(songQueryProvider.songInfo);
+              songQueryProvider.setQueue(songQueryProvider.songInfoFromPlaylist);
               songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist, 0);
               Navigator.pop(context);
             },
