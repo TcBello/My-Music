@@ -7,14 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/audio_player_task/audio_player_task.dart';
 import 'package:my_music/main.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
+  String artWork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id.png";
 
-  Icon playPauseMiniPlayerIcon = Icon(Icons.pause, color: Colors.pinkAccent,);
-  Icon playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
+  Icon playPauseMiniPlayerIcon(bool isPlaying){
+    return isPlaying
+      ? Icon(Icons.pause, color: Colors.pinkAccent,)
+      : Icon(Icons.play_arrow, color: Colors.pinkAccent,);
+  }
+
+  Icon playPausePlayerIcon(bool isPlaying){
+    return isPlaying
+      ? Icon(Icons.pause, color: Colors.white, size: 60,)
+      : Icon(Icons.play_arrow, color: Colors.white, size: 60,);
+  }
 
   int _repeatIndex = 0;
   int _shuffleIndex = 0;
@@ -57,6 +66,32 @@ class SongPlayerProvider extends ChangeNotifier{
   Icon get currentRepeatIcon => _repeatIcons[_repeatIndex];
   Icon get currentShuffleIcon => _shuffleIcons[_shuffleIndex];
 
+  Icon shuffleIcon(AudioServiceShuffleMode mode){
+    switch(mode){  
+      case AudioServiceShuffleMode.none:
+        return Icon(
+          Icons.shuffle,
+          color: Colors.grey,
+          size: 40,
+        );
+        break;
+      case AudioServiceShuffleMode.all:
+        return Icon(
+          Icons.shuffle,
+          color: Colors.white,
+          size: 40,
+        );
+        break;
+      case AudioServiceShuffleMode.group:
+        return Icon(
+          Icons.shuffle,
+          color: Colors.white,
+          size: 40,
+        );
+        break;
+    }
+  }
+
   Stream<MediaItem> get audioItemStream => AudioService.currentMediaItemStream;
   Stream<bool> get backgroundRunningStream => AudioService.runningStream;
 
@@ -71,11 +106,14 @@ class SongPlayerProvider extends ChangeNotifier{
 
   bool get isBackgroundRunning => AudioService.running;
   AudioProcessingState get processingState => AudioService.playbackState.processingState;
+  Stream<PlaybackState> get playbackStateStream => AudioService.playbackStateStream;
 
   void playSong(List<SongInfo> songInfoList, int index) async{
     _convertToMediaItemList(songInfoList);
 
     if(!AudioService.running){
+      _repeatIndex = 0;
+      _shuffleIndex = 0;
       await AudioService.start(backgroundTaskEntrypoint: audioPlayerTaskEntrypoint);
     }
 
@@ -83,11 +121,18 @@ class SongPlayerProvider extends ChangeNotifier{
     AudioService.customAction("setAudioSourceMode", 0);
     AudioService.updateQueue(songList);
 
-    AudioService.play();
+    await AudioService.play();
+
+    int id = await AudioService.customAction("getAudioSessionId");
+    print("EQUALIZER AUD ID: $id");
+    Equalizer.setAudioSessionId(id);
 
     if(!_isPlayOnce){
       _isPlayOnce = true;
     }
+
+    // playPauseMiniPlayerIcon = Icon(Icons.pause, color: Colors.pinkAccent,);
+    // playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
 
     notifyListeners();
   }
@@ -111,31 +156,36 @@ class SongPlayerProvider extends ChangeNotifier{
   void pauseResume() async{
     if(await AudioService.customAction("isPlaying")){
       AudioService.pause();
-      playPauseMiniPlayerIcon = Icon(Icons.play_arrow, color: Colors.pinkAccent,);
-      playPausePlayerIcon = Icon(Icons.play_arrow, color: Colors.white, size: 60,);
+      // playPauseMiniPlayerIcon = Icon(Icons.play_arrow, color: Colors.pinkAccent,);
+      // playPausePlayerIcon = Icon(Icons.play_arrow, color: Colors.white, size: 60,);
     }
     else{
       AudioService.play();
-      playPauseMiniPlayerIcon = Icon(Icons.pause, color: Colors.pinkAccent,);
-      playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
+      // playPauseMiniPlayerIcon = Icon(Icons.pause, color: Colors.pinkAccent,);
+      // playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
     }
 
     notifyListeners();
   }
 
   void _convertToMediaItemList(List<SongInfo> songInfoList){
-    songList = songInfoList.map((e) => MediaItem(
-      id: e.filePath,
-      title: e.title,
-      artist: e.artist != "<unknown>"
-        ? e.artist
-        : "Unknown Artist",
-      album: e.album,
-      artUri: e.albumArtwork != null
-        ? File(e.albumArtwork).uri
-        : File(_defaultAlbum).uri,
-      duration: Duration(milliseconds: int.parse(e.duration)),
-    )).toList();
+    songList = songInfoList.map((e){
+      bool hasArtWork = File(artWork(e.albumId)).existsSync();
+
+      return MediaItem(
+        id: e.filePath,
+        title: e.title,
+        artist: e.artist != "<unknown>"
+          ? e.artist
+          : "Unknown Artist",
+        album: e.album,
+        artUri: hasArtWork
+          ? File(artWork(e.albumId)).uri
+          : File(_defaultAlbum).uri,
+        // artUri: File(artWork(e.albumId)).uri,
+        duration: Duration(milliseconds: int.parse(e.duration)),
+      );
+    }).toList();
 
     notifyListeners();
   }
@@ -158,6 +208,7 @@ class SongPlayerProvider extends ChangeNotifier{
     if(_repeatIndex >= 3){
       _repeatIndex = 0;
     }
+    notifyListeners();
 
     switch(_repeatIndex){
       case 0:
@@ -170,31 +221,64 @@ class SongPlayerProvider extends ChangeNotifier{
         AudioService.setRepeatMode(AudioServiceRepeatMode.one);
         break;
     }
-
-    notifyListeners();
   }
 
-  void setShuffleMode(){
+  void setShuffleMode() async{
     _shuffleIndex += 1;
 
     if(_shuffleIndex >= 2){
       _shuffleIndex = 0;
     }
 
+    notifyListeners();
+    // AudioService.customAction("setShuffle");
+
     switch(_shuffleIndex){
       case 0:
         AudioService.setShuffleMode(AudioServiceShuffleMode.none);
+        // _shuffleIndex = 0;
         break;
       case 1:
         AudioService.setShuffleMode(AudioServiceShuffleMode.all);
+        // _shuffleIndex = 1;
         break;
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void setPlayerExpandBool(bool value){
     _isPlayerExpand = value;
     notifyListeners();
+  }
+
+  Future<void> defaultModes() async{
+    _repeatIndex = 0;
+    _shuffleIndex = 0;
+    // bool isPlaying = await AudioService.customAction("isPlaying");
+    // print("ISPLAYING: $isPlaying");
+
+    // if(isPlaying){
+    //   int id = await AudioService.customAction("getAudioSessionId");
+    //   Equalizer.init(id);
+    //   Equalizer.setEnabled(true);
+    //   Equalizer.setAudioSessionId(id);
+    //   print("ISPLAYING: $isPlaying\nID: $id");
+    // }
+
+    // Future.delayed(Duration(seconds: 1), () async {
+    //   bool isPlaying = await AudioService.customAction("isPlaying");
+    //   print("ISPLAYING: $isPlaying");
+
+    //   if(isPlaying){
+    //     int id = await AudioService.customAction("getAudioSessionId");
+    //     Equalizer.init(id);
+    //     Equalizer.setEnabled(true);
+    //     Equalizer.setAudioSessionId(id);
+    //     print("ISPLAYING: $isPlaying\nID: $id");
+    //   }
+    // });
+
+    // notifyListeners();
   }
 }

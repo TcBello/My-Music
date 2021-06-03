@@ -39,16 +39,22 @@ class LibrarySong extends StatelessWidget {
               })
             ],
             expandedHeight: 350,
-            flexibleSpace: FlexibleSpaceBar(
-                background: albumInfo.albumArt != null
-                    ? Image.file(
-                        File(albumInfo.albumArt),
-                        fit: BoxFit.cover,
-                      )
-                    : Image.asset(
-                        "assets/imgs/defalbum.png",
-                        fit: BoxFit.cover,
-                      )),
+            flexibleSpace: Consumer<SongQueryProvider>(
+              builder: (context, notifier, snapshot) {
+                final hasArtWork = File(notifier.artWork(albumInfo.id)).existsSync();
+
+                return FlexibleSpaceBar(
+                    background: hasArtWork
+                        ? Image.file(
+                            File(notifier.artWork(albumInfo.id)),
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            "assets/imgs/defalbum.png",
+                            fit: BoxFit.cover,
+                          ));
+              }
+            ),
           ),
         ];
       },

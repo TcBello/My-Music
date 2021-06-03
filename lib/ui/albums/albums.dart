@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/image_gridview.dart';
@@ -24,9 +26,14 @@ class Albums extends StatelessWidget {
                 final artistName = notifier.albumInfo[index].artist != "<unknown>"
                   ? notifier.albumInfo[index].artist
                   : "Unknown Artist";
+                final hasArtWork = File(notifier.artWork(notifier.albumInfo[index].id)).existsSync();
                   
-                final albumImage = notifier.albumInfo[index].albumArt != null
-                  ? ImageGridFile(notifier.albumInfo[index].albumArt)
+                // final albumImage = notifier.albumInfo[index].albumArt != null
+                //   ? ImageGridFile(notifier.albumInfo[index].albumArt)
+                //   : ImageGridAsset("defalbum.png");
+
+                final albumImage = hasArtWork
+                  ? ImageGridFile(notifier.artWork(notifier.albumInfo[index].id))
                   : ImageGridAsset("defalbum.png");
 
                 return InkWell(

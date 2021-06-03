@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -29,7 +31,7 @@ class Artists extends StatelessWidget {
                 final albumImage = notifier.artistInfo[index].artistArtPath != null
                   ? ImageGridFile(notifier.artistInfo[index].artistArtPath)
                   : ImageGridAsset("defalbum.png");
-                
+
                 return InkWell(
                   onTap: () async{
                     await notifier.getAlbumFromArtist(artistName);

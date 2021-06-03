@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:miniplayer/miniplayer.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/ui/mini_player/components/animated_pause_play.dart';
 import 'package:my_music/ui/mini_player/components/slider_bar.dart';
 import 'package:my_music/ui/now_playing/now_playing.dart';
 import 'package:my_music/provider/song_model.dart';
@@ -18,14 +19,13 @@ import 'package:provider/provider.dart';
 import 'package:equalizer/equalizer.dart';
 
 class MiniPlayer extends StatelessWidget {
-  // final AudioObject audioObject;
-
-  // const MiniPlayer({Key key, @required this.audioObject}) : super(key: key);
   final double playerMinHeight = 70.0;
+
   final double miniplayerPercentageDeclaration = 0.25;
+
   ValueNotifier<double> get playerExpandProgress =>
       ValueNotifier(playerMinHeight);
-  // final Color backgroundColor = Color(0xff112432);
+
   final Color backgroundColor = Colors.black;
 
   void expandMiniPlayer(){
@@ -53,13 +53,16 @@ class MiniPlayer extends StatelessWidget {
         stream: songPlayer.audioItemStream,
         builder: (context, snapshot) {
           if(snapshot.hasData){
-            final albumImage = Image.file(File(snapshot.data.artUri.path));
-            String songTitle = snapshot.data.title;
-            String artistName = snapshot.data.artist != '<unknown>'
+            final albumImage = ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Image.file(File(snapshot.data.artUri.path)),
+            );
+            final songTitle = snapshot.data.title;
+            final artistName = snapshot.data.artist != '<unknown>'
                 ? snapshot.data.artist
                 : "Unknown Artist";
-            String duration = toMinSecFormat(snapshot.data.duration);
-            double durationValue = snapshot.data.duration.inMilliseconds.toDouble();
+            final duration = toMinSecFormat(snapshot.data.duration);
+            final durationValue = snapshot.data.duration;
 
             return Miniplayer(
               valueNotifier: playerExpandProgress,
@@ -285,8 +288,8 @@ class MiniPlayer extends StatelessWidget {
                                         //     .toDouble();
 
                                         if (snapshot.hasData) {
-                                          String position =  toMinSecFormat(snapshot.data);
-                                          double positionValue = snapshot.data.inMilliseconds.toDouble();
+                                          final position =  toMinSecFormat(snapshot.data);
+                                          final positionValue = snapshot.data;
 
                                           return Column(
                                             children: [
@@ -301,8 +304,8 @@ class MiniPlayer extends StatelessWidget {
                                                     SizedBox(
                                                       width: size.width,
                                                       child: SliderBar(
-                                                        positionValue: positionValue,
-                                                        durationValue: durationValue,
+                                                        position: positionValue,
+                                                        duration: durationValue,
                                                       ),
                                                     ),
                                                     Row(
@@ -367,26 +370,42 @@ class MiniPlayer extends StatelessWidget {
                                             },
                                           ),
                                           SizedBox(width: 10),
-                                          ClipOval(
-                                            child: Stack(
-                                              children: [
-                                                Container(
-                                                  height: 80,
-                                                  width: 80,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.pinkAccent,
-                                                          width: 6)),
-                                                ),
-                                                Positioned.fill(
-                                                  child: IconButton(
-                                                    icon: songPlayer.playPausePlayerIcon,
-                                                    onPressed: songPlayer.pauseResume,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                          AnimatedPausePlay(),
+                                          // ClipOval(
+                                          //   child: Stack(
+                                          //     children: [
+                                          //       Container(
+                                          //         height: 80,
+                                          //         width: 80,
+                                          //         decoration: BoxDecoration(
+                                          //             border: Border.all(
+                                          //                 color: Colors.pinkAccent,
+                                          //                 width: 6)),
+                                          //       ),
+                                          //       Positioned.fill(
+                                          //         child: StreamBuilder<PlaybackState>(
+                                          //           stream: songPlayer.playbackStateStream,
+                                          //           builder: (context, snapshot) {
+                                          //             if(snapshot.hasData){
+                                          //               return IconButton(
+                                          //                 icon: songPlayer.playPausePlayerIcon(snapshot.data.playing),
+                                          //                 onPressed: songPlayer.pauseResume,
+                                          //               );
+                                          //             }
+
+                                          //             return IconButton(
+                                          //               icon: songPlayer.playPausePlayerIcon(true),
+                                          //               onPressed: songPlayer.pauseResume,
+                                          //             );
+                                          //           }
+                                          //         ),
+                                          //       ),
+                                          //       // StreamBuilder(
+                                          //       //   stream: AudioService.
+                                          //       // )
+                                          //     ],
+                                          //   ),
+                                          // ),
                                           SizedBox(width: 10),
                                           IconButton(
                                             icon: Icon(
@@ -457,8 +476,19 @@ class MiniPlayer extends StatelessWidget {
                       Expanded(
                         child: Row(
                           children: [
+                            // ConstrainedBox(
+                            //   constraints: BoxConstraints(
+                            //     maxHeight: maxImgSize,
+                            //   ),
+                            //   child: albumImage,
+                            // ),
                             ConstrainedBox(
-                              constraints: BoxConstraints(maxHeight: maxImgSize),
+                              constraints: BoxConstraints(
+                                maxHeight: maxImgSize,
+                                maxWidth: height == playerMinHeight
+                                  ? 70
+                                  : maxImgSize
+                              ),
                               child: albumImage,
                             ),
                             Expanded(
@@ -491,12 +521,27 @@ class MiniPlayer extends StatelessWidget {
                                 width: 50,
                                 margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
                                 child: ClipOval(
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      // notifier.onPauseResume();
-                                      songPlayer.pauseResume();
-                                    },
-                                    child: songPlayer.playPauseMiniPlayerIcon,
+                                  child: StreamBuilder<PlaybackState>(
+                                    stream: songPlayer.playbackStateStream,
+                                    builder: (context, snapshot) {
+                                      if(snapshot.hasData){
+                                        return FlatButton(
+                                          onPressed: () {
+                                            // notifier.onPauseResume();
+                                            songPlayer.pauseResume();
+                                          },
+                                          child: songPlayer.playPauseMiniPlayerIcon(snapshot.data.playing),
+                                        );
+                                      }
+
+                                      return FlatButton(
+                                        onPressed: () {
+                                          // notifier.onPauseResume();
+                                          songPlayer.pauseResume();
+                                        },
+                                        child: songPlayer.playPauseMiniPlayerIcon(true),
+                                      );
+                                    }
                                   ),
                                 ),
                               ),
@@ -546,6 +591,113 @@ class MiniPlayer extends StatelessWidget {
                             // ),
                           ],
                         ),
+                        // child: StreamBuilder<PlaybackState>(
+                        //   stream: songPlayer.playbackStateStream,
+                        //   builder: (context, snapshot) {
+                        //     return Row(
+                        //       children: [
+                        //         // ConstrainedBox(
+                        //         //   constraints: BoxConstraints(
+                        //         //     maxHeight: maxImgSize,
+                        //         //   ),
+                        //         //   child: albumImage,
+                        //         // ),
+                        //         ConstrainedBox(
+                        //           constraints: BoxConstraints(
+                        //             maxHeight: maxImgSize,
+                        //             maxWidth: height == playerMinHeight
+                        //               ? 70
+                        //               : maxImgSize
+                        //           ),
+                        //           child: albumImage,
+                        //         ),
+                        //         Expanded(
+                        //           //asdasdadadadasddas
+                        //           child: Opacity(
+                        //             opacity: elementOpacity,
+                        //             child: InkWell(
+                        //               onTap: (){
+                        //                 expandMiniPlayer();
+                        //                 songPlayer.setPlayerExpandBool(true);
+                        //               },
+                        //               child: Container(
+                        //                 height: 70,
+                        //                 padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                        //                 //  color: Colors.yellow,
+                        //                 child: Center(
+                        //                     child: Text(
+                        //                   songTitle,
+                        //                   style: rubberTextStyle,
+                        //                   overflow: TextOverflow.ellipsis,
+                        //                 )),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         Opacity(
+                        //           opacity: elementOpacity,
+                        //           child: Container(
+                        //             height: 50,
+                        //             width: 50,
+                        //             margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                        //             child: ClipOval(
+                        //               child: FlatButton(
+                        //                 onPressed: () {
+                        //                   // notifier.onPauseResume();
+                        //                   songPlayer.pauseResume();
+                        //                 },
+                        //                 child: songPlayer.playPauseMiniPlayerIcon,
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         // Expanded(
+                        //         //   child: Padding(
+                        //         //     padding: const EdgeInsets.only(left: 10),
+                        //         //     child: Opacity(
+                        //         //       opacity: elementOpacity,
+                        //         //       child: Column(
+                        //         //         crossAxisAlignment: CrossAxisAlignment.start,
+                        //         //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         //         mainAxisSize: MainAxisSize.min,
+                        //         //         children: [
+                        //         //           Text(audioObject.title,
+                        //         //               style: Theme.of(context)
+                        //         //                   .textTheme
+                        //         //                   .bodyText2
+                        //         //                   .copyWith(fontSize: 16)),
+                        //         //           Text(
+                        //         //             audioObject.subtitle,
+                        //         //             style: Theme.of(context)
+                        //         //                 .textTheme
+                        //         //                 .bodyText2
+                        //         //                 .copyWith(
+                        //         //                     color: Colors.black.withOpacity(0.55)),
+                        //         //           ),
+                        //         //         ],
+                        //         //       ),
+                        //         //     ),
+                        //         //   ),
+                        //         // ),
+                        //         // Opacity(
+                        //         //   opacity: elementOpacity,
+                        //         //   child: buttonPlay,
+                        //         // ),
+                        //         // Opacity(
+                        //         //   opacity: elementOpacity,
+                        //         //   child: Padding(
+                        //         //     padding: const EdgeInsets.only(right: 3.0),
+                        //         //     child: IconButton(
+                        //         //         icon: Icon(Icons.skip_next),
+                        //         //         onPressed: () {
+                        //         //           controller.animateToHeight(state: PanelState.MAX);
+                        //         //         }),
+                        //         //   ),
+                        //         // ),
+                        //       ],
+                        //     );
+                        //   }
+                        // ),
                       ),
                     ],
                   ),

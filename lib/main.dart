@@ -55,6 +55,7 @@ class _MainState extends State<Main> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     
     return MaterialApp(
+      showPerformanceOverlay: true,
         theme: ThemeData(
           tabBarTheme: tabBarStyle,
           appBarTheme: appBarStyle,
@@ -78,12 +79,16 @@ class _InitsState extends State<Inits> {
 
   @override
   void initState() {
+    init();
     super.initState();
+  }
+
+  void init() async{
     _themeProvider = context.read<ThemeProvider>();
     songQueryProvider = context.read<SongQueryProvider>();
-    _themeProvider.getCurrentBackground();
-    songQueryProvider.getSongs();
     songQueryProvider.setDefaultAlbumArt();
+    await songQueryProvider.getSongs();
+    await _themeProvider.getCurrentBackground();
   }
 
   @override

@@ -34,8 +34,8 @@ class MyDrawer extends StatelessWidget {
           Consumer<SongPlayerProvider>(
             builder: (context, songPlayer, child) {
               return ListTile(
-                onTap: () async{
-                  await songPlayer.openEqualizer();
+                onTap: (){
+                  songPlayer.openEqualizer();
                 },
                 leading: Icon(
                   Icons.equalizer,

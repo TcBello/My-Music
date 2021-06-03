@@ -1,20 +1,23 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/main.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SongQueryProvider extends ChangeNotifier{
   final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
-  final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
+  String artWork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id.png";
   bool isConvertToStringOnce = false;
 
-  List<SongInfo> _songinfo;
-  List<SongInfo> get songInfo => _songinfo;
+  final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
+  String get defaultAlbum => _defaultAlbum;
+
+  List<SongInfo> _songInfo;
+  List<SongInfo> get songInfo => _songInfo;
 
   List<SongInfo> _songInfoFromAlbum;
   List<SongInfo> get songInfoFromAlbum => _songInfoFromAlbum;
@@ -43,11 +46,13 @@ class SongQueryProvider extends ChangeNotifier{
   final List stringSongs = [];
 
   Future<void> getSongs() async {
-    _songinfo = await flutterAudioQuery.getSongs();
+    _songInfo = await flutterAudioQuery.getSongs();
     _artistInfo = await flutterAudioQuery.getArtists();
     _albumInfo = await flutterAudioQuery.getAlbums();
     _playlistInfo = await flutterAudioQuery.getPlaylists();
     print("GET DATA SONGS FROM FILES COMPLETED!");
+
+    await getAlbumArts();
 
     notifyListeners();
   }
@@ -150,21 +155,31 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   List<MediaItem> _convertToMediaItemList(List<SongInfo> songInfoList){
-    return songInfoList.map((e) => MediaItem(
-      id: e.filePath,
-      title: e.title,
-      artist: e.artist != "<unknown>"
-        ? e.artist
-        : "Unknown Artist",
-      album: e.album,
-      artUri: e.albumArtwork != null
-        ? File(e.albumArtwork).uri
-        : File(_defaultAlbum).uri,
-      duration: Duration(milliseconds: int.parse(e.duration))
-    )).toList();
+    return songInfoList.map((e){
+      bool hasArtWork = File(artWork(e.albumId)).existsSync();
+
+      return MediaItem(
+        id: e.filePath,
+        title: e.title,
+        artist: e.artist != "<unknown>"
+          ? e.artist
+          : "Unknown Artist",
+        album: e.album,
+        // artUri: e.albumArtwork != null
+        //   ? File(e.albumArtwork).uri
+        //   : File(_defaultAlbum).uri,
+        // artUri: File(artWork(e.albumId)).uri,
+        artUri: hasArtWork
+          ? File(artWork(e.albumId)).uri
+          : File(_defaultAlbum).uri,
+        duration: Duration(milliseconds: int.parse(e.duration))
+      );
+    }).toList();
   }
 
   MediaItem _convertToMediaItem(SongInfo newSongInfo){
+    bool hasArtWork = File(artWork(newSongInfo.albumId)).existsSync();
+
     return MediaItem(
       id: newSongInfo.filePath,
       title: newSongInfo.title,
@@ -172,8 +187,11 @@ class SongQueryProvider extends ChangeNotifier{
         ? newSongInfo.artist
         : "Unknown Artist",
       album: newSongInfo.album,
-      artUri: newSongInfo.albumArtwork != null
-        ? File(newSongInfo.albumArtwork).uri
+      // artUri: newSongInfo.albumArtwork != null
+      //   ? File(newSongInfo.albumArtwork).uri
+      //   : File(_defaultAlbum).uri,
+      artUri: hasArtWork
+        ? File(artWork(newSongInfo.albumId)).uri
         : File(_defaultAlbum).uri,
       duration: Duration(milliseconds: int.parse(newSongInfo.duration))
     );
@@ -202,6 +220,34 @@ class SongQueryProvider extends ChangeNotifier{
       file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
       notifyListeners();
     }
+  }
+
+  Future<void> getAlbumArts() async {
+    final Directory dir = await getTemporaryDirectory();
+    String dirPath = dir.path;
+
+    _songInfo.forEach((element) async {
+      String filePath = "$dirPath/${element.albumId}.png";
+      File file = File(filePath);
+      bool isExists = await file.exists();
+      Uint8List artWork = await flutterAudioQuery.getArtwork(
+        type: ResourceType.ALBUM,
+        id: element.albumId,
+        size: Size(500, 500)
+      );
+
+      if(!isExists){
+        try{
+          if(artWork.isNotEmpty && artWork != null){
+            file.writeAsBytes(artWork);
+            print("FilePath: ${file.path}\nSong Name: ${element.title}");
+          }
+        }
+        catch(e){
+          print(e);
+        }
+      }
+    });
   }
 
   void setQueue(List<SongInfo> songList){

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/song_tile.dart';
@@ -42,15 +44,20 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
 
               return ListView.builder(
                 itemCount: songQueryProvider.currentQueue.length,
-                itemBuilder: (context, index) => NowPlayingSongTile(
-                  songInfo: songQueryProvider.currentQueue[index],
-                  onTap: () {
-                    // provider.setIndex(index);
-                    // provider.playSong(provider.nowPlayingSongs);
-                    songPlayerProvider.playSong(songQueryProvider.currentQueue, index);
-                  },
-                  isPlaying: songQueryProvider.currentQueue[index].title == currentTitle,
-                ),
+                itemBuilder: (context, index){
+                  final hasArtWork = File(songQueryProvider.artWork(songQueryProvider.currentQueue[index].albumId)).existsSync();
+
+                  return NowPlayingSongTile(
+                    songInfo: songQueryProvider.currentQueue[index],
+                    onTap: () {
+                      songPlayerProvider.playSong(songQueryProvider.currentQueue, index);
+                    },
+                    isPlaying: songQueryProvider.currentQueue[index].title == currentTitle,
+                    image: hasArtWork
+                      ? Image.file(File(songQueryProvider.artWork(songQueryProvider.currentQueue[index].albumId)), fit: BoxFit.cover,)
+                      : Image.file(File(songQueryProvider.defaultAlbum)),
+                  );
+                }
               );
             }
 

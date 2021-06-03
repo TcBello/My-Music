@@ -21,8 +21,6 @@ class AudioPlayerTask extends BackgroundAudioTask{
   StreamSubscription<PlaybackEvent> eventSubscription;
   bool isDispose = false;
   int audioSourceMode = 0;
-  // bool isPlayOnce = false;
-  // bool isUIConnected = false;
 
   final audioSourceTest = ConcatenatingAudioSource(
     children: []
@@ -40,61 +38,23 @@ class AudioPlayerTask extends BackgroundAudioTask{
         case ProcessingState.completed:
           // In this example, the service stops when reaching the end.
           onStop();
-          // if(isUIConnected){
-          //   audioPlayer.stop();
-          // }
-          // else{
-          //   onStop();
-          // }
           break;
         case ProcessingState.ready:
           // If we just came from skipping between tracks, clear the skip
           // state now that we're ready to play.
           skipState = null;
-          // if(!isPlayOnce){
-          //   isPlayOnce = true;
-          // }
           break;
         default:
           break;
       }
     });
-    // playerSubscription = audioPlayer.playerStateStream.listen((state) {
-    //   AudioServiceBackground.setState(
-    //     playing: state.playing,
-    //     processingState: {
-    //       ProcessingState.idle: AudioProcessingState.stopped,
-    //       ProcessingState.loading: AudioProcessingState.connecting,
-    //       ProcessingState.buffering: AudioProcessingState.buffering,
-    //       ProcessingState.ready: AudioProcessingState.ready,
-    //       ProcessingState.completed: AudioProcessingState.completed,
-    //     }[state.processingState],
-    //     controls: [
-    //       MediaControl.skipToPrevious,
-    //       state.playing
-    //         ? MediaControl.pause
-    //         : MediaControl.play,
-    //       MediaControl.skipToNext
-    //     ],
-    //     // androidCompactActions: [0, 1, 3],
-    //     // shuffleMode: AudioServiceShuffleMode.none
-    //   );
-    // });
-    
-    // try{
-    //   await audioPlayer.setAudioSource(
-    //     ConcatenatingAudioSource(
-    //       children: queue.map((e) => AudioSource.uri(Uri.parse(e.id),)).toList()
-    //     ),
-    //     initialIndex: index
-    //   );
-    // }
-    // catch(e){
-    //   print(e);
-    // }
 
     eventSubscription = audioPlayer.playbackEventStream.listen((event) {
       _broadcastState();
+    });
+
+    audioPlayer.currentIndexStream.listen((i) {
+      if(i != null) AudioServiceBackground.setMediaItem(queue[i]);
     });
   }
 
@@ -142,9 +102,9 @@ class AudioPlayerTask extends BackgroundAudioTask{
 
   @override
   Future<void> onPlay() async {
-    audioPlayer.currentIndexStream.listen((i) {
-      AudioServiceBackground.setMediaItem(queue[i]);
-    });
+    // audioPlayer.currentIndexStream.listen((i) {
+    //   AudioServiceBackground.setMediaItem(queue[i]);
+    // });
     audioPlayer.play();
   }
 
@@ -313,9 +273,6 @@ class AudioPlayerTask extends BackgroundAudioTask{
       case "isShuffle":
         return Future.value(audioPlayer.shuffleModeEnabled);
         break;
-      // case "connectUI":
-      //   isUIConnected = arguments;
-      //   break;
     }
   }
 }
