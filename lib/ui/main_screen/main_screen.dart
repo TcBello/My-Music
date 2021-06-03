@@ -4,19 +4,45 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/provider/theme.dart';
+import 'package:my_music/ui/main_screen/components/my_drawer.dart';
 import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
 import 'package:my_music/ui/main_screen/components/blur_effect.dart';
 import 'package:my_music/ui/main_screen/components/main_ui.dart';
+import 'package:my_music/ui/themes/themes.dart';
 import 'package:provider/provider.dart';
 import 'package:miniplayer/miniplayer.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final _innerDrawerKey = GlobalKey<InnerDrawerState>();
+  
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  void init(){
+    final themeProvider = context.read<ThemeProvider>();
+    final songQueryProvider = context.read<SongQueryProvider>();
+    songQueryProvider.setDefaultAlbumArt();
+    songQueryProvider.getSongs();
+    themeProvider.getCurrentBackground();
+  }
+
   Future<bool> onWillScope(bool isPlayerExpand){
     if(isPlayerExpand){
       miniPlayerController.animateToHeight(state: PanelState.MIN);
@@ -26,29 +52,53 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
+    // final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
     
-    return WillPopScope(
-      onWillPop: (){
-        return onWillScope(songPlayerProvider.isPlayerExpand);
-      },
-      child: Stack(
+    // return WillPopScope(
+    //   onWillPop: (){
+    //     return onWillScope(songPlayerProvider.isPlayerExpand);
+    //   },
+    //   child: Stack(
+    //     children: <Widget>[
+    //       BackgroundWallpaper(),
+    //       BlurEffect(),
+    //       MainUI(),
+    //       Consumer<SongPlayerProvider>(
+    //         builder: (context, songPlayer, child) {
+    //           return StreamBuilder<bool>(
+    //             stream: songPlayer.backgroundRunningStream,
+    //             builder: (context, snapshot) {
+    //               if(snapshot.hasData){
+    //                 print(snapshot.data);
+    //                 if(snapshot.data){
+    //                   return Container(
+    //                     width: MediaQuery.of(context).size.width,
+    //                     child: MiniPlayer(),
+    //                   );
+    //                 }
+                    
+    //                 return Container();
+    //               }
+
+    //               return Container();
+    //             },
+    //           );
+    //         },
+    //       )
+    //     ],
+    //   ),
+    // );
+
+    return InnerDrawer(
+      key: _innerDrawerKey,
+      swipe: true,
+      swipeChild: true,
+      onTapClose: true,
+      scaffold: Stack(
         children: <Widget>[
           BackgroundWallpaper(),
           BlurEffect(),
-          MainUI(),
-          // Consumer<SongPlayerProvider>(
-          //   builder: (context, songPlayer, child) {
-          //     if(songPlayer.isPlayOnce){
-          //       return Container(
-          //         width: MediaQuery.of(context).size.width,
-          //         child: MiniPlayer(),
-          //       );
-          //     }
-
-          //     return Container();
-          //   },
-          // )
+          MainUI(globalKey: _innerDrawerKey,),
           Consumer<SongPlayerProvider>(
             builder: (context, songPlayer, child) {
               return StreamBuilder<bool>(
@@ -73,6 +123,7 @@ class MainScreen extends StatelessWidget {
           )
         ],
       ),
+      leftChild: MyDrawer()
     );
   }
 }

@@ -62,7 +62,7 @@ class _MainState extends State<Main> {
           textTheme: textStyle,
           fontFamily: "Montserrat",
         ),
-        home: AudioServiceWidget(child: Material(child: Inits()),)
+        home: AudioServiceWidget(child: Material(child: MainScreen()),)
     );
   }
 }
@@ -89,6 +89,7 @@ class _InitsState extends State<Inits> {
     songQueryProvider.setDefaultAlbumArt();
     await songQueryProvider.getSongs();
     await _themeProvider.getCurrentBackground();
+    print("HAKDOG");
   }
 
   @override
