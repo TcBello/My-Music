@@ -39,6 +39,8 @@ dependencies:
   flutter_inner_drawer: ^1.0.0+1
   simple_animations: ^3.1.1
   supercharged: ^2.0.0
+  marquee: ^2.1.0
+  marquee_text: ^2.0.0
 
   flutter_audio_query:
     git:

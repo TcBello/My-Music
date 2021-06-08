@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:marquee/marquee.dart';
 import 'package:miniplayer/miniplayer.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/mini_player/components/animated_pause_play.dart';
 import 'package:my_music/ui/mini_player/components/slider_bar.dart';
+import 'package:my_music/ui/mini_player/components/song_title.dart';
 import 'package:my_music/ui/now_playing/now_playing.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
@@ -234,16 +236,7 @@ class MiniPlayer extends StatelessWidget {
                                             MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 20.0, right: 20.0),
-                                            child: Text(
-                                              songTitle,
-                                              style: rubberTextStyle,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
+                                          SongTitle(title: songTitle,),
                                           Padding(
                                             padding: EdgeInsets.only(
                                                 left: 20.0, right: 20.0),
@@ -261,32 +254,6 @@ class MiniPlayer extends StatelessWidget {
                                       initialData: Duration.zero,
                                       stream: songPlayer.positionStream,
                                       builder: (context, snapshot) {
-                                        // String position = snapshot.data.position
-                                        //     .toString()
-                                        //     .split('.')
-                                        //     .first;
-                                        // String duration = snapshot.data.duration
-                                        //     .toString()
-                                        //     .split('.')
-                                        //     .first;
-                                        // String position = notifier.isDrag
-                                        //     ? toMinSecFormatWhileDragging(
-                                        //         notifier.dragSliderValue,
-                                        //         snapshot.data.position)
-                                        //     : toMinSecFormat(snapshot.data);
-                                        // String position =  toMinSecFormat(snapshot.data);
-                                        // double positionValue = snapshot.data.inMilliseconds.toDouble();
-
-                                        // String duration =
-                                        //     toMinSecFormat(snapshot.data.duration);
-
-                                        // double durationMin = snapshot
-                                        //     .data.position.inMilliseconds
-                                        //     .toDouble();
-                                        // double durationMax = snapshot
-                                        //     .data.duration.inMilliseconds
-                                        //     .toDouble();
-
                                         if (snapshot.hasData) {
                                           final position =  toMinSecFormat(snapshot.data);
                                           final positionValue = snapshot.data;
@@ -371,41 +338,6 @@ class MiniPlayer extends StatelessWidget {
                                           ),
                                           SizedBox(width: 10),
                                           AnimatedPausePlay(),
-                                          // ClipOval(
-                                          //   child: Stack(
-                                          //     children: [
-                                          //       Container(
-                                          //         height: 80,
-                                          //         width: 80,
-                                          //         decoration: BoxDecoration(
-                                          //             border: Border.all(
-                                          //                 color: Colors.pinkAccent,
-                                          //                 width: 6)),
-                                          //       ),
-                                          //       Positioned.fill(
-                                          //         child: StreamBuilder<PlaybackState>(
-                                          //           stream: songPlayer.playbackStateStream,
-                                          //           builder: (context, snapshot) {
-                                          //             if(snapshot.hasData){
-                                          //               return IconButton(
-                                          //                 icon: songPlayer.playPausePlayerIcon(snapshot.data.playing),
-                                          //                 onPressed: songPlayer.pauseResume,
-                                          //               );
-                                          //             }
-
-                                          //             return IconButton(
-                                          //               icon: songPlayer.playPausePlayerIcon(true),
-                                          //               onPressed: songPlayer.pauseResume,
-                                          //             );
-                                          //           }
-                                          //         ),
-                                          //       ),
-                                          //       // StreamBuilder(
-                                          //       //   stream: AudioService.
-                                          //       // )
-                                          //     ],
-                                          //   ),
-                                          // ),
                                           SizedBox(width: 10),
                                           IconButton(
                                             icon: Icon(
@@ -500,17 +432,7 @@ class MiniPlayer extends StatelessWidget {
                                     expandMiniPlayer();
                                     songPlayer.setPlayerExpandBool(true);
                                   },
-                                  child: Container(
-                                    height: 70,
-                                    padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                                    //  color: Colors.yellow,
-                                    child: Center(
-                                        child: Text(
-                                      songTitle,
-                                      style: rubberTextStyle,
-                                      overflow: TextOverflow.ellipsis,
-                                    )),
-                                  ),
+                                  child: SongTitleMiniPlayer(title: songTitle),
                                 ),
                               ),
                             ),

@@ -43,7 +43,34 @@ class MyDrawer extends StatelessWidget {
             ),  
             ListTile(
               onTap: () async {
-                await songQuery.getSongs().then((value) => Navigator.pop(context));
+                Navigator.pop(context);
+                showDialog(
+                  // barrierDismissible: false,
+                  context: context,
+                  builder: (context){
+                    Future.delayed(Duration(seconds: 2), () async{
+                      await songQuery.getSongs();
+                      Navigator.pop(context);
+                    });
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      content: Container(
+                        height: 100,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Searching..."),
+                            SizedBox(height: 20,),
+                            CircularProgressIndicator()
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                );
+                // await songQuery.getSongs().then((value){
+                //   Navigator.pop(context);
+                // });
               },
               leading: Icon(
                 Icons.search,
