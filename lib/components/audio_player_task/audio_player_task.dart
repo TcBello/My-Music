@@ -54,6 +54,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
     });
 
     audioPlayer.currentIndexStream.listen((i) {
+      print("CURRENT INDEX: $i");
       if(i != null) AudioServiceBackground.setMediaItem(queue[i]);
     });
   }
@@ -142,23 +143,28 @@ class AudioPlayerTask extends BackgroundAudioTask{
     // queue = List.from(newQueue);
     // AudioServiceBackground.setQueue(queue);
 
+    // CASE 0: PLAY SONG
+    // CASE 1 : PLAY NEXT SONG
+    // CASE 2: ADD QUEUE SONG
     switch(audioSourceMode){
       case 0:
         if(audioSourceTest.length == 0){
+          print("AUDIO SOURCE LEN: ${audioSourceTest.length}");
           queue = List.from(newQueue);
           audioSourceTest.addAll(
             newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList()
           );
         }
         else{
+          print("AUDIO SOURCE LEN: ${audioSourceTest.length}");
           queue = List.from(newQueue);
           audioSourceTest.removeRange(0, audioSourceTest.length);
           audioSourceTest.addAll(
             newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList()
           );
         }
-
-        await audioPlayer.setAudioSource(
+        
+        audioPlayer.setAudioSource(
           audioSourceTest,
           initialIndex: index
         );

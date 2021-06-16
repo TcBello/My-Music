@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/theme.dart';
 import 'package:provider/provider.dart';
@@ -201,13 +202,15 @@ class _BackgroundSkinState extends State<BackgroundSkin>
         SizedBox(
           width: 20,
         ),
-        Text("Blur"),
+        Text("Blur", style: headerBodyTextStyle,),
         SizedBox(
           width: 15,
         ),
         Expanded(
           child: Slider(
             value: _blurValue,
+            activeColor: color3,
+            inactiveColor: color4,
             min: 0.0,
             max: 10.0,
             divisions: 5,
@@ -238,7 +241,7 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                 margin: EdgeInsets.only(left: 10),
                 width: 100,
                 height: 150,
-                color: Colors.grey[700],
+                color: color5,
                 child: Center(
                   child: Icon(Icons.add, color: Colors.white),
                 ),
@@ -313,8 +316,10 @@ class _BackgroundSkinState extends State<BackgroundSkin>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: color1,
         appBar: AppBar(
-          title: Text("Background Skin"),
+          backgroundColor: color2,
+          title: Text("Background Skin", style: headerAppBarTextStyle,),
           actions: [
             Consumer<ThemeProvider>(
               builder: (context, theme, child) {

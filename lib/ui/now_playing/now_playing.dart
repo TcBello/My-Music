@@ -6,19 +6,17 @@ class NowPlaying extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: color1,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: color1,
         title: Text(
           "Up Next",
-          style: headerLibrarySongListTextStyle,
+          style: headerAppBarTextStyle,
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
+          icon: Icon(Icons.arrow_back,),
           onPressed: () => Navigator.pop(context),
         ),
         elevation: 0.0,

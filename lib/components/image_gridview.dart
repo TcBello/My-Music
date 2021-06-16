@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class ImageGridFile extends StatelessWidget {
   final String img;
-  ImageGridFile(this.img);
+  final String id;
+  ImageGridFile(this.img, this.id);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,10 @@ class ImageGridFile extends StatelessWidget {
               topLeft: Radius.circular(20.0),
               topRight: Radius.circular(20.0)
           ),
-          child: Image.file(File(img), fit: BoxFit.cover,),
+          child: Hero(
+            tag: id,
+            child: Image.file(File(img), fit: BoxFit.cover,)
+          ),
         )
     );
   }
@@ -25,7 +29,8 @@ class ImageGridFile extends StatelessWidget {
 
 class ImageGridAsset extends StatelessWidget {
   final String img;
-  ImageGridAsset(this.img);
+  final String id;
+  ImageGridAsset(this.img, this.id);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,10 @@ class ImageGridAsset extends StatelessWidget {
               topLeft: Radius.circular(20.0),
               topRight: Radius.circular(20.0)
           ),
-          child: Image.asset("assets/imgs/$img", fit: BoxFit.cover,),
+          child: Hero(
+            tag: id,
+            child: Image.asset("assets/imgs/$img", fit: BoxFit.cover,),
+          )
         )
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/playlist_builder.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
@@ -16,16 +17,16 @@ class PlaylistDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text("Add to playlist"),
+      title: Text("Add to playlist", style: dialogTitleTextStyle,),
       content: Container(
-        height: 150,
+        height: 175,
         width: 150,
         child: PlaylistBuilder(songInfo: songInfo,),
       ),
       actions: [
         FlatButton(
           onPressed: (){Navigator.pop(context);},
-          child: Text("Cancel"),
+          child: Text("Cancel", style: dialogButtonTextStyle,),
         ),
         FlatButton(
           onPressed: (){
@@ -34,7 +35,7 @@ class PlaylistDialog extends StatelessWidget {
               context: context,
               builder: (context) => AlertDialog(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                title: Text("Create Playlist"),
+                title: Text("Create Playlist", style: dialogTitleTextStyle,),
                 content: TextField(
                   controller: playlistController,
                   decoration: InputDecoration(
@@ -44,7 +45,7 @@ class PlaylistDialog extends StatelessWidget {
                 actions: [
                   FlatButton(
                     onPressed: (){Navigator.pop(context);},
-                    child: Text("Cancel"),
+                    child: Text("Cancel", style: dialogButtonTextStyle,),
                   ),
                   Consumer<SongQueryProvider>(
                     builder: (context, notifier, child) {
@@ -64,7 +65,7 @@ class PlaylistDialog extends StatelessWidget {
                           playlistController.text = "";
                           Navigator.pop(context);
                         },
-                        child: Text("Create"),
+                        child: Text("Create", style: dialogButtonTextStyle,),
                       );
                     }
                   ),
@@ -72,7 +73,7 @@ class PlaylistDialog extends StatelessWidget {
               ),
             );
           },
-          child: Text("New"),
+          child: Text("New", style: dialogButtonTextStyle,),
         )
       ],
     );

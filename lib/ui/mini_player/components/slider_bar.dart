@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:provider/provider.dart';
 
@@ -31,10 +32,8 @@ class _SliderBarState extends State<SliderBar> {
 
     try{
       return Slider(
-        activeColor:
-            Colors.pinkAccent,
-        inactiveColor:
-            Colors.pink[100],
+        activeColor: color3,
+        inactiveColor: color4,
         value: min(
           _dragValue ?? widget.position.inMilliseconds.toDouble(),
           widget.duration.inMilliseconds.toDouble()
@@ -57,10 +56,8 @@ class _SliderBarState extends State<SliderBar> {
     }
     catch(e){
       return Slider(
-        activeColor:
-            Colors.pinkAccent,
-        inactiveColor:
-            Colors.pink[100],
+        activeColor: color3,
+        inactiveColor: color4,
         value: 1.0,
         min: 0.0,
         max: 1.0,

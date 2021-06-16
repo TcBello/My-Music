@@ -33,13 +33,15 @@ class Albums extends StatelessWidget {
                 //   : ImageGridAsset("defalbum.png");
 
                 final albumImage = hasArtWork
-                  ? ImageGridFile(notifier.artWork(notifier.albumInfo[index].id))
-                  : ImageGridAsset("defalbum.png");
+                  ? ImageGridFile(
+                    notifier.artWork(notifier.albumInfo[index].id), notifier.albumInfo[index].id
+                  )
+                  : ImageGridAsset("defalbum.png", notifier.albumInfo[index].id);
 
                 return InkWell(
                   onTap: () async{
                     await notifier.getSongFromAlbum(notifier.albumInfo[index].id);
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => LibrarySong(
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySong(
                       notifier.albumInfo[index],
                       notifier.songInfoFromAlbum
                     )));

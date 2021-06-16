@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/bottom_sheet.dart';
 import 'package:my_music/components/image_gridview.dart';
+import 'package:my_music/components/style.dart';
 
 class PlaylistCard extends StatelessWidget {
   const PlaylistCard({this.playlistName, this.songNumber, this.playlistInfo, this.index});
@@ -19,7 +20,7 @@ class PlaylistCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ImageGridAsset("defalbum.png"),
+          ImageGridAsset("defalbum.png", "playlist$index"),
           Stack(
             children: [
               Column(
@@ -29,33 +30,28 @@ class PlaylistCard extends StatelessWidget {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Container(
-                        child: Text(playlistName),
+                        child: Text(playlistName, style: cardTitleTextStyle,),
                         width: MediaQuery.of(context).size.width,
                         height: 20,
                       )),
                   Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Text(
-                          "$songNumber songs")),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Text("$songNumber songs", style: cardSubtitleTextStyle,)
+                  ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 6, top: 7),
-                    child: InkWell(
-                      onTap: () {
-                        showPlaylistBottomSheet(context, playlistInfo, index);
-                      },
-                      child: Icon(
-                        Icons.more_vert,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  )
-                ],
+              Positioned.fill(
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  width: 20,
+                  height: 20,
+                  child: IconButton(
+                    icon: Icon(Icons.more_vert),
+                    onPressed: (){
+                      showPlaylistBottomSheet(context, playlistInfo, index);
+                    },
+                  ),
+                ),
               )
             ],
           )

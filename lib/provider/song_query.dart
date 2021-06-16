@@ -5,6 +5,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
+import 'package:my_music/components/audio_player_task/audio_player_task.dart';
 import 'package:my_music/main.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -45,27 +47,32 @@ class SongQueryProvider extends ChangeNotifier{
 
   final List stringSongs = [];
 
+  double _searchProgress = 0.0;
+  double get searchProgress => _searchProgress;
+
+  File validatorFile = File("/data/user/0/com.tcbello.my_music/cache/validate");
+
   Future<void> getSongs() async {
     _songInfo = await flutterAudioQuery.getSongs();
     _artistInfo = await flutterAudioQuery.getArtists();
     _albumInfo = await flutterAudioQuery.getAlbums();
     _playlistInfo = await flutterAudioQuery.getPlaylists();
     print("GET DATA SONGS FROM FILES COMPLETED!");
-
-    await getAlbumArts();
-
+    
+    getAlbumArts();
     notifyListeners();
   }
 
   Future<void> createPlaylist(String name, SongInfo songInfo) async {
-    await FlutterAudioQuery.createPlaylist(playlistName: name);
+    var newPlaylist = await FlutterAudioQuery.createPlaylist(playlistName: name);
+    newPlaylist.addSong(song: songInfo);
     await getSongs();
 
-    _playlistInfo.forEach((element) {
-      if(element.name == name){
-        element.addSong(song: songInfo);
-      }
-    });
+    // _playlistInfo.forEach((element) {
+    //   if(element.name == name){
+    //     element.addSong(song: songInfo);
+    //   }
+    // });
   }
 
   Future<void> addSongToPlaylist(SongInfo song, int index) async {
@@ -225,29 +232,76 @@ class SongQueryProvider extends ChangeNotifier{
   Future<void> getAlbumArts() async {
     final Directory dir = await getTemporaryDirectory();
     String dirPath = dir.path;
+    _searchProgress = 0.0;
+    notifyListeners();
 
-    _songInfo.forEach((element) async {
-      String filePath = "$dirPath/${element.albumId}.png";
-      File file = File(filePath);
-      bool isExists = await file.exists();
-      Uint8List artWork = await flutterAudioQuery.getArtwork(
-        type: ResourceType.ALBUM,
-        id: element.albumId,
-        size: Size(500, 500)
-      );
+    // _songInfo.forEach((element) async {
+    //   String filePath = "$dirPath/${element.albumId}.png";
+    //   print(filePath);
+    //   File file = File(filePath);
+    //   // bool isExists = await file.exists();
+    //   bool isExists = file.existsSync();
+    //   Uint8List artWork = await flutterAudioQuery.getArtwork(
+    //     type: ResourceType.ALBUM,
+    //     id: element.albumId,
+    //     size: Size(500, 500)
+    //   );
 
-      if(!isExists){
-        try{
-          if(artWork.isNotEmpty && artWork != null){
-            file.writeAsBytes(artWork);
-            print("FilePath: ${file.path}\nSong Name: ${element.title}");
+    //   if(!isExists){
+    //     try{
+    //       if(artWork.isNotEmpty && artWork != null){
+    //         file.writeAsBytes(artWork);
+    //         print("FilePath: ${file.path}\nSong Name: ${element.title}");
+    //       }
+    //     }
+    //     catch(e){
+    //       print(e);
+    //     }
+    //   }
+    // });
+
+    if(!validatorFile.existsSync()){
+      int currentSearch = 0;
+      _songInfo.forEach((element) async {
+        String filePath = "$dirPath/${element.albumId}.png";
+        File file = File(filePath);
+        bool isFileExist = await file.exists();
+        // Uint8List artWork = await flutterAudioQuery.getArtwork(
+        //   type: ResourceType.ALBUM,
+        //   id: element.albumId,
+        //   size: Size(500, 500)
+        // );
+
+        if(!isFileExist){
+          Uint8List artWork = await flutterAudioQuery.getArtwork(
+            type: ResourceType.ALBUM,
+            id: element.albumId,
+            size: Size(500, 500)
+          );
+          currentSearch += 1;
+          _searchProgress = currentSearch / songInfo.length;
+          notifyListeners();
+          try{
+            if(artWork.isNotEmpty && artWork != null){
+              file.writeAsBytes(artWork);
+              print("FilePath: ${file.path}\nSong Name: ${element.title}");
+            }
+            
+            if(_searchProgress == 1.0){
+              validatorFile.writeAsString("validate");
+            }
+          }
+          catch(e){
+            print(e);
           }
         }
-        catch(e){
-          print(e);
+        else{
+          currentSearch += 1;
+          _searchProgress = currentSearch / songInfo.length;
+          notifyListeners();
         }
-      }
-    });
+      });
+    }
   }
 
   void setQueue(List<SongInfo> songList){

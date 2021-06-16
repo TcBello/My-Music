@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +15,16 @@ class PlaylistBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SongQueryProvider>(
       builder: (context, notifier, child) {
-        return ListView.builder(
+        return ListView.separated(
           itemCount: notifier.playlistInfo.length,
+          separatorBuilder: (context, index) => Divider(
+            color: Colors.grey,
+          ),
           itemBuilder: (context, playlistIndex){
             final playlistName = notifier.playlistInfo[playlistIndex].name;
 
             return ListTile(
-              title: Text(playlistName),
+              title: Text(playlistName, style: dialogContentTextStyle,),
               onTap: () async {
                 await notifier.addSongToPlaylist(songInfo, playlistIndex);
                 Fluttertoast.showToast(
@@ -32,7 +36,7 @@ class PlaylistBuilder extends StatelessWidget {
                     fontSize: 16.0
                 );
                 Navigator.pop(context);
-                notifier.getSongs();
+                await notifier.getSongs();
               },
             );
           },

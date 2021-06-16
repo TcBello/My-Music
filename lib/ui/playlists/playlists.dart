@@ -25,7 +25,7 @@ class Playlists extends StatelessWidget {
                   onTap: () async{
                     await notifier.getSongFromPlaylist(index);
                     // Navigator.push(context, CupertinoPageRoute(builder: (context) => LibrarySongList(indexFromOutside: index, isFromArtist: false, isFromPlaylist: true,)));
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => LibrarySongPlaylist(index)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySongPlaylist(index)));
                   },
                   child: PlaylistCard(
                     playlistName: playlistName,

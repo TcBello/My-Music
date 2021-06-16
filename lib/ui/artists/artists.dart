@@ -24,13 +24,12 @@ class Artists extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.fromLTRB(0, 15, 0, 70),
               children: List.generate(notifier.artistInfo.length, (index){
-                final artistName = notifier.artistInfo[index].name != "<unknown>"
-                  ? notifier.artistInfo[index].name
-                  : "Unknown Artist";
-                  
+                final artistName = notifier.artistInfo[index].name;       
                 final albumImage = notifier.artistInfo[index].artistArtPath != null
-                  ? ImageGridFile(notifier.artistInfo[index].artistArtPath)
-                  : ImageGridAsset("defalbum.png");
+                  ? ImageGridFile(
+                    notifier.artistInfo[index].artistArtPath, "artist$index"
+                  )
+                  : ImageGridAsset("defalbum.png", "artist$index");
 
                 return InkWell(
                   onTap: () async{

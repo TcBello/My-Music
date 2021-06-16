@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/delete_dialog.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
@@ -31,10 +32,10 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  AutoSizeText(
-                    playlistName,
+                  MarqueeText(
+                    text: playlistName,
                     style: headerBottomSheetTextStyle,
-                    maxLines: 1,
+                    speed: 20,
                   ),
                   SizedBox(
                     height: 10,
@@ -48,7 +49,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Playlist"),
+            title: Text("Play Playlist", style: bottomSheetTextStyle,),
             onTap: () async {
               await songQueryProvider.getSongFromPlaylist(index);
               // provider.setIndex(0);
@@ -61,7 +62,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Play Next"),
+            title: Text("Play Next", style: bottomSheetTextStyle,),
             onTap: () async {
               songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
                 songQueryProvider.playNextPlaylist(songQueryProvider.songInfoFromPlaylist);
@@ -70,7 +71,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to Queue"),
+            title: Text("Add to Queue", style: bottomSheetTextStyle,),
             onTap: () {
               songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
                 songQueryProvider.addToQueuePlaylist(songQueryProvider.songInfoFromPlaylist);
@@ -83,7 +84,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               final playlistName = notifier.playlistInfo[index].name;
 
               return ListTile(
-                title: Text("Delete Playlist"),
+                title: Text("Delete Playlist", style: bottomSheetTextStyle,),
                 onTap: () async {
                   Navigator.pop(context);
                   showDialog(

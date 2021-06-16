@@ -38,13 +38,15 @@ class ArtistLibraryBuilder extends StatelessWidget {
               final hasArtWork = File(notifier.artWork(notifier.albumFromArtist[index].id)).existsSync();
 
               final albumImage = hasArtWork
-                  ? ImageGridFile(notifier.artWork(notifier.albumFromArtist[index].id))
-                  : ImageGridAsset("defalbum.png");
+                  ? ImageGridFile(
+                    notifier.artWork(notifier.albumFromArtist[index].id), notifier.albumFromArtist[index].id
+                  )
+                  : ImageGridAsset("defalbum.png", notifier.albumFromArtist[index].id);
                 
               return InkWell(
                 onTap: () async{
                   await notifier.getSongFromArtist(notifier.albumFromArtist[index].artist, notifier.albumFromArtist[index].id);
-                  Navigator.push(context, CupertinoPageRoute(builder: (context) => LibrarySong(
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySong(
                     notifier.albumFromArtist[index],
                     notifier.songInfoFromArtist
                   )));

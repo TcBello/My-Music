@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/components/style.dart';
 
 class ArtistCard extends StatelessWidget {
   const ArtistCard({this.imageGrid, this.artistName});
@@ -20,6 +21,7 @@ class ArtistCard extends StatelessWidget {
             child: Text(
               artistName,
               overflow: TextOverflow.ellipsis,
+              style: cardTitleTextStyle,
             ),
           ),
         ],

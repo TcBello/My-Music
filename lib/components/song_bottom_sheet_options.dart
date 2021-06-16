@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/playlist_dialog.dart';
 import 'package:my_music/main.dart';
 import 'package:my_music/provider/song_model.dart';
@@ -36,10 +37,10 @@ class SongBottomSheetOptions extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  AutoSizeText(
-                    songTitle,
+                  MarqueeText(
+                    text: songTitle,
                     style: headerBottomSheetTextStyle,
-                    maxLines: 1,
+                    speed: 20,
                   ),
                   SizedBox(height: 5),
                   Divider(thickness: 1.0, color: Colors.grey)
@@ -48,21 +49,21 @@ class SongBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Next"),
+            title: Text("Play Next", style: bottomSheetTextStyle,),
             onTap: () {
               songQueryProvider.playNextSong(songInfo);
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Add to Queue"),
+            title: Text("Add to Queue", style: bottomSheetTextStyle,),
             onTap: () {
               songQueryProvider.addToQueueSong(songInfo);
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Add to playlist"),
+            title: Text("Add to playlist", style: bottomSheetTextStyle,),
             onTap: () {
               Navigator.pop(context);
               showPlaylistDialog(context);

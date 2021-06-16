@@ -28,7 +28,7 @@ class MiniPlayer extends StatelessWidget {
   ValueNotifier<double> get playerExpandProgress =>
       ValueNotifier(playerMinHeight);
 
-  final Color backgroundColor = Colors.black;
+  final Color backgroundColor = color2;
 
   void expandMiniPlayer(){
     miniPlayerController.animateToHeight(state: PanelState.MAX);
@@ -55,14 +55,14 @@ class MiniPlayer extends StatelessWidget {
         stream: songPlayer.audioItemStream,
         builder: (context, snapshot) {
           if(snapshot.hasData){
+            print(snapshot.data.title);
+
             final albumImage = ClipRRect(
               borderRadius: BorderRadius.circular(5),
               child: Image.file(File(snapshot.data.artUri.path)),
             );
             final songTitle = snapshot.data.title;
-            final artistName = snapshot.data.artist != '<unknown>'
-                ? snapshot.data.artist
-                : "Unknown Artist";
+            final artistName = snapshot.data.artist;
             final duration = toMinSecFormat(snapshot.data.duration);
             final durationValue = snapshot.data.duration;
 
@@ -152,7 +152,7 @@ class MiniPlayer extends StatelessWidget {
                                   IconButton(
                                     icon: Icon(
                                       Icons.keyboard_arrow_down,
-                                      color: Colors.pinkAccent,
+                                      color: Colors.white,
                                       size: 30,
                                     ),
                                     onPressed: (){
@@ -164,21 +164,21 @@ class MiniPlayer extends StatelessWidget {
                                     child: Container(
                                       height: 70,
                                       child: Center(
-                                        child: Text("Now Playing", style: rubberTextStyle,)
+                                        child: Text("Now Playing", style: headerAppBarTextStyle)
                                       )
                                     )
                                   ),
                                   IconButton(
                                     icon: Icon(
                                       Icons.equalizer,
-                                      color: Colors.pinkAccent,
+                                      color: Colors.white,
                                     ),
                                     onPressed: () => songPlayer.openEqualizer(),
                                   ),
                                   IconButton(
                                     icon: Icon(
                                       Icons.queue_music_outlined,
-                                      color: Colors.pinkAccent,
+                                      color: Colors.white,
                                     ),
                                     onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => NowPlaying())),
                                   )
@@ -230,7 +230,7 @@ class MiniPlayer extends StatelessWidget {
                                     // Container(),
 
                                     Container(
-                                      height: 50,
+                                      height: 60,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -242,7 +242,7 @@ class MiniPlayer extends StatelessWidget {
                                                 left: 20.0, right: 20.0),
                                             child: Text(
                                               artistName,
-                                              style: defTextStyle,
+                                              style: artistMiniplayerTextStyle2,
                                               overflow: TextOverflow.ellipsis,
                                               textAlign: TextAlign.center,
                                             ),
@@ -289,7 +289,7 @@ class MiniPlayer extends StatelessWidget {
                                                             child: Text(
                                                               // _songModel.currentPosition,
                                                               position,
-                                                              style: defTextStyle,
+                                                              style: durationTextStyle
                                                             )),
                                                         Container(
                                                             margin:
@@ -298,7 +298,7 @@ class MiniPlayer extends StatelessWidget {
                                                             child: Text(
                                                               // _songModel.songDuration,
                                                               duration,
-                                                              style: defTextStyle,
+                                                              style: durationTextStyle,
                                                             ))
                                                       ],
                                                     ),
@@ -432,7 +432,7 @@ class MiniPlayer extends StatelessWidget {
                                     expandMiniPlayer();
                                     songPlayer.setPlayerExpandBool(true);
                                   },
-                                  child: SongTitleMiniPlayer(title: songTitle),
+                                  child: SongTitleMiniPlayer(title: songTitle, artist: artistName,),
                                 ),
                               ),
                             ),
@@ -468,158 +468,8 @@ class MiniPlayer extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            // Expanded(
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.only(left: 10),
-                            //     child: Opacity(
-                            //       opacity: elementOpacity,
-                            //       child: Column(
-                            //         crossAxisAlignment: CrossAxisAlignment.start,
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         mainAxisSize: MainAxisSize.min,
-                            //         children: [
-                            //           Text(audioObject.title,
-                            //               style: Theme.of(context)
-                            //                   .textTheme
-                            //                   .bodyText2
-                            //                   .copyWith(fontSize: 16)),
-                            //           Text(
-                            //             audioObject.subtitle,
-                            //             style: Theme.of(context)
-                            //                 .textTheme
-                            //                 .bodyText2
-                            //                 .copyWith(
-                            //                     color: Colors.black.withOpacity(0.55)),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            // Opacity(
-                            //   opacity: elementOpacity,
-                            //   child: buttonPlay,
-                            // ),
-                            // Opacity(
-                            //   opacity: elementOpacity,
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.only(right: 3.0),
-                            //     child: IconButton(
-                            //         icon: Icon(Icons.skip_next),
-                            //         onPressed: () {
-                            //           controller.animateToHeight(state: PanelState.MAX);
-                            //         }),
-                            //   ),
-                            // ),
                           ],
                         ),
-                        // child: StreamBuilder<PlaybackState>(
-                        //   stream: songPlayer.playbackStateStream,
-                        //   builder: (context, snapshot) {
-                        //     return Row(
-                        //       children: [
-                        //         // ConstrainedBox(
-                        //         //   constraints: BoxConstraints(
-                        //         //     maxHeight: maxImgSize,
-                        //         //   ),
-                        //         //   child: albumImage,
-                        //         // ),
-                        //         ConstrainedBox(
-                        //           constraints: BoxConstraints(
-                        //             maxHeight: maxImgSize,
-                        //             maxWidth: height == playerMinHeight
-                        //               ? 70
-                        //               : maxImgSize
-                        //           ),
-                        //           child: albumImage,
-                        //         ),
-                        //         Expanded(
-                        //           //asdasdadadadasddas
-                        //           child: Opacity(
-                        //             opacity: elementOpacity,
-                        //             child: InkWell(
-                        //               onTap: (){
-                        //                 expandMiniPlayer();
-                        //                 songPlayer.setPlayerExpandBool(true);
-                        //               },
-                        //               child: Container(
-                        //                 height: 70,
-                        //                 padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                        //                 //  color: Colors.yellow,
-                        //                 child: Center(
-                        //                     child: Text(
-                        //                   songTitle,
-                        //                   style: rubberTextStyle,
-                        //                   overflow: TextOverflow.ellipsis,
-                        //                 )),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         Opacity(
-                        //           opacity: elementOpacity,
-                        //           child: Container(
-                        //             height: 50,
-                        //             width: 50,
-                        //             margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                        //             child: ClipOval(
-                        //               child: FlatButton(
-                        //                 onPressed: () {
-                        //                   // notifier.onPauseResume();
-                        //                   songPlayer.pauseResume();
-                        //                 },
-                        //                 child: songPlayer.playPauseMiniPlayerIcon,
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         // Expanded(
-                        //         //   child: Padding(
-                        //         //     padding: const EdgeInsets.only(left: 10),
-                        //         //     child: Opacity(
-                        //         //       opacity: elementOpacity,
-                        //         //       child: Column(
-                        //         //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         //         mainAxisAlignment: MainAxisAlignment.center,
-                        //         //         mainAxisSize: MainAxisSize.min,
-                        //         //         children: [
-                        //         //           Text(audioObject.title,
-                        //         //               style: Theme.of(context)
-                        //         //                   .textTheme
-                        //         //                   .bodyText2
-                        //         //                   .copyWith(fontSize: 16)),
-                        //         //           Text(
-                        //         //             audioObject.subtitle,
-                        //         //             style: Theme.of(context)
-                        //         //                 .textTheme
-                        //         //                 .bodyText2
-                        //         //                 .copyWith(
-                        //         //                     color: Colors.black.withOpacity(0.55)),
-                        //         //           ),
-                        //         //         ],
-                        //         //       ),
-                        //         //     ),
-                        //         //   ),
-                        //         // ),
-                        //         // Opacity(
-                        //         //   opacity: elementOpacity,
-                        //         //   child: buttonPlay,
-                        //         // ),
-                        //         // Opacity(
-                        //         //   opacity: elementOpacity,
-                        //         //   child: Padding(
-                        //         //     padding: const EdgeInsets.only(right: 3.0),
-                        //         //     child: IconButton(
-                        //         //         icon: Icon(Icons.skip_next),
-                        //         //         onPressed: () {
-                        //         //           controller.animateToHeight(state: PanelState.MAX);
-                        //         //         }),
-                        //         //   ),
-                        //         // ),
-                        //       ],
-                        //     );
-                        //   }
-                        // ),
                       ),
                     ],
                   ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/song_tile.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -24,18 +25,6 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
 
     return Container(
-        color: Colors.white,
-        // child: ListView.builder(
-        //   itemCount: songQueryProvider.currentQueue.length,
-        //   itemBuilder: (context, index) => NowPlayingSongTile(
-        //     songInfo: songQueryProvider.currentQueue[index],
-        //     onTap: () {
-        //       // provider.setIndex(index);
-        //       // provider.playSong(provider.nowPlayingSongs);
-        //       songPlayerProvider.playSong(songQueryProvider.currentQueue, index);
-        //     },
-        //   ),
-        // )
         child: StreamBuilder<MediaItem>(
           stream: songPlayerProvider.audioItemStream,
           builder: (context, snapshot) {

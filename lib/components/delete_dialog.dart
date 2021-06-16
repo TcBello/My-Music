@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/components/style.dart';
 
 class DeleteDialog extends StatelessWidget {
   const DeleteDialog({this.index, this.onPressedDelete, this.title, this.content});
@@ -13,15 +14,15 @@ class DeleteDialog extends StatelessWidget {
     return AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20)),
-      title: Text(title),
-      content: Text(content),
+      title: Text(title, style: dialogTitleTextStyle,),
+      content: Text(content, style: dialogContentTextStyle,),
       actions: [
         FlatButton(
-          child: Text("Cancel"),
+          child: Text("Cancel", style: dialogButtonTextStyle,),
           onPressed: () => Navigator.pop(context),
         ),
         FlatButton(
-          child: Text("Delete"),
+          child: Text("Delete", style: dialogButtonTextStyle,),
           onPressed: onPressedDelete
         ),
       ],

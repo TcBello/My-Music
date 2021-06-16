@@ -20,12 +20,7 @@ class Search extends SearchDelegate<SongInfo>{
 
   @override
   buildActions(BuildContext context) {
-    return <Widget>[
-      IconButton(
-        icon: Icon(Icons.mic, color: Colors.grey[700],),
-        onPressed: (){},
-      )
-    ];
+    return <Widget>[];
   }
 
   @override
@@ -50,12 +45,12 @@ class Search extends SearchDelegate<SongInfo>{
           return Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
+            color: theme.backgroundFilePath == theme.defaultBgPath || theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
+              ? color1
+              : Colors.transparent,
             child: theme.backgroundFilePath == theme.defaultBgPath ||
                       theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
-                  ? Image.asset(
-                      "assets/imgs/starry.jpg",
-                      fit: BoxFit.cover,
-                    )
+                  ? Container()
                   : Image.file(
                       File(theme.backgroundFilePath),
                       fit: BoxFit.cover,
@@ -82,15 +77,13 @@ class Search extends SearchDelegate<SongInfo>{
                 ),
                 child: Text("Songs", style: headerSearchResult,),
               ),
-              Consumer<SongPlayerProvider>(
-                builder: (context, songPlayer, child){
+              Consumer2<SongPlayerProvider, SongQueryProvider>(
+                builder: (context, songPlayer, songQuery, child){
                   return ListBody(
                     children: List.generate(_songSearchList.length, (index) => SongTile(
                       songInfo: _songSearchList[index],
-                      onTap: () async{
-                        // song.setIndex(index);
-                        // await song.playSong(_songSearchList);
-                        // print("PLAY STARTED!");
+                      onTap: (){
+                        songQuery.setQueue(_songSearchList);
                         songPlayer.playSong(_songSearchList, index);
                       },
                     )),
@@ -148,14 +141,14 @@ class Search extends SearchDelegate<SongInfo>{
       itemBuilder: (context, index){
         return ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.blue,
+              backgroundColor: color2,
               child: Icon(Icons.music_note, color: Colors.white,),
             ),
             onTap: (){
               query = _suggestionList[index];
               showResults(context);
             },
-            title: Text(_suggestionList[index])
+            title: Text(_suggestionList[index], style: searchSuggestionTextStyle,)
         );
       },
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/delete_dialog.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/theme.dart';
 import 'package:my_music/ui/themes/background/background_skin.dart';
@@ -15,20 +16,20 @@ class Themes extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ListTile(
-          title: Text("Background Skin"),
-          subtitle: Text("Customize background wallpaper"),
+          title: Text("Background Skin", style: themeTitleTextStyle,),
+          subtitle: Text("Customize background wallpaper", style: themeSubtitleTextStyle,),
           onTap: (){Navigator.push(context, CupertinoPageRoute(builder: (context) => BackgroundSkin()));},
         ),
         ListTile(
-          title: Text("Text"),
-          subtitle: Text("Customize text style"),
+          title: Text("Text", style: themeTitleTextStyle,),
+          subtitle: Text("Customize text style", style: themeSubtitleTextStyle,),
           onTap: (){Navigator.push(context, CupertinoPageRoute(builder: (context) => TextStyleTheme()));},
         ),
         Consumer<ThemeProvider>(
           builder: (context, theme, snapshot) {
             return ListTile(
-              title: Text("Reset Theme"),
-              subtitle: Text("Set to default theme"),
+              title: Text("Reset Theme", style: themeTitleTextStyle,),
+              subtitle: Text("Set to default theme", style: themeSubtitleTextStyle,),
               onTap: () async {
                 showDialog(
                   context: context,
@@ -69,8 +70,10 @@ class Themes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: color1,
       appBar: AppBar(
         title: Text("Themes"),
+        backgroundColor: color2,
       ),
       body: _themesWidget(context),
     );

@@ -15,10 +15,12 @@ class ArtistProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: color1,
       body: NestedScrollView(
         headerSliverBuilder: (context, isScreenScrolled){
           return <Widget>[
             SliverAppBar(
+              backgroundColor: color2,
               pinned: true,
               actions: [
                 IconButton(
@@ -28,7 +30,15 @@ class ArtistProfile extends StatelessWidget {
               ],
               expandedHeight: 165,
               flexibleSpace: FlexibleSpaceBar(
-                  background: backgroundSliver != null ? Image.file(File(backgroundSliver), fit: BoxFit.cover,) : Image.asset('assets/imgs/defalbum.png', fit: BoxFit.cover,)
+                background: backgroundSliver != null
+                  ? Hero(
+                    tag: "artist$index",
+                    child: Image.file(File(backgroundSliver), fit: BoxFit.cover,),
+                  )
+                  : Hero(
+                    tag: "artist$index",
+                    child: Image.asset('assets/imgs/defalbum.png', fit: BoxFit.cover,),
+                  )
               ),
             ),
           ];

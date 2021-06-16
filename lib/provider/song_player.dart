@@ -15,8 +15,8 @@ class SongPlayerProvider extends ChangeNotifier{
 
   Icon playPauseMiniPlayerIcon(bool isPlaying){
     return isPlaying
-      ? Icon(Icons.pause, color: Colors.pinkAccent,)
-      : Icon(Icons.play_arrow, color: Colors.pinkAccent,);
+      ? Icon(Icons.pause, color: Colors.white,)
+      : Icon(Icons.play_arrow, color: Colors.white,);
   }
 
   Icon playPausePlayerIcon(bool isPlaying){
@@ -182,7 +182,6 @@ class SongPlayerProvider extends ChangeNotifier{
         artUri: hasArtWork
           ? File(artWork(e.albumId)).uri
           : File(_defaultAlbum).uri,
-        // artUri: File(artWork(e.albumId)).uri,
         duration: Duration(milliseconds: int.parse(e.duration)),
       );
     }).toList();

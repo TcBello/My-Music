@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/theme.dart';
 import 'package:provider/provider.dart';
@@ -139,23 +140,17 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ListTile(
-          title: Text("Primary", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+          title: Text("Primary", style: headerBodyTextStyle),
         ),
         SizedBox(height: 10,),
         Container(
-          color: _hex == _white ? Colors.black : null,
-          child: Text(
-            "Sample Text",
-            style: TextStyle(
-                fontSize: 30.0,
-                color: Color(_hex)
-            ),
-          ),
+          // color: _hex == _white ? Colors.black : null,
+          child: Text("Sample Text", style: sampleTextStyle(Color(_hex)),),
         ),
         SizedBox(height: 20,),
         ListTile(
-          title: Text("Color"),
-          subtitle: Text("Customize text color"),
+          title: Text("Color", style: themeTitleTextStyle,),
+          subtitle: Text("Customize text color", style: themeSubtitleTextStyle,),
           onTap: (){_openColorDialog(context);},
           focusColor: Colors.blue,
         ),
@@ -164,8 +159,8 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
           splashColor: Colors.blue,
           onTap: (){},
           child: ListTile(
-            title: Text("Font"),
-            subtitle: Text("Customize font style"),
+            title: Text("Font", style: themeTitleTextStyle,),
+            subtitle: Text("Customize font style", style: themeSubtitleTextStyle,),
             // onTap: (){},
           ),
         )
@@ -216,8 +211,10 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: color1,
       appBar: AppBar(
-        title: Text("Text Style"),
+        backgroundColor: color2,
+        title: Text("Text Style", style: headerAppBarTextStyle,),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -226,7 +223,7 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
           child: Column(
             children: [
               _primaryWidget(),
-              _secondaryWidget()
+              // _secondaryWidget()
             ],
           ),
         ),

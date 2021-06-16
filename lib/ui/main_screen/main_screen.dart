@@ -11,6 +11,7 @@ import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/theme.dart';
+import 'package:my_music/search_song/search_song.dart';
 import 'package:my_music/ui/main_screen/components/my_drawer.dart';
 import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/components/controller.dart';
@@ -52,17 +53,16 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
-    
-    // return WillPopScope(
-    //   onWillPop: (){
-    //     return onWillScope(songPlayerProvider.isPlayerExpand);
-    //   },
-    //   child: Stack(
+    // return InnerDrawer(
+    //   key: _innerDrawerKey,
+    //   swipe: true,
+    //   swipeChild: true,
+    //   onTapClose: true,
+    //   scaffold: Stack(
     //     children: <Widget>[
     //       BackgroundWallpaper(),
     //       BlurEffect(),
-    //       MainUI(),
+    //       MainUI(globalKey: _innerDrawerKey,),
     //       Consumer<SongPlayerProvider>(
     //         builder: (context, songPlayer, child) {
     //           return StreamBuilder<bool>(
@@ -87,43 +87,50 @@ class _MainScreenState extends State<MainScreen> {
     //       )
     //     ],
     //   ),
+    //   leftChild: MyDrawer()
     // );
 
-    return InnerDrawer(
-      key: _innerDrawerKey,
-      swipe: true,
-      swipeChild: true,
-      onTapClose: true,
-      scaffold: Stack(
-        children: <Widget>[
-          BackgroundWallpaper(),
-          BlurEffect(),
-          MainUI(globalKey: _innerDrawerKey,),
-          Consumer<SongPlayerProvider>(
-            builder: (context, songPlayer, child) {
-              return StreamBuilder<bool>(
-                stream: songPlayer.backgroundRunningStream,
-                builder: (context, snapshot) {
-                  if(snapshot.hasData){
-                    print(snapshot.data);
-                    if(snapshot.data){
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: MiniPlayer(),
-                      );
-                    }
-                    
-                    return Container();
-                  }
+    return Consumer<SongQueryProvider>(
+      builder: (context, songQuery, child){
+        return songQuery.validatorFile.existsSync()
+          ? InnerDrawer(
+            key: _innerDrawerKey,
+            swipe: true,
+            swipeChild: true,
+            onTapClose: true,
+            scaffold: Stack(
+              children: <Widget>[
+                BackgroundWallpaper(),
+                BlurEffect(),
+                MainUI(globalKey: _innerDrawerKey,),
+                Consumer<SongPlayerProvider>(
+                  builder: (context, songPlayer, child) {
+                    return StreamBuilder<bool>(
+                      stream: songPlayer.backgroundRunningStream,
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          print(snapshot.data);
+                          if(snapshot.data){
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: MiniPlayer(),
+                            );
+                          }
+                          
+                          return Container();
+                        }
 
-                  return Container();
-                },
-              );
-            },
+                        return Container();
+                      },
+                    );
+                  },
+                )
+              ],
+            ),
+            leftChild: MyDrawer()
           )
-        ],
-      ),
-      leftChild: MyDrawer()
+        : SearchSongUI();
+      },
     );
   }
 }

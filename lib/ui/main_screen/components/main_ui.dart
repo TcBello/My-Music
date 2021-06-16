@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/albums/albums.dart';
@@ -30,12 +31,10 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    tabController.dispose();
-    scrollController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +52,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
               SliverAppBar(
                 backgroundColor: Colors.transparent,
                 forceElevated: true,
-                title: Text("Music"),
+                title: Text("Music", style: musicHeaderTextStyle,),
                 leading: IconButton(
                   onPressed: () {
                     // Scaffold.of(context).openDrawer();
@@ -72,8 +71,10 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
                   ),
                 ],
                 bottom: TabBar(
+                  labelStyle: selectedTabTextStyle,
+                  unselectedLabelStyle: unselectedTabTextStyle,
                   controller: tabController,
-                  indicatorColor: Colors.pinkAccent,
+                  indicatorColor: color3,
                   tabs: <Widget>[
                     Tab(
                       text: "Songs",
@@ -93,7 +94,6 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
             ];
           },
           body: TabBarView(controller: tabController, children: _myTabs)),
-      // drawer: MyDrawer(),
     );
   }
 }
