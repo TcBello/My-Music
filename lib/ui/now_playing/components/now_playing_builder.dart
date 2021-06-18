@@ -23,17 +23,19 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
   Widget build(BuildContext context) {
     final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
+    final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
 
     return Container(
         child: StreamBuilder<MediaItem>(
           stream: songPlayerProvider.audioItemStream,
           builder: (context, snapshot) {
             if(snapshot.hasData){
-              var currentTitle = snapshot.data.title;
+              final currentTitle = snapshot.data.title;
 
               return ListView.builder(
                 itemCount: songQueryProvider.currentQueue.length,
                 itemBuilder: (context, index){
+                  final songArtwork = songQueryProvider.currentQueue[index].albumArtwork;
                   final hasArtWork = File(songQueryProvider.artWork(songQueryProvider.currentQueue[index].albumId)).existsSync();
 
                   return NowPlayingSongTile(
@@ -42,9 +44,13 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
                       songPlayerProvider.playSong(songQueryProvider.currentQueue, index);
                     },
                     isPlaying: songQueryProvider.currentQueue[index].title == currentTitle,
-                    image: hasArtWork
-                      ? Image.file(File(songQueryProvider.artWork(songQueryProvider.currentQueue[index].albumId)), fit: BoxFit.cover,)
-                      : Image.file(File(songQueryProvider.defaultAlbum)),
+                    image: isSdk28Below
+                      ? songArtwork != null
+                        ? Image.file(File(songArtwork), fit: BoxFit.cover,)
+                        : Image.file(File(songQueryProvider.defaultAlbum))
+                      : hasArtWork
+                        ? Image.file(File(songQueryProvider.artWork(songQueryProvider.currentQueue[index].albumId)), fit: BoxFit.cover,)
+                        : Image.file(File(songQueryProvider.defaultAlbum)),
                   );
                 }
               );

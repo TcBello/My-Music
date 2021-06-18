@@ -261,3 +261,10 @@ const TextStyle searchSuggestionTextStyle = TextStyle(
   fontWeight: FontWeight.w500,
   color: Colors.black
 );
+
+const TextStyle searchSongTextStyle = TextStyle(
+  fontFamily: defaultFont,
+  fontWeight: FontWeight.w500,
+  color: Colors.white,
+  // fontSize: 18
+);

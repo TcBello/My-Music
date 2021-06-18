@@ -24,12 +24,34 @@ class Artists extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.fromLTRB(0, 15, 0, 70),
               children: List.generate(notifier.artistInfo.length, (index){
-                final artistName = notifier.artistInfo[index].name;       
-                final albumImage = notifier.artistInfo[index].artistArtPath != null
-                  ? ImageGridFile(
-                    notifier.artistInfo[index].artistArtPath, "artist$index"
-                  )
-                  : ImageGridAsset("defalbum.png", "artist$index");
+                final artistName = notifier.artistInfo[index].name;     
+                final artistArtwork = notifier.artistInfo[index].artistArtPath;
+                final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
+                final hasArtWork = File(notifier.artistArtworkList[index]).existsSync();
+                final backgroundSliver = isSdk28Below
+                  ? artistArtwork
+                  : hasArtWork
+                    ? notifier.artistArtworkList[index]
+                    : notifier.defaultAlbum;
+                final albumImage = isSdk28Below
+                  ? artistArtwork != null
+                    ? ImageGridFile(
+                      artistArtwork,
+                      "artist$index"
+                    )
+                    : ImageGridFile(
+                      notifier.defaultAlbum,
+                      "artist$index"
+                    )
+                  : hasArtWork
+                    ? ImageGridFile(
+                      notifier.artistArtworkList[index],
+                      "artist$index"
+                    )
+                    : ImageGridFile(
+                      notifier.defaultAlbum,
+                      "artist$index"
+                    );
 
                 return InkWell(
                   onTap: () async{
@@ -37,7 +59,7 @@ class Artists extends StatelessWidget {
                     Navigator.push(context, CupertinoPageRoute(builder: (context) => ArtistProfile(
                       title: artistName,
                       index: index,
-                      backgroundSliver: notifier.artistInfo[index].artistArtPath,
+                      backgroundSliver: backgroundSliver,
                     )));
                   },
                   child: ArtistCard(

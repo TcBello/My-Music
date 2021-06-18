@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:device_info/device_info.dart';
 import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -168,9 +169,14 @@ class SongPlayerProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void _convertToMediaItemList(List<SongInfo> songInfoList){
+  void _convertToMediaItemList(List<SongInfo> songInfoList) async{
+    final deviceInfo = DeviceInfoPlugin();
+    final androidDeviceInfo = await deviceInfo.androidInfo;
+    final isSdk28Below = androidDeviceInfo.version.sdkInt < 29;
+
     songList = songInfoList.map((e){
       bool hasArtWork = File(artWork(e.albumId)).existsSync();
+      final songArtwork = e.albumArtwork;
 
       return MediaItem(
         id: e.filePath,
@@ -179,9 +185,13 @@ class SongPlayerProvider extends ChangeNotifier{
           ? e.artist
           : "Unknown Artist",
         album: e.album,
-        artUri: hasArtWork
-          ? File(artWork(e.albumId)).uri
-          : File(_defaultAlbum).uri,
+        artUri: isSdk28Below
+          ? songArtwork != null
+            ? File(songArtwork).uri
+            : File(_defaultAlbum).uri
+          : hasArtWork
+            ? File(artWork(e.albumId)).uri
+            : File(_defaultAlbum).uri,
         duration: Duration(milliseconds: int.parse(e.duration)),
       );
     }).toList();

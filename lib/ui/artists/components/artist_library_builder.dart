@@ -18,6 +18,8 @@ class ArtistLibraryBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SongQueryProvider>(
       builder: (context, notifier, child){
+        final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
+
         return Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -25,21 +27,24 @@ class ArtistLibraryBuilder extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             children: List.generate(notifier.albumFromArtist.length, (index){
-              // final imageGrid = notifier.albumFromArtist[index].albumArt != null
-              //   ? ImageGridFile(notifier.albumFromArtist[index].albumArt)
-              //   : ImageGridAsset("defalbum.png");
-
-              final artistName = notifier.albumFromArtist[index].artist != "<unknown>"
-                ? notifier.albumFromArtist[index].artist
-                : "Unknown Artist";
-              
+              final artistName = notifier.albumFromArtist[index].artist;
               final albumName = notifier.albumFromArtist[index].title;
-
+              final albumArtwork = notifier.albumFromArtist[index].albumArt;
               final hasArtWork = File(notifier.artWork(notifier.albumFromArtist[index].id)).existsSync();
-
-              final albumImage = hasArtWork
+              final albumImage = isSdk28Below
+                ? albumArtwork != null
                   ? ImageGridFile(
-                    notifier.artWork(notifier.albumFromArtist[index].id), notifier.albumFromArtist[index].id
+                    albumArtwork,
+                    notifier.albumFromArtist[index].id
+                  )
+                  : ImageGridFile(
+                    notifier.defaultAlbum,
+                    notifier.albumFromArtist[index].id
+                  )
+                : hasArtWork
+                  ? ImageGridFile(
+                    notifier.artWork(notifier.albumFromArtist[index].id),
+                    notifier.albumFromArtist[index].id
                   )
                   : ImageGridAsset("defalbum.png", notifier.albumFromArtist[index].id);
                 

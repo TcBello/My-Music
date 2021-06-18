@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -92,44 +93,57 @@ class _MainScreenState extends State<MainScreen> {
 
     return Consumer<SongQueryProvider>(
       builder: (context, songQuery, child){
-        return songQuery.validatorFile.existsSync()
-          ? InnerDrawer(
-            key: _innerDrawerKey,
-            swipe: true,
-            swipeChild: true,
-            onTapClose: true,
-            scaffold: Stack(
-              children: <Widget>[
-                BackgroundWallpaper(),
-                BlurEffect(),
-                MainUI(globalKey: _innerDrawerKey,),
-                Consumer<SongPlayerProvider>(
-                  builder: (context, songPlayer, child) {
-                    return StreamBuilder<bool>(
-                      stream: songPlayer.backgroundRunningStream,
-                      builder: (context, snapshot) {
-                        if(snapshot.hasData){
-                          print(snapshot.data);
-                          if(snapshot.data){
-                            return Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: MiniPlayer(),
-                            );
-                          }
-                          
-                          return Container();
-                        }
+        return FutureBuilder<File>(
+          future: songQuery.validatorFile(),
+          builder: (context, snapshot) {
+            if(snapshot.hasData){
+              return snapshot.data.existsSync()
+                ? InnerDrawer(
+                  key: _innerDrawerKey,
+                  swipe: true,
+                  swipeChild: true,
+                  onTapClose: true,
+                  scaffold: Stack(
+                    children: <Widget>[
+                      BackgroundWallpaper(),
+                      BlurEffect(),
+                      MainUI(globalKey: _innerDrawerKey,),
+                      Consumer<SongPlayerProvider>(
+                        builder: (context, songPlayer, child) {
+                          return StreamBuilder<bool>(
+                            stream: songPlayer.backgroundRunningStream,
+                            builder: (context, snapshot) {
+                              if(snapshot.hasData){
+                                print(snapshot.data);
+                                if(snapshot.data){
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: MiniPlayer(),
+                                  );
+                                }
+                                
+                                return Container();
+                              }
 
-                        return Container();
-                      },
-                    );
-                  },
+                              return Container();
+                            },
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                  leftChild: MyDrawer()
                 )
-              ],
-            ),
-            leftChild: MyDrawer()
-          )
-        : SearchSongUI();
+                : SearchSongUI();
+            }
+
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: color1,
+            );
+          },
+        );
       },
     );
   }

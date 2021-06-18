@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
@@ -12,8 +13,26 @@ import 'package:path_provider/path_provider.dart';
 
 class SongQueryProvider extends ChangeNotifier{
   final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
+  final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   String artWork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id.png";
+
+  Future<String> artistArtwork(String name) async {
+    final albumInfo = await flutterAudioQuery.getAlbumsFromArtist(artist: name);
+    if(albumInfo.length != null || albumInfo.length != 0){
+      try{
+        return "/data/user/0/com.tcbello.my_music/cache/${albumInfo[0].id}.png";
+      }
+      catch(e){
+        return "/data/user/0/com.tcbello.my_music/cache/no_artwork";
+      }
+    }
+    return "/data/user/0/com.tcbello.my_music/cache/no_artwork";
+  }
+
   bool isConvertToStringOnce = false;
+
+  AndroidDeviceInfo _androidDeviceInfo;
+  AndroidDeviceInfo get androidDeviceInfo => _androidDeviceInfo;
 
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
   String get defaultAlbum => _defaultAlbum;
@@ -46,17 +65,33 @@ class SongQueryProvider extends ChangeNotifier{
   List<SongInfo> get currentQueue => _currentQueue;
 
   final List stringSongs = [];
+  
+  List<String> _artistArtWorkList = [];
+  List<String> get artistArtworkList => _artistArtWorkList;
 
   double _searchProgress = 0.0;
   double get searchProgress => _searchProgress;
 
-  File validatorFile = File("/data/user/0/com.tcbello.my_music/cache/validate");
+  String _locationSongSearch = "";
+  String get locationSongSearch => _locationSongSearch;
+
+  Future<File> validatorFile() async {
+    Directory dir = await getTemporaryDirectory();
+    return File("${dir.path}/validate");
+  }
 
   Future<void> getSongs() async {
+    _androidDeviceInfo = await deviceInfo.androidInfo;
+    
     _songInfo = await flutterAudioQuery.getSongs();
     _artistInfo = await flutterAudioQuery.getArtists();
     _albumInfo = await flutterAudioQuery.getAlbums();
     _playlistInfo = await flutterAudioQuery.getPlaylists();
+
+    _artistInfo.forEach((element) async {
+      final artWorkPath = await artistArtwork(element.name);
+      _artistArtWorkList.add(artWorkPath);
+    });
     print("GET DATA SONGS FROM FILES COMPLETED!");
     
     getAlbumArts();
@@ -231,6 +266,7 @@ class SongQueryProvider extends ChangeNotifier{
 
   Future<void> getAlbumArts() async {
     final Directory dir = await getTemporaryDirectory();
+    final valFile = await validatorFile();
     String dirPath = dir.path;
     _searchProgress = 0.0;
     notifyListeners();
@@ -260,46 +296,65 @@ class SongQueryProvider extends ChangeNotifier{
     //   }
     // });
 
-    if(!validatorFile.existsSync()){
-      int currentSearch = 0;
-      _songInfo.forEach((element) async {
-        String filePath = "$dirPath/${element.albumId}.png";
-        File file = File(filePath);
-        bool isFileExist = await file.exists();
-        // Uint8List artWork = await flutterAudioQuery.getArtwork(
-        //   type: ResourceType.ALBUM,
-        //   id: element.albumId,
-        //   size: Size(500, 500)
-        // );
+    if(_androidDeviceInfo.version.sdkInt >= 29){
+      if(!valFile.existsSync()){
+        int currentSearch = 0;
+        _songInfo.forEach((element) async {
+          String filePath = "$dirPath/${element.albumId}.png";
+          File file = File(filePath);
+          bool isFileExist = await file.exists();
+          // Uint8List artWork = await flutterAudioQuery.getArtwork(
+          //   type: ResourceType.ALBUM,
+          //   id: element.albumId,
+          //   size: Size(500, 500)
+          // );
 
-        if(!isFileExist){
-          Uint8List artWork = await flutterAudioQuery.getArtwork(
-            type: ResourceType.ALBUM,
-            id: element.albumId,
-            size: Size(500, 500)
-          );
-          currentSearch += 1;
-          _searchProgress = currentSearch / songInfo.length;
-          notifyListeners();
-          try{
-            if(artWork.isNotEmpty && artWork != null){
-              file.writeAsBytes(artWork);
-              print("FilePath: ${file.path}\nSong Name: ${element.title}");
+          if(!isFileExist){
+            Uint8List artWork = await flutterAudioQuery.getArtwork(
+              type: ResourceType.ALBUM,
+              id: element.albumId,
+              size: Size(500, 500)
+            );
+            _locationSongSearch = element.filePath;
+            currentSearch += 1;
+            _searchProgress = currentSearch / songInfo.length;
+            notifyListeners();
+            try{
+              if(artWork.isNotEmpty && artWork != null){
+                file.writeAsBytes(artWork);
+                print("FilePath: ${file.path}\nSong Name: ${element.title}");
+              }
+              
+              if(_searchProgress == 1.0){
+                valFile.writeAsString("validate");
+                notifyListeners();
+              }
             }
-            
-            if(_searchProgress == 1.0){
-              validatorFile.writeAsString("validate");
+            catch(e){
+              print(e);
             }
           }
-          catch(e){
-            print(e);
+          else{
+            currentSearch += 1;
+            _searchProgress = currentSearch / songInfo.length;
+            notifyListeners();
           }
+        });
+      }
+    }
+
+    if(_androidDeviceInfo.version.sdkInt < 29 && !valFile.existsSync()){
+      int currentSearch = 0;
+
+      _songInfo.forEach((element) {
+        currentSearch += 1;
+        _searchProgress = currentSearch / songInfo.length;
+
+        if(_searchProgress == 1.0){
+          valFile.writeAsString("validate");
         }
-        else{
-          currentSearch += 1;
-          _searchProgress = currentSearch / songInfo.length;
-          notifyListeners();
-        }
+
+        notifyListeners();
       });
     }
   }

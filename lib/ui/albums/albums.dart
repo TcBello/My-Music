@@ -23,20 +23,24 @@ class Albums extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(0, 15, 0, 70),
               children: List.generate(notifier.albumInfo.length, (index){
                 final albumName = notifier.albumInfo[index].title;
-                final artistName = notifier.albumInfo[index].artist != "<unknown>"
-                  ? notifier.albumInfo[index].artist
-                  : "Unknown Artist";
+                final artistName = notifier.albumInfo[index].artist;
+                final albumArtwork = notifier.albumInfo[index].albumArt;
                 final hasArtWork = File(notifier.artWork(notifier.albumInfo[index].id)).existsSync();
+                final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
                   
                 // final albumImage = notifier.albumInfo[index].albumArt != null
                 //   ? ImageGridFile(notifier.albumInfo[index].albumArt)
                 //   : ImageGridAsset("defalbum.png");
 
-                final albumImage = hasArtWork
-                  ? ImageGridFile(
-                    notifier.artWork(notifier.albumInfo[index].id), notifier.albumInfo[index].id
-                  )
-                  : ImageGridAsset("defalbum.png", notifier.albumInfo[index].id);
+                final albumImage = isSdk28Below
+                  ? albumArtwork != null
+                    ? ImageGridFile(albumArtwork, notifier.albumInfo[index].id)
+                    : ImageGridFile(notifier.defaultAlbum, notifier.albumInfo[index].id)
+                  : hasArtWork
+                    ? ImageGridFile(
+                      notifier.artWork(notifier.albumInfo[index].id), notifier.albumInfo[index].id
+                    )
+                    : ImageGridAsset("defalbum.png", notifier.albumInfo[index].id);
 
                 return InkWell(
                   onTap: () async{

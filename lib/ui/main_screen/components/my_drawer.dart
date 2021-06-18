@@ -47,8 +47,9 @@ class MyDrawer extends StatelessWidget {
               ),  
               ListTile(
                 onTap: () async {
+                  var file = await songQuery.validatorFile();
+                  file.deleteSync();
                   Navigator.pop(context);
-                  songQuery.validatorFile.deleteSync();
                   songQuery.getSongs();
                 },
                 leading: Icon(

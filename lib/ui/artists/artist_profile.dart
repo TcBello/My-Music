@@ -54,8 +54,7 @@ class ArtistProfile extends StatelessWidget {
                 height: 80,
                 child: Center(
                   child: Text(
-                    title != "<unknown>" ? title
-                        : "UnknownArtist",
+                    title,
                     style: headerLibrarySongListTextStyle,
                   ),
                 ),

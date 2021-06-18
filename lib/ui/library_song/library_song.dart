@@ -45,7 +45,9 @@ class LibrarySong extends StatelessWidget {
               expandedHeight: 350,
               flexibleSpace: Consumer<SongQueryProvider>(
                 builder: (context, notifier, snapshot) {
+                  final albumArtwork = albumInfo.albumArt;
                   final hasArtWork = File(notifier.artWork(albumInfo.id)).existsSync();
+                  final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
 
                   return FlexibleSpaceBar(
                     // title: Container(
@@ -61,15 +63,25 @@ class LibrarySong extends StatelessWidget {
                       color: color1,
                       child: Hero(
                         tag: albumInfo.id,
-                        child: hasArtWork
-                          ? Image.file(
-                              File(notifier.artWork(albumInfo.id)),
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              "assets/imgs/defalbum.png",
-                              fit: BoxFit.cover,
-                            ),
+                        child: isSdk28Below
+                          ? albumArtwork != null
+                            ? Image.file(
+                                File(albumArtwork),
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                File(notifier.defaultAlbum),
+                                fit: BoxFit.cover,
+                              )
+                          : hasArtWork
+                            ? Image.file(
+                                File(notifier.artWork(albumInfo.id)),
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                "assets/imgs/defalbum.png",
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                   );

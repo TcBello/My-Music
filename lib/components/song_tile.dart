@@ -31,7 +31,9 @@ class _SongTileState extends State<SongTile> {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songTitle = widget.songInfo.title;
     final songArtist = widget.songInfo.artist;
+    final songArtwork = widget.songInfo.albumArtwork;
     final hasArtWork = File(songQueryProvider.artWork(widget.songInfo.albumId)).existsSync();
+    final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
 
     return ListTile(
         tileColor: Colors.transparent,
@@ -41,9 +43,16 @@ class _SongTileState extends State<SongTile> {
           width: 50,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: hasArtWork
-              ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
-              : Image.file(File(songQueryProvider.defaultAlbum)),
+            // child: hasArtWork
+            //   ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
+            //   : Image.file(File(songQueryProvider.defaultAlbum)),
+            child: isSdk28Below
+              ? songArtwork != null
+                ? Image.file(File(songArtwork), fit: BoxFit.cover,)
+                : Image.file(File(songQueryProvider.defaultAlbum))
+              : hasArtWork
+                ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
+                : Image.file(File(songQueryProvider.defaultAlbum)),
           )
         ),
         title: Container(
@@ -190,6 +199,8 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
     final songTitle = widget.songInfo.title;
     final hasArtWork = File(songQueryProvider.artWork(widget.songInfo.albumId)).existsSync();
     final artistName = widget.songInfo.artist;
+    final songArtwork = widget.songInfo.albumArtwork;
+    final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
 
     return ListTile(
         contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
@@ -198,9 +209,13 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
           width: 50,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: hasArtWork
-              ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
-              : Image.file(File(songQueryProvider.defaultAlbum)),
+            child: isSdk28Below
+              ? songArtwork != null
+                ? Image.file(File(songArtwork), fit: BoxFit.cover,)
+                : Image.file(File(songQueryProvider.defaultAlbum))
+              : hasArtWork
+                ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
+                : Image.file(File(songQueryProvider.defaultAlbum)),
           )
         ),
         title: Container(

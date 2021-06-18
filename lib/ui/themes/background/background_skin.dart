@@ -247,27 +247,9 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                 ),
               ),
             ),
-            InkWell(
-              onTap: (){
-                setState(() {
-                  _defaultImage = Image.asset("assets/imgs/starry.jpg", fit: BoxFit.cover,);
-                  _currentBG = "assets/imgs/starry.jpg";
-                });
-              },
-              child: Container(
-                margin: EdgeInsets.only(left: 10),
-                width: 100,
-                height: 150,
-                child: Image.asset(
-                  "assets/imgs/starry.jpg",
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
             StreamBuilder<List<String>>(
               initialData: [],
               stream: imageStream(),
-              // ignore: missing_return
               builder: (context, snapshot){
                 final x = snapshot.data;
 
@@ -303,8 +285,9 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                   else{
                     return Container();
                   }
-
                 }
+                
+                return Container();
               },
             )
           ]
