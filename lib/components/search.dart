@@ -51,10 +51,18 @@ class Search extends SearchDelegate<SongInfo>{
             child: theme.backgroundFilePath == theme.defaultBgPath ||
                       theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
                   ? Container()
-                  : Image.file(
-                      File(theme.backgroundFilePath),
-                      fit: BoxFit.cover,
-                    )
+                  : ClipRect(
+                    child: ImageFiltered(
+                      imageFilter: ImageFilter.blur(
+                        sigmaX: theme.blurValue,
+                        sigmaY: theme.blurValue
+                      ),
+                      child: Image.file(
+                          File(theme.backgroundFilePath),
+                          fit: BoxFit.cover,
+                        ),
+                    ),
+                  )
           );
         }
       );
@@ -101,34 +109,34 @@ class Search extends SearchDelegate<SongInfo>{
     return Stack(
       children: [
         _backgroundWidget(),
-        Positioned.fill(
-          child: FutureBuilder<SharedPreferences>(
-            future: SharedPreferences.getInstance(),
-            builder: (context, snapshot) {
-              var pref = snapshot.data;
-              double blurValue = pref.getDouble('currentblur');
+        // Positioned.fill(
+        //   child: FutureBuilder<SharedPreferences>(
+        //     future: SharedPreferences.getInstance(),
+        //     builder: (context, snapshot) {
+        //       var pref = snapshot.data;
+        //       double blurValue = pref.getDouble('currentblur');
 
-              if(snapshot.hasData){
-                if(blurValue == null){
-                  blurValue = 0.0;
-                }
+        //       if(snapshot.hasData){
+        //         if(blurValue == null){
+        //           blurValue = 0.0;
+        //         }
                 
-                return BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: blurValue,
-                    sigmaY: blurValue,
-                  ),
-                  child: Container(
-                    color: Colors.black.withOpacity(0),
-                  ),
-                );
-              }
-              else{
-                return Container();
-              }
-            }
-          ),
-        ),
+        //         return BackdropFilter(
+        //           filter: ImageFilter.blur(
+        //             sigmaX: blurValue,
+        //             sigmaY: blurValue,
+        //           ),
+        //           child: Container(
+        //             color: Colors.black.withOpacity(0),
+        //           ),
+        //         );
+        //       }
+        //       else{
+        //         return Container();
+        //       }
+        //     }
+        //   ),
+        // ),
         _songListBuilder()
       ],
     );

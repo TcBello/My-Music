@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
@@ -21,10 +22,18 @@ class BackgroundWallpaper extends StatelessWidget {
                   theme.backgroundFilePath == "" ||
                   !File(theme.backgroundFilePath).existsSync()
               ? Container()
-              : Image.file(
-                  File(theme.backgroundFilePath),
-                  fit: BoxFit.cover,
-                )
+              : ClipRect(
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: theme.blurValue,
+                    sigmaY: theme.blurValue
+                  ),
+                  child: Image.file(
+                      File(theme.backgroundFilePath),
+                      fit: BoxFit.cover,
+                    ),
+                ),
+              )
         );
     });
   }

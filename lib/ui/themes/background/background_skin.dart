@@ -41,17 +41,19 @@ class _BackgroundSkinState extends State<BackgroundSkin>
 
   Future<void> prefInit() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    final currentList = _prefs.getStringList('images');
+    final currentList = _prefs.getStringList('images') ?? [];
     final currentBG = _prefs.getString('currentbg');
-    if (currentList == null){
-      return _imageList = [];
-      // return [];
-    }
-    else{
-      setState(() {
-        _imageList = _prefs.getStringList('images');
-      });
-    }
+    final currentBlur = _prefs.getDouble('currentblur') ?? 0.0;
+
+    // if (currentList == null){
+    //   return _imageList = [];
+    //   // return [];
+    // }
+    // else{
+    //   setState(() {
+    //     _imageList = _prefs.getStringList('images');
+    //   });
+    // }
     // setState(() {
     //   _imageList = _prefs.getStringList('images');
     // });
@@ -60,6 +62,8 @@ class _BackgroundSkinState extends State<BackgroundSkin>
       setState(() {
         _defaultImage = Image.file(File(currentBG), fit: BoxFit.cover,);
         _currentBG = currentBG;
+        _imageList = currentList;
+        _blurValue = currentBlur;
       });
     }
   }
@@ -117,22 +121,35 @@ class _BackgroundSkinState extends State<BackgroundSkin>
               width: 300,
               child: Stack(
                 children: [
-                  Container(
-                      height: 500,
-                      width: 300,
-                      child: _isChangeOnce ? Image.file(File(_currentBG)) : _defaultImage
-                  ),
-                  Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
+                  ClipRect(
+                    child: ImageFiltered(
+                      imageFilter: ImageFilter.blur(
                         sigmaX: _blurValue,
-                        sigmaY: _blurValue,
+                        sigmaY: _blurValue
                       ),
                       child: Container(
-                        color: Colors.black.withOpacity(0),
+                          height: 500,
+                          width: 300,
+                          child: _isChangeOnce ? Image.file(File(_currentBG)) : _defaultImage
                       ),
                     ),
                   ),
+                  // Container(
+                  //       height: 500,
+                  //       width: 300,
+                  //       child: _isChangeOnce ? Image.file(File(_currentBG)) : _defaultImage
+                  // ),
+                  // BackdropFilter(
+                  //   filter: ImageFilter.blur(
+                  //     sigmaX: _blurValue,
+                  //     sigmaY: _blurValue
+                  //   ),
+                  //   child: Container(
+                  //     height: 500,
+                  //     width: 300,
+                  //     color: Colors.white.withOpacity(0.0),
+                  //   ),
+                  // ),
                   Scaffold(
                     resizeToAvoidBottomInset: false,
                     backgroundColor: Colors.transparent,
@@ -210,10 +227,12 @@ class _BackgroundSkinState extends State<BackgroundSkin>
           child: Slider(
             value: _blurValue,
             activeColor: color3,
-            inactiveColor: color4,
+            inactiveColor: color5,
+            // min: 0.0,
+            // max: 12.5,
             min: 0.0,
-            max: 10.0,
-            divisions: 5,
+            max: 12.0,
+            divisions: 3,
             onChanged: (val) {
               setState(() {
                 _blurValue = val;

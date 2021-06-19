@@ -106,7 +106,7 @@ class _MainScreenState extends State<MainScreen> {
                   scaffold: Stack(
                     children: <Widget>[
                       BackgroundWallpaper(),
-                      BlurEffect(),
+                      // BlurEffect(),
                       MainUI(globalKey: _innerDrawerKey,),
                       Consumer<SongPlayerProvider>(
                         builder: (context, songPlayer, child) {
