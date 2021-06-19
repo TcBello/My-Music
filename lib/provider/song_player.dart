@@ -115,7 +115,10 @@ class SongPlayerProvider extends ChangeNotifier{
     if(!AudioService.running){
       _repeatIndex = 0;
       _shuffleIndex = 0;
-      await AudioService.start(backgroundTaskEntrypoint: audioPlayerTaskEntrypoint);
+      await AudioService.start(
+        backgroundTaskEntrypoint: audioPlayerTaskEntrypoint,
+        androidStopForegroundOnPause: true
+      );
     }
 
     AudioService.customAction("setIndex", index);
@@ -157,13 +160,9 @@ class SongPlayerProvider extends ChangeNotifier{
   void pauseResume() async{
     if(await AudioService.customAction("isPlaying")){
       AudioService.pause();
-      // playPauseMiniPlayerIcon = Icon(Icons.play_arrow, color: Colors.pinkAccent,);
-      // playPausePlayerIcon = Icon(Icons.play_arrow, color: Colors.white, size: 60,);
     }
     else{
       AudioService.play();
-      // playPauseMiniPlayerIcon = Icon(Icons.pause, color: Colors.pinkAccent,);
-      // playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
     }
 
     notifyListeners();

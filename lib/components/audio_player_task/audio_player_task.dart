@@ -28,8 +28,6 @@ class AudioPlayerTask extends BackgroundAudioTask{
   
   @override
   Future<void> onStart(Map<String, dynamic> params) async {
-    // AudioServiceBackground.setQueue(queue);
-
     final audioSession = await AudioSession.instance;
     await audioSession.configure(AudioSessionConfiguration.music());
 
@@ -251,9 +249,6 @@ class AudioPlayerTask extends BackgroundAudioTask{
         break;
     }
   }
-
-  @override
-  Future<void> onClose() => onStop();
 
   @override
   Future onCustomAction(String name, arguments) {
