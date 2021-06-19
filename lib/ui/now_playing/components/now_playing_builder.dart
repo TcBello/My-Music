@@ -24,6 +24,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
     final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
+    final sdkInt = songQueryProvider.androidDeviceInfo.version.sdkInt;
 
     return Container(
         child: StreamBuilder<MediaItem>(
@@ -41,7 +42,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
                   return NowPlayingSongTile(
                     songInfo: songQueryProvider.currentQueue[index],
                     onTap: () {
-                      songPlayerProvider.playSong(songQueryProvider.currentQueue, index);
+                      songPlayerProvider.playSong(songQueryProvider.currentQueue, index, sdkInt);
                     },
                     isPlaying: songQueryProvider.currentQueue[index].title == currentTitle,
                     image: isSdk28Below

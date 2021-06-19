@@ -109,8 +109,8 @@ class SongPlayerProvider extends ChangeNotifier{
   AudioProcessingState get processingState => AudioService.playbackState.processingState;
   Stream<PlaybackState> get playbackStateStream => AudioService.playbackStateStream;
 
-  void playSong(List<SongInfo> songInfoList, int index) async{
-    _convertToMediaItemList(songInfoList);
+  void playSong(List<SongInfo> songInfoList, int index, int sdkInt) async{
+    _convertToMediaItemList(songInfoList, sdkInt);
 
     if(!AudioService.running){
       _repeatIndex = 0;
@@ -169,10 +169,8 @@ class SongPlayerProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void _convertToMediaItemList(List<SongInfo> songInfoList) async{
-    final deviceInfo = DeviceInfoPlugin();
-    final androidDeviceInfo = await deviceInfo.androidInfo;
-    final isSdk28Below = androidDeviceInfo.version.sdkInt < 29;
+  void _convertToMediaItemList(List<SongInfo> songInfoList, int sdkInt){
+    final isSdk28Below = sdkInt < 29;
 
     songList = songInfoList.map((e){
       bool hasArtWork = File(artWork(e.albumId)).existsSync();

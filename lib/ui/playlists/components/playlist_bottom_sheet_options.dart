@@ -20,6 +20,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songPlayerProvider  = Provider.of<SongPlayerProvider>(context);
     final playlistName = playlistInfo.name;
+    final sdkInt = songQueryProvider.androidDeviceInfo.version.sdkInt;
 
     return Container(
       height: 305,
@@ -57,7 +58,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               //     .playSong(provider.songInfoFromPlaylist)
               //     .whenComplete(() => Navigator.pop(context));
               songQueryProvider.setQueue(songQueryProvider.songInfoFromPlaylist);
-              songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist, 0);
+              songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist, 0, sdkInt);
               Navigator.pop(context);
             },
           ),

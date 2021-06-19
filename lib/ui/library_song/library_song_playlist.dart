@@ -18,13 +18,15 @@ class LibrarySongPlaylist extends StatelessWidget {
   Widget _librarySongWidget() {
     return Consumer2<SongQueryProvider, SongPlayerProvider>(
       builder: (context, songQuery, songPlayer, child) {
+        final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+
         return ListBody(
           children: List.generate(
               songQuery.songInfoFromPlaylist.length, (index) => PlaylistSongTile(
                 songInfo: songQuery.songInfoFromPlaylist[index],
                 onTap: (){
                   songQuery.setQueue(songQuery.songInfoFromPlaylist);
-                  songPlayer.playSong(songQuery.songInfoFromPlaylist, index);
+                  songPlayer.playSong(songQuery.songInfoFromPlaylist, index, sdkInt);
                 },
                 index: indexFromOutside,
               )

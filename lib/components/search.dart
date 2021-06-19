@@ -79,12 +79,14 @@ class Search extends SearchDelegate<SongInfo>{
               ),
               Consumer2<SongPlayerProvider, SongQueryProvider>(
                 builder: (context, songPlayer, songQuery, child){
+                  final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+
                   return ListBody(
                     children: List.generate(_songSearchList.length, (index) => SongTile(
                       songInfo: _songSearchList[index],
                       onTap: (){
                         songQuery.setQueue(_songSearchList);
-                        songPlayer.playSong(_songSearchList, index);
+                        songPlayer.playSong(_songSearchList, index, sdkInt);
                       },
                     )),
                   );

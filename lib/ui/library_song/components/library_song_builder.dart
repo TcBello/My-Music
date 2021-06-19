@@ -14,6 +14,8 @@ class LibrarySongBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<SongQueryProvider, SongPlayerProvider>(
       builder: (context, songQuery, songPlayer, child) {
+        final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+
         return ListBody(
           children: List.generate(songInfoList.length,(index) => SongTile2(
             songInfo: songInfoList[index],
@@ -21,7 +23,7 @@ class LibrarySongBuilder extends StatelessWidget {
               // notifier.setIndex(index);
               // await notifier.playSong(songInfoList);
               songQuery.setQueue(songInfoList);
-              songPlayer.playSong(songInfoList, index);
+              songPlayer.playSong(songInfoList, index, sdkInt);
             },
           )),
         );

@@ -207,13 +207,13 @@ class SongQueryProvider extends ChangeNotifier{
           ? e.artist
           : "Unknown Artist",
         album: e.album,
-        // artUri: e.albumArtwork != null
-        //   ? File(e.albumArtwork).uri
-        //   : File(_defaultAlbum).uri,
-        // artUri: File(artWork(e.albumId)).uri,
-        artUri: hasArtWork
-          ? File(artWork(e.albumId)).uri
-          : File(_defaultAlbum).uri,
+        artUri: _androidDeviceInfo.version.sdkInt < 29
+          ? e.albumArtwork != null
+            ? File(e.albumArtwork).uri
+            : File(_defaultAlbum).uri
+          : hasArtWork
+            ? File(artWork(e.albumId)).uri
+            : File(_defaultAlbum).uri,
         duration: Duration(milliseconds: int.parse(e.duration))
       );
     }).toList();
@@ -229,12 +229,13 @@ class SongQueryProvider extends ChangeNotifier{
         ? newSongInfo.artist
         : "Unknown Artist",
       album: newSongInfo.album,
-      // artUri: newSongInfo.albumArtwork != null
-      //   ? File(newSongInfo.albumArtwork).uri
-      //   : File(_defaultAlbum).uri,
-      artUri: hasArtWork
-        ? File(artWork(newSongInfo.albumId)).uri
-        : File(_defaultAlbum).uri,
+      artUri: _androidDeviceInfo.version.sdkInt < 29
+        ? newSongInfo.albumArtwork != null
+          ? File(newSongInfo.albumArtwork).uri
+          : File(_defaultAlbum).uri
+        : hasArtWork
+          ? File(artWork(newSongInfo.albumId)).uri
+          : File(_defaultAlbum).uri,
       duration: Duration(milliseconds: int.parse(newSongInfo.duration))
     );
   }
@@ -303,11 +304,6 @@ class SongQueryProvider extends ChangeNotifier{
           String filePath = "$dirPath/${element.albumId}.png";
           File file = File(filePath);
           bool isFileExist = await file.exists();
-          // Uint8List artWork = await flutterAudioQuery.getArtwork(
-          //   type: ResourceType.ALBUM,
-          //   id: element.albumId,
-          //   size: Size(500, 500)
-          // );
 
           if(!isFileExist){
             Uint8List artWork = await flutterAudioQuery.getArtwork(
@@ -315,10 +311,12 @@ class SongQueryProvider extends ChangeNotifier{
               id: element.albumId,
               size: Size(500, 500)
             );
+
             _locationSongSearch = element.filePath;
             currentSearch += 1;
             _searchProgress = currentSearch / songInfo.length;
             notifyListeners();
+
             try{
               if(artWork.isNotEmpty && artWork != null){
                 file.writeAsBytes(artWork);
@@ -347,6 +345,7 @@ class SongQueryProvider extends ChangeNotifier{
       int currentSearch = 0;
 
       _songInfo.forEach((element) {
+        _locationSongSearch = element.filePath;
         currentSearch += 1;
         _searchProgress = currentSearch / songInfo.length;
 
