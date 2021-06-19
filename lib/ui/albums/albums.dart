@@ -40,7 +40,7 @@ class Albums extends StatelessWidget {
                     ? ImageGridFile(
                       notifier.artWork(notifier.albumInfo[index].id), notifier.albumInfo[index].id
                     )
-                    : ImageGridAsset("defalbum.png", notifier.albumInfo[index].id);
+                    : ImageGridFile(notifier.defaultAlbum, notifier.albumInfo[index].id);
 
                 return InkWell(
                   onTap: () async{

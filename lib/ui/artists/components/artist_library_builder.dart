@@ -46,7 +46,7 @@ class ArtistLibraryBuilder extends StatelessWidget {
                     notifier.artWork(notifier.albumFromArtist[index].id),
                     notifier.albumFromArtist[index].id
                   )
-                  : ImageGridAsset("defalbum.png", notifier.albumFromArtist[index].id);
+                  : ImageGridFile(notifier.defaultAlbum, notifier.albumFromArtist[index].id);
                 
               return InkWell(
                 onTap: () async{

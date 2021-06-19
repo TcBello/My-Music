@@ -3,6 +3,8 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/bottom_sheet.dart';
 import 'package:my_music/components/image_gridview.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/provider/song_query.dart';
+import 'package:provider/provider.dart';
 
 class PlaylistCard extends StatelessWidget {
   const PlaylistCard({this.playlistName, this.songNumber, this.playlistInfo, this.index});
@@ -14,13 +16,15 @@ class PlaylistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final songQueryProvider = Provider.of<SongQueryProvider>(context);
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ImageGridAsset("defalbum.png", "playlist$index"),
+          ImageGridFile(songQueryProvider.defaultAlbum, "playlist$index"),
           Stack(
             children: [
               Column(
