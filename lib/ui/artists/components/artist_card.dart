@@ -21,12 +21,18 @@ class ArtistCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           imageGrid,
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-              artistName,
-              overflow: TextOverflow.ellipsis,
-              style: cardTitleTextStyle,
+          Expanded(
+            // height: MediaQuery.of(context).size.height * 0.05,
+            // color: Colors.green,
+            child: Container(
+              // color: Colors.green,
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                artistName,
+                overflow: TextOverflow.ellipsis,
+                style: cardTitleTextStyle,
+              ),
             ),
           ),
         ],

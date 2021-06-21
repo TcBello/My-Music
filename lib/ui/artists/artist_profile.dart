@@ -61,7 +61,7 @@ class ArtistProfile extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Text("In my library", style: headerLibrarySongListTextStyle,),
+                child: Text("Albums", style: headerLibrarySongListTextStyle,),
               ),
               ArtistLibraryBuilder()
             ],

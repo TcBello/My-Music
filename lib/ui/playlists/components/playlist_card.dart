@@ -25,39 +25,44 @@ class PlaylistCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ImageGridFile(songQueryProvider.defaultAlbum, "playlist$index"),
-          Stack(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Container(
+              // color: Colors.green,
+              child: Stack(
                 children: [
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Container(
-                        child: Text(playlistName, style: cardTitleTextStyle,),
-                        width: MediaQuery.of(context).size.width,
-                        height: 20,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Text("$songNumber songs", style: cardSubtitleTextStyle,)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Container(
+                            child: Text(playlistName, style: cardTitleTextStyle,),
+                            width: MediaQuery.of(context).size.width,
+                            height: 20,
+                          )),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Text("$songNumber songs", style: cardSubtitleTextStyle,)
+                      ),
+                    ],
                   ),
+                  Positioned.fill(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      width: 20,
+                      height: 20,
+                      child: IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: (){
+                          showPlaylistBottomSheet(context, playlistInfo, index);
+                        },
+                      ),
+                    ),
+                  )
                 ],
               ),
-              Positioned.fill(
-                child: Container(
-                  alignment: Alignment.centerRight,
-                  width: 20,
-                  height: 20,
-                  child: IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: (){
-                      showPlaylistBottomSheet(context, playlistInfo, index);
-                    },
-                  ),
-                ),
-              )
-            ],
+            ),
           )
         ],
       ),

@@ -253,7 +253,8 @@ const TextStyle cardTitleTextStyle = TextStyle(
 const TextStyle cardSubtitleTextStyle = TextStyle(
   fontFamily: defaultFont,
   fontWeight: FontWeight.w500,
-  color: Colors.black
+  color: Colors.black,
+  fontSize: 12
 );
 
 const TextStyle searchSuggestionTextStyle = TextStyle(
