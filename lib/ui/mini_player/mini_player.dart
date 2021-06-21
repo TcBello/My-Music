@@ -105,7 +105,7 @@ class MiniPlayer extends StatelessWidget {
 
                   if (percentageExpandedPlayer < 0) percentageExpandedPlayer = 0;
                   final paddingVertical = valueFromPercentageInRange(
-                      min: 0, max: 150, percentage: percentageExpandedPlayer);
+                      min: 0, max: size.height * 0.3, percentage: percentageExpandedPlayer);
                   final double heightWithoutPadding = height - paddingVertical * 2;
                   final double imageSize = heightWithoutPadding > maxImgSize
                       ? maxImgSize
@@ -141,7 +141,7 @@ class MiniPlayer extends StatelessWidget {
                         Column(
                           children: [
                             SizedBox(
-                              height: 30,
+                              height: size.height * 0.03,
                             ),
                             Opacity(
                               opacity: opacityPercentageExpandedPlayer,
@@ -204,7 +204,7 @@ class MiniPlayer extends StatelessWidget {
                               child: Container(
                                 padding: EdgeInsets.only(
                                   left: paddingLeft,
-                                  top: paddingVertical * 0.2,
+                                  top: paddingVertical * 0.05,
                                 ),
                                 child: SizedBox(height: imageSize),
                               ),
@@ -368,9 +368,10 @@ class MiniPlayer extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: EdgeInsets.only(
-                                left: paddingLeft,
-                                // top: paddingVertical * 0.1,
-                                bottom: paddingVertical * 1.5),
+                              left: paddingLeft,
+                              // top: paddingVertical * 0.1,
+                              bottom: paddingVertical
+                            ),
                             child: SizedBox(
                               height: imageSize,
                               width: imageSize,
