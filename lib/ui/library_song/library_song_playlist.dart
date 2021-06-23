@@ -15,52 +15,52 @@ class LibrarySongPlaylist extends StatelessWidget {
   final int indexFromOutside;
   LibrarySongPlaylist(this.indexFromOutside);
 
-  Widget _librarySongWidget() {
-    return Consumer2<SongQueryProvider, SongPlayerProvider>(
-      builder: (context, songQuery, songPlayer, child) {
-        final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+  // Widget _librarySongWidget() {
+  //   return Consumer2<SongQueryProvider, SongPlayerProvider>(
+  //     builder: (context, songQuery, songPlayer, child) {
+  //       final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
 
-        return ListBody(
-          children: List.generate(
-              songQuery.songInfoFromPlaylist.length, (index) => PlaylistSongTile(
-                songInfo: songQuery.songInfoFromPlaylist[index],
-                onTap: (){
-                  songQuery.setQueue(songQuery.songInfoFromPlaylist);
-                  songPlayer.playSong(songQuery.songInfoFromPlaylist, index, sdkInt);
-                },
-                index: indexFromOutside,
-              )
+  //       return ListBody(
+  //         children: List.generate(
+  //             songQuery.songInfoFromPlaylist.length, (index) => PlaylistSongTile(
+  //               songInfo: songQuery.songInfoFromPlaylist[index],
+  //               onTap: (){
+  //                 songQuery.setQueue(songQuery.songInfoFromPlaylist);
+  //                 songPlayer.playSong(songQuery.songInfoFromPlaylist, index, sdkInt);
+  //               },
+  //               index: indexFromOutside,
+  //             )
           
-          // children: List.generate(
-          //     songQuery.songInfoFromPlaylist.length, (index) => SongTile2(
-          //       songInfo: songQuery.songInfoFromPlaylist[index],
-          //       onTap: (){
-          //         songQuery.setQueue(songQuery.songInfoFromPlaylist);
-          //         songPlayer.playSong(songQuery.songInfoFromPlaylist, index);
-          //       },
-          //       // index: indexFromOutside,
-          //     )
-          ), 
-        );
-      },
-    );
-  }
+  //         // children: List.generate(
+  //         //     songQuery.songInfoFromPlaylist.length, (index) => SongTile2(
+  //         //       songInfo: songQuery.songInfoFromPlaylist[index],
+  //         //       onTap: (){
+  //         //         songQuery.setQueue(songQuery.songInfoFromPlaylist);
+  //         //         songPlayer.playSong(songQuery.songInfoFromPlaylist, index);
+  //         //       },
+  //         //       // index: indexFromOutside,
+  //         //     )
+  //         ), 
+  //       );
+  //     },
+  //   );
+  // }
 
-  Widget _headerWidget() {
-    return Consumer<SongQueryProvider>(builder: (context, song, child) {
-      return Container(
-        height: 50,
-        width: MediaQuery.of(context).size.width,
-        child: Center(
-          child: AutoSizeText(
-            song.playlistInfo[indexFromOutside].name,
-            maxLines: 2,
-            style: headerLibrarySongListTextStyle,
-          ),
-        ),
-      );
-    });
-  }
+  // Widget _headerWidget() {
+  //   return Consumer<SongQueryProvider>(builder: (context, song, child) {
+  //     return Container(
+  //       height: 50,
+  //       width: MediaQuery.of(context).size.width,
+  //       child: Center(
+  //         child: AutoSizeText(
+  //           song.playlistInfo[indexFromOutside].name,
+  //           maxLines: 2,
+  //           style: headerLibrarySongListTextStyle,
+  //         ),
+  //       ),
+  //     );
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class LibrarySongPlaylist extends StatelessWidget {
             ],
             expandedHeight: 350,
             flexibleSpace: Consumer<SongQueryProvider>(
-              builder: (context, songQuery, snapshot) {
+              builder: (context, songQuery, child) {
                 return FlexibleSpaceBar(
                   centerTitle: true,
                   title: ConstrainedBox(
@@ -136,11 +136,36 @@ class LibrarySongPlaylist extends StatelessWidget {
       },
       body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_librarySongWidget()],
-          )),
+          child: Consumer2<SongQueryProvider, SongPlayerProvider>(
+            builder: (context, songQuery, songPlayer, child) {
+              final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                    songQuery.songInfoFromPlaylist.length, (index) => PlaylistSongTile(
+                      songInfo: songQuery.songInfoFromPlaylist[index],
+                      onTap: (){
+                        songQuery.setQueue(songQuery.songInfoFromPlaylist);
+                        songPlayer.playSong(songQuery.songInfoFromPlaylist, index, sdkInt);
+                      },
+                      index: indexFromOutside,
+                    )
+                
+                // children: List.generate(
+                //     songQuery.songInfoFromPlaylist.length, (index) => SongTile2(
+                //       songInfo: songQuery.songInfoFromPlaylist[index],
+                //       onTap: (){
+                //         songQuery.setQueue(songQuery.songInfoFromPlaylist);
+                //         songPlayer.playSong(songQuery.songInfoFromPlaylist, index);
+                //       },
+                //       // index: indexFromOutside,
+                //     )
+                ),
+              );
+            },
+          )
+      ),
     ));
   }
 }

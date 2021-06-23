@@ -22,7 +22,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
   bool isDispose = false;
   int audioSourceMode = 0;
 
-  final audioSourceTest = ConcatenatingAudioSource(
+  ConcatenatingAudioSource audioSourceTest = ConcatenatingAudioSource(
     children: []
   );
   
@@ -155,16 +155,19 @@ class AudioPlayerTask extends BackgroundAudioTask{
         }
         else{
           print("AUDIO SOURCE LEN: ${audioSourceTest.length}");
+          // await audioSourceTest.removeRange(0, audioSourceTest.length);
+          audioSourceTest = ConcatenatingAudioSource(children: []);
           queue = List.from(newQueue);
-          audioSourceTest.removeRange(0, audioSourceTest.length);
+          // audioSourceTest.removeRange(0, audioSourceTest.length);
           audioSourceTest.addAll(
             newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList()
           );
+          AudioServiceBackground.setMediaItem(queue[index]);
         }
         
         audioPlayer.setAudioSource(
           audioSourceTest,
-          initialIndex: index
+          initialIndex: index,
         );
         break;
       case 1:
@@ -181,9 +184,11 @@ class AudioPlayerTask extends BackgroundAudioTask{
         queue.addAll(newQueue);
         audioSourceTest.addAll(newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList());
         break;
+      default:
+        break;
     }
 
-    AudioServiceBackground.setQueue(queue);
+    await AudioServiceBackground.setQueue(queue);
     
   }
 

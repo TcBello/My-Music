@@ -155,45 +155,57 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   void playNextSong(SongInfo nextSongInfo) async{
-    MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
-    int nextIndex = await AudioService.customAction("getCurrentIndex");
-    AudioService.addQueueItemAt(mediaItem, nextIndex);
+    if(AudioService.running){
+      MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
+      int nextIndex = await AudioService.customAction("getCurrentIndex");
+      AudioService.addQueueItemAt(mediaItem, nextIndex);
 
-    _currentQueue.insert(nextIndex, nextSongInfo);
+      _currentQueue.insert(nextIndex, nextSongInfo);
+      _songInfo = await flutterAudioQuery.getSongs();
 
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
-  void addToQueueSong(SongInfo addToQueueSongInfo){
-    MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
-    AudioService.addQueueItem(mediaItem);
+  void addToQueueSong(SongInfo addToQueueSongInfo) async{
+    if(AudioService.running){
+      MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
+      AudioService.addQueueItem(mediaItem);
 
-    _currentQueue.add(addToQueueSongInfo);
+      _currentQueue.add(addToQueueSongInfo);
+      _songInfo = await flutterAudioQuery.getSongs();
 
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
   void playNextPlaylist(List<SongInfo> songInfoList) async{
-    List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+    if(AudioService.running){
+      List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
 
-    AudioService.customAction("setAudioSourceMode", 1);
-    AudioService.updateQueue(mediaList);
+      AudioService.customAction("setAudioSourceMode", 1);
+      AudioService.updateQueue(mediaList);
 
-    int nextIndex = await AudioService.customAction("getCurrentIndex");
-    _currentQueue.insertAll(nextIndex, songInfoList);
+      int nextIndex = await AudioService.customAction("getCurrentIndex");
+      _currentQueue.insertAll(nextIndex, songInfoList);
+      _songInfo = await flutterAudioQuery.getSongs();
 
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
-  void addToQueuePlaylist(List<SongInfo> songInfoList){
-    List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+  void addToQueuePlaylist(List<SongInfo> songInfoList) async{
+    if(AudioService.running){
+      List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
 
-    AudioService.customAction("setAudioSourceMode", 2);
-    AudioService.updateQueue(mediaList);
+      AudioService.customAction("setAudioSourceMode", 2);
+      AudioService.updateQueue(mediaList);
 
-    _currentQueue.addAll(songInfoList);
+      _currentQueue.addAll(songInfoList);
+      _songInfo = await flutterAudioQuery.getSongs();
 
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
   List<MediaItem> _convertToMediaItemList(List<SongInfo> songInfoList){

@@ -11,6 +11,7 @@ import 'package:my_music/main.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
+  int _currentAudioSessionID = 0;
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
   String artWork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id.png";
 
@@ -128,17 +129,22 @@ class SongPlayerProvider extends ChangeNotifier{
     await AudioService.play();
 
     int id = await AudioService.customAction("getAudioSessionId");
-    print("EQUALIZER AUD ID: $id");
-    Equalizer.setAudioSessionId(id);
+    if(_currentAudioSessionID != id){
+      _currentAudioSessionID = id;
+      notifyListeners();
+      print("EQUALIZER AUD ID: $id");
+      Equalizer.setAudioSessionId(id);
+    }
 
     if(!_isPlayOnce){
       _isPlayOnce = true;
+      notifyListeners();
     }
 
     // playPauseMiniPlayerIcon = Icon(Icons.pause, color: Colors.pinkAccent,);
     // playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void stopSong(){
