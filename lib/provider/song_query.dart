@@ -84,6 +84,7 @@ class SongQueryProvider extends ChangeNotifier{
     _androidDeviceInfo = await deviceInfo.androidInfo;
     
     _songInfo = await flutterAudioQuery.getSongs();
+    // _songInfo = List.from(await flutterAudioQuery.getSongs(), growable: false);
     _artistInfo = await flutterAudioQuery.getArtists();
     _albumInfo = await flutterAudioQuery.getAlbums();
     _playlistInfo = await flutterAudioQuery.getPlaylists();
@@ -161,9 +162,11 @@ class SongQueryProvider extends ChangeNotifier{
       AudioService.addQueueItemAt(mediaItem, nextIndex);
 
       _currentQueue.insert(nextIndex, nextSongInfo);
-      _songInfo = await flutterAudioQuery.getSongs();
-
+      // _songInfo = await flutterAudioQuery.getSongs();
       notifyListeners();
+      // _songInfo = await flutterAudioQuery.getSongs();
+
+      // notifyListeners();
     }
   }
 
@@ -173,7 +176,7 @@ class SongQueryProvider extends ChangeNotifier{
       AudioService.addQueueItem(mediaItem);
 
       _currentQueue.add(addToQueueSongInfo);
-      _songInfo = await flutterAudioQuery.getSongs();
+      // _songInfo = await flutterAudioQuery.getSongs();
 
       notifyListeners();
     }
@@ -188,7 +191,7 @@ class SongQueryProvider extends ChangeNotifier{
 
       int nextIndex = await AudioService.customAction("getCurrentIndex");
       _currentQueue.insertAll(nextIndex, songInfoList);
-      _songInfo = await flutterAudioQuery.getSongs();
+      // _songInfo = await flutterAudioQuery.getSongs();
 
       notifyListeners();
     }
@@ -202,7 +205,7 @@ class SongQueryProvider extends ChangeNotifier{
       AudioService.updateQueue(mediaList);
 
       _currentQueue.addAll(songInfoList);
-      _songInfo = await flutterAudioQuery.getSongs();
+      // _songInfo = await flutterAudioQuery.getSongs();
 
       notifyListeners();
     }
@@ -371,8 +374,20 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   void setQueue(List<SongInfo> songList){
-    _currentQueue = songList;
+    // _currentQueue = songList;
+    _currentQueue = List.from(songList);
 
+    notifyListeners();
+  }
+
+  void reorderSong(int oldIndex, int newIndex, SongInfo song){
+    if(oldIndex < newIndex){
+      newIndex--;
+    }
+    AudioService.customAction("reorderSong", [oldIndex, newIndex]);
+
+    _currentQueue.removeAt(oldIndex);
+    _currentQueue.insert(newIndex, song);
     notifyListeners();
   }
 }

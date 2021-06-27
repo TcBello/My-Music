@@ -30,6 +30,9 @@ class SongPlayerProvider extends ChangeNotifier{
   int _repeatIndex = 0;
   int _shuffleIndex = 0;
 
+  int _initPlayerIndex = 0;
+  int get initPlayerIndex => _initPlayerIndex;
+
   List<Icon> _repeatIcons = [
     // OFF
     Icon(
@@ -96,6 +99,7 @@ class SongPlayerProvider extends ChangeNotifier{
 
   Stream<MediaItem> get audioItemStream => AudioService.currentMediaItemStream;
   Stream<bool> get backgroundRunningStream => AudioService.runningStream;
+  Stream get indexStream => AudioService.customEventStream;
 
   bool _isPlayOnce = false;
   bool get isPlayOnce => _isPlayOnce;
@@ -292,5 +296,11 @@ class SongPlayerProvider extends ChangeNotifier{
     // });
 
     // notifyListeners();
+  }
+
+  Future<void> initIndex() async{
+    AudioService.customAction("initIndex");
+    _initPlayerIndex = (await AudioService.customAction("getCurrentIndex")) - 1;
+    notifyListeners();
   }
 }

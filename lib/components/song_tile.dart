@@ -55,21 +55,15 @@ class _SongTileState extends State<SongTile> {
                 : Image.file(File(songQueryProvider.defaultAlbum)),
           )
         ),
-        title: Container(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Text(
-            songTitle,
-            style: musicTextStyle(themeProvider.textHexColor),
-            overflow: TextOverflow.ellipsis,
-          ),
+        title: Text(
+          songTitle,
+          style: musicTextStyle(themeProvider.textHexColor),
+          overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Container(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Text(
-            songArtist,
-            style: artistMusicTextStyle(themeProvider.textHexColor),
-            overflow: TextOverflow.ellipsis,
-          ),
+        subtitle: Text(
+          songArtist,
+          style: artistMusicTextStyle(themeProvider.textHexColor),
+          overflow: TextOverflow.ellipsis,
         ),
         trailing: IconButton(
           icon: Icon(Icons.more_vert, color: Color(themeProvider.textHexColor)),
@@ -98,13 +92,10 @@ class _SongTile2State extends State<SongTile2> {
 
     return ListTile(
         contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
-        title: Container(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Text(
-            songTitle,
-            overflow: TextOverflow.ellipsis,
-            style: librarySongTitleTextStyle,
-          ),
+        title: Text(
+          songTitle,
+          overflow: TextOverflow.ellipsis,
+          style: librarySongTitleTextStyle,
         ),
         trailing: IconButton(
           icon: Icon(Icons.more_vert, color: Colors.white),
@@ -117,12 +108,20 @@ class _SongTile2State extends State<SongTile2> {
 }
 
 class NowPlayingSongTile extends StatefulWidget {
-  const NowPlayingSongTile({this.songInfo, this.onTap, this.isPlaying, this.image});
+  const NowPlayingSongTile({
+    Key key,
+    this.songInfo,
+    this.onTap,
+    this.isPlaying,
+    this.image,
+    this.index
+  }) : super(key: key);
 
   final SongInfo songInfo;
   final Function onTap;
   final bool isPlaying;
   final Image image;
+  final int index;
 
   @override
   _NowPlayingSongTileState createState() => _NowPlayingSongTileState();
@@ -133,51 +132,84 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
   Widget build(BuildContext context) {
     final songTitle = widget.songInfo.title;
     final songArtist = widget.songInfo.artist;
+    final imageSize = 50.0;
 
     return ListTile(
         contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
         tileColor: widget.isPlaying ? color4 : color1,
         leading: Container(
-          height: 50,
-          width: 50,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: widget.image
-          )
-        ),
-        title: Container(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Text(
-            songTitle,
-            style: nowPlayingStyle,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        subtitle: Container(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Text(
-            songArtist,
-            style: nowPlayingStyle2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        trailing: widget.isPlaying
-          ? Container(
-              margin: const EdgeInsets.all(10),
-              width: 35,
-              height: 35,
-              child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.contain,),
-            )
-          : IconButton(
-              icon: Icon(
-                Icons.more_vert,
-                color: Colors.white,
+          height: imageSize,
+          width: imageSize,
+          child: Stack(
+            children: [
+              Container(
+                height: imageSize,
+                width: imageSize,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: widget.image
+                ),
               ),
-              onPressed: () {
-                showSongBottomSheet(context, widget.songInfo);
-              },
-            ),
-        onTap: widget.onTap);
+              widget.isPlaying
+                ? Container(
+                    height: imageSize,
+                    width: imageSize,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.black.withOpacity(0.35),
+                    ),
+                    child: Container(
+                      height: imageSize * 0.5,
+                      width: imageSize * 0.5,
+                      child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.fill,),
+                    ),
+                  )
+                : Container()
+            ],
+          ),
+        ),
+        title: Text(
+          songTitle,
+          style: nowPlayingStyle,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          songArtist,
+          style: nowPlayingStyle2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: ReorderableDragStartListener(
+          index: widget.index,
+          child: Container(
+            width: 35,
+            height: 35,
+            margin: const EdgeInsets.all(10),
+            child: Icon(Icons.menu, color: Colors.white,),
+          ),
+        ),
+        // trailing: widget.isPlaying
+        //   ? Container(
+        //       margin: const EdgeInsets.all(10),
+        //       width: 35,
+        //       height: 35,
+        //       child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.contain,),
+        //     )
+        //   // : IconButton(
+        //   //     icon: Icon(
+        //   //       Icons.more_vert,
+        //   //       color: Colors.white,
+        //   //     ),
+        //   //     onPressed: () {
+        //   //       showSongBottomSheet(context, widget.songInfo);
+        //   //     },
+        //   //   ),
+        //   : Container(
+        //     height: 1,
+        //     width: 1,
+        //   ),
+        onTap: widget.onTap,
+        onLongPress: () => showSongBottomSheet(context, widget.songInfo),
+    );
   }
 }
 

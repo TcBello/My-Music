@@ -22,7 +22,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
   bool isDispose = false;
   int audioSourceMode = 0;
 
-  ConcatenatingAudioSource audioSourceTest = ConcatenatingAudioSource(
+  ConcatenatingAudioSource nowPlayingAudioSource = ConcatenatingAudioSource(
     children: []
   );
   
@@ -53,7 +53,10 @@ class AudioPlayerTask extends BackgroundAudioTask{
 
     audioPlayer.currentIndexStream.listen((i) {
       print("CURRENT INDEX: $i");
-      if(i != null) AudioServiceBackground.setMediaItem(queue[i]);
+      if(i != null){
+         AudioServiceBackground.setMediaItem(queue[i]);
+         AudioServiceBackground.sendCustomEvent(i ?? index);
+      }
     });
   }
 
@@ -146,27 +149,27 @@ class AudioPlayerTask extends BackgroundAudioTask{
     // CASE 2: ADD QUEUE SONG
     switch(audioSourceMode){
       case 0:
-        if(audioSourceTest.length == 0){
-          print("AUDIO SOURCE LEN: ${audioSourceTest.length}");
+        if(nowPlayingAudioSource.length == 0){
+          print("AUDIO SOURCE LEN: ${nowPlayingAudioSource.length}");
           queue = List.from(newQueue);
-          audioSourceTest.addAll(
+          nowPlayingAudioSource.addAll(
             newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList()
           );
         }
         else{
-          print("AUDIO SOURCE LEN: ${audioSourceTest.length}");
-          // await audioSourceTest.removeRange(0, audioSourceTest.length);
-          audioSourceTest = ConcatenatingAudioSource(children: []);
+          print("AUDIO SOURCE LEN: ${nowPlayingAudioSource.length}");
+          // await nowPlayingAudioSource.removeRange(0, nowPlayingAudioSource.length);
+          nowPlayingAudioSource = ConcatenatingAudioSource(children: []);
           queue = List.from(newQueue);
-          // audioSourceTest.removeRange(0, audioSourceTest.length);
-          audioSourceTest.addAll(
+          // nowPlayingAudioSource.removeRange(0, nowPlayingAudioSource.length);
+          nowPlayingAudioSource.addAll(
             newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList()
           );
           AudioServiceBackground.setMediaItem(queue[index]);
         }
         
         audioPlayer.setAudioSource(
-          audioSourceTest,
+          nowPlayingAudioSource,
           initialIndex: index,
         );
         break;
@@ -175,28 +178,27 @@ class AudioPlayerTask extends BackgroundAudioTask{
           audioPlayer.currentIndex + 1,
           newQueue
         );
-        audioSourceTest.insertAll(
+        nowPlayingAudioSource.insertAll(
           audioPlayer.currentIndex + 1,
           newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList()
         );
         break;
       case 2:
         queue.addAll(newQueue);
-        audioSourceTest.addAll(newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList());
+        nowPlayingAudioSource.addAll(newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList());
         break;
       default:
         break;
     }
 
     await AudioServiceBackground.setQueue(queue);
-    
   }
 
   // @override
   Future<void> onAddQueueItem(MediaItem mediaItem) async{
     int lastIndex = queue.length;
     queue.insert(lastIndex, mediaItem);
-    audioSourceTest.insert(lastIndex, AudioSource.uri(Uri.parse(mediaItem.id)));
+    nowPlayingAudioSource.insert(lastIndex, AudioSource.uri(Uri.parse(mediaItem.id)));
     AudioServiceBackground.setQueue(queue);
 
     // await audioPlayer.setAudioSource(
@@ -211,7 +213,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
   // @override
   Future<void> onAddQueueItemAt(MediaItem mediaItem, int index) async{
     queue.insert(index, mediaItem);
-    audioSourceTest.insert(index, AudioSource.uri(Uri.parse(mediaItem.id)));
+    nowPlayingAudioSource.insert(index, AudioSource.uri(Uri.parse(mediaItem.id)));
     AudioServiceBackground.setQueue(queue);
 
     // audioPlayer.setAudioSource(
@@ -255,6 +257,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
     }
   }
 
+
   @override
   Future onCustomAction(String name, arguments) {
     switch(name){
@@ -278,6 +281,16 @@ class AudioPlayerTask extends BackgroundAudioTask{
         break;
       case "isShuffle":
         return Future.value(audioPlayer.shuffleModeEnabled);
+        break;
+      case "reorderSong":
+        final mediaItem = queue[arguments[0]];
+        queue.removeAt(arguments[0]);
+        queue.insert(arguments[1], mediaItem);
+        nowPlayingAudioSource.move(arguments[0], arguments[1]);
+        AudioServiceBackground.setQueue(queue);
+        break;
+      case "initIndex":
+        AudioServiceBackground.sendCustomEvent(audioPlayer.currentIndex);
         break;
     }
   }
