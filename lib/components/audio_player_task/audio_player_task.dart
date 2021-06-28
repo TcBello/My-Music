@@ -21,6 +21,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
   StreamSubscription<PlaybackEvent> eventSubscription;
   bool isDispose = false;
   int audioSourceMode = 0;
+  Timer _timer;
 
   ConcatenatingAudioSource nowPlayingAudioSource = ConcatenatingAudioSource(
     children: []
@@ -291,6 +292,14 @@ class AudioPlayerTask extends BackgroundAudioTask{
         break;
       case "initIndex":
         AudioServiceBackground.sendCustomEvent(audioPlayer.currentIndex);
+        break;
+      case "setTimer":
+        if(_timer != null) _timer.cancel();
+        if(arguments > 0){
+          _timer = Timer(Duration(minutes: arguments), (){
+            onStop();
+          });
+        }
         break;
     }
   }

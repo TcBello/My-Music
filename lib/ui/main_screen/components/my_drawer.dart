@@ -10,6 +10,53 @@ import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget {
 
+  void _showDialogTimer(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (context) => Consumer<SongPlayerProvider>(
+        builder: (context, songPlayer, child) {
+          return AlertDialog(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            content: SizedBox(
+              height: 300,
+              child: Column(
+                children: [
+                  Text("Minutes", style: timerHeaderTextStyle),
+                  Expanded(
+                    child: CupertinoPicker(
+                      itemExtent: 99,
+                      onSelectedItemChanged: (value) => songPlayer.selectTimerItem(value + 1),
+                      children: List.generate(99, (index) => Center(
+                        child: Text(
+                          (index + 1).toString(),
+                          style: timerTextStyle,
+                        ),
+                      )),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: Text("Cancel", style: dialogButtonTextStyle,),
+                onPressed: () => Navigator.pop(context),
+              ),
+              TextButton(
+                child: Text("Apply", style: dialogButtonTextStyle,),
+                onPressed: (){
+                  songPlayer.setTimer();
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        }
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,7 +95,7 @@ class MyDrawer extends StatelessWidget {
               ListTile(
                 onTap: () async {
                   var file = await songQuery.validatorFile();
-                  file.deleteSync();
+                  await file.delete();
                   Navigator.pop(context);
                   songQuery.getSongs();
                 },
@@ -57,6 +104,11 @@ class MyDrawer extends StatelessWidget {
                   color: Colors.white,
                 ),
                 title: Text("Scan", style: drawerTextStyle,),
+              ),
+              ListTile(
+                leading: Icon(Icons.timer_rounded, color: Colors.white,),
+                title: Text("Sleep Timer", style: drawerTextStyle,),
+                onTap: () => _showDialogTimer(context),
               )
             ],
           );

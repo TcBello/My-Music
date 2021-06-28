@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
@@ -6,6 +7,7 @@ import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/audio_player_task/audio_player_task.dart';
 import 'package:my_music/main.dart';
 
@@ -14,6 +16,7 @@ class SongPlayerProvider extends ChangeNotifier{
   int _currentAudioSessionID = 0;
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
   String artWork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id.png";
+  int _minuteTimer = 0;
 
   Icon playPauseMiniPlayerIcon(bool isPlaying){
     return isPlaying
@@ -302,5 +305,23 @@ class SongPlayerProvider extends ChangeNotifier{
     AudioService.customAction("initIndex");
     _initPlayerIndex = (await AudioService.customAction("getCurrentIndex")) - 1;
     notifyListeners();
+  }
+
+  void setTimer(){
+    if(AudioService.running){
+      AudioService.customAction("setTimer", _minuteTimer);
+      Fluttertoast.showToast(
+        msg: "Music will stop at $_minuteTimer minutes",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.grey[800],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }
+  }
+
+  void selectTimerItem(int minute){
+    _minuteTimer = minute;
   }
 }

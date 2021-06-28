@@ -269,3 +269,17 @@ const TextStyle searchSongTextStyle = TextStyle(
   color: Colors.white,
   // fontSize: 18
 );
+
+const TextStyle timerHeaderTextStyle = TextStyle(
+  fontFamily: defaultFont,
+  fontWeight: FontWeight.w600,
+  color: Colors.black,
+  fontSize: 25
+);
+
+const TextStyle timerTextStyle = TextStyle(
+  fontFamily: defaultFont,
+  fontWeight: FontWeight.w500,
+  color: Colors.black,
+  fontSize: 22
+);
