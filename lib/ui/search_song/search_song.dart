@@ -22,12 +22,20 @@ class SearchSongUI extends StatelessWidget {
             animatedTexts: [WavyAnimatedText("Searching Songs...", textStyle: searchTextStyle)],
             repeatForever: true,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-            child: Consumer<SongQueryProvider>(
-              builder: (context, songQuery, child) {
-                return Text(songQuery.locationSongSearch, style: searchSongTextStyle,);
-              }
+          Container(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                  child: Consumer<SongQueryProvider>(
+                    builder: (context, songQuery, child) {
+                      return Text(songQuery.locationSongSearch, style: searchSongTextStyle,);
+                    }
+                  ),
+                ),
+              ],
             ),
           ),
           Consumer<SongQueryProvider>(
