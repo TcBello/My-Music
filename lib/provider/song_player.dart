@@ -310,14 +310,16 @@ class SongPlayerProvider extends ChangeNotifier{
   void setTimer(){
     if(AudioService.running){
       AudioService.customAction("setTimer", _minuteTimer);
-      Fluttertoast.showToast(
-        msg: "Music will stop at $_minuteTimer minutes",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.grey[800],
-        textColor: Colors.white,
-        fontSize: 16.0
-      );
+      if(_minuteTimer != 0){
+        Fluttertoast.showToast(
+          msg: "Music will stop at $_minuteTimer minutes",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.grey[800],
+          textColor: Colors.white,
+          fontSize: 16.0
+        );
+      }
     }
   }
 

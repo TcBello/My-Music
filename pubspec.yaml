@@ -45,6 +45,7 @@ dependencies:
   animated_text_kit: ^4.2.1
   device_info: ^2.0.2
   drag_and_drop_lists: ^0.3.2
+  audiotagger: ^2.2.1
 
   flutter_audio_query:
     git:

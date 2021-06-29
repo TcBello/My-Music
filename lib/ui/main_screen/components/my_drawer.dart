@@ -25,11 +25,11 @@ class MyDrawer extends StatelessWidget {
                   Text("Minutes", style: timerHeaderTextStyle),
                   Expanded(
                     child: CupertinoPicker(
-                      itemExtent: 99,
-                      onSelectedItemChanged: (value) => songPlayer.selectTimerItem(value + 1),
-                      children: List.generate(99, (index) => Center(
+                      itemExtent: 100,
+                      onSelectedItemChanged: (value) => songPlayer.selectTimerItem(value),
+                      children: List.generate(100, (index) => Center(
                         child: Text(
-                          (index + 1).toString(),
+                          (index).toString(),
                           style: timerTextStyle,
                         ),
                       )),
