@@ -326,4 +326,8 @@ class SongPlayerProvider extends ChangeNotifier{
   void selectTimerItem(int minute){
     _minuteTimer = minute;
   }
+
+  void resetTimer(){
+    _minuteTimer = 0;
+  }
 }

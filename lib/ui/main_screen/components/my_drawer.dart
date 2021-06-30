@@ -15,6 +15,8 @@ class MyDrawer extends StatelessWidget {
       context: context,
       builder: (context) => Consumer<SongPlayerProvider>(
         builder: (context, songPlayer, child) {
+          songPlayer.resetTimer();
+          
           return AlertDialog(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
