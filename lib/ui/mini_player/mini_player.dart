@@ -57,10 +57,16 @@ class MiniPlayer extends StatelessWidget {
           if(snapshot.hasData){
             print(snapshot.data.title);
 
-            final albumImage = ClipRRect(
+            final collapsedAlbumImage = ClipRRect(
               borderRadius: BorderRadius.circular(5),
-              child: Image.file(File(snapshot.data.artUri.path)),
+              child: Image.file(File(snapshot.data.artUri.path), fit: BoxFit.cover)
             );
+
+            final expandedAlbumImage = ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: Image.file(File(snapshot.data.artUri.path), fit: BoxFit.cover,),
+            );
+
             final songTitle = snapshot.data.title;
             final artistName = snapshot.data.artist;
             final duration = toMinSecFormat(snapshot.data.duration);
@@ -375,7 +381,7 @@ class MiniPlayer extends StatelessWidget {
                             child: SizedBox(
                               height: imageSize,
                               width: imageSize,
-                              child: albumImage,
+                              child: expandedAlbumImage,
                             ),
                           ),
                         ),
@@ -415,14 +421,22 @@ class MiniPlayer extends StatelessWidget {
                             //   ),
                             //   child: albumImage,
                             // ),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: maxImgSize,
-                                maxWidth: height == playerMinHeight
-                                  ? 70
-                                  : maxImgSize
+                            SizedBox(
+                              height: playerMinHeight + height,
+                              child: FittedBox(
+                                alignment: Alignment.centerLeft,
+                                fit: BoxFit.cover,
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    maxHeight: maxImgSize,
+                                    minWidth: playerMinHeight,
+                                    minHeight: playerMinHeight
+                                  ),
+                                  height: playerMinHeight,
+                                  width: playerMinHeight,
+                                  child: collapsedAlbumImage,
+                                ),
                               ),
-                              child: albumImage,
                             ),
                             Expanded(
                               //asdasdadadadasddas
