@@ -14,20 +14,9 @@ import 'package:path_provider/path_provider.dart';
 class SongQueryProvider extends ChangeNotifier{
   final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  String artWork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id.png";
-
-  Future<String> artistArtwork(String name) async {
-    final albumInfo = await flutterAudioQuery.getAlbumsFromArtist(artist: name);
-    if(albumInfo.length != null || albumInfo.length != 0){
-      try{
-        return "/data/user/0/com.tcbello.my_music/cache/${albumInfo[0].id}.png";
-      }
-      catch(e){
-        return "/data/user/0/com.tcbello.my_music/cache/no_artwork";
-      }
-    }
-    return "/data/user/0/com.tcbello.my_music/cache/no_artwork";
-  }
+  String songArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id";
+  String albumArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/al$id";
+  String artistArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/ar$id";
 
   bool isConvertToStringOnce = false;
 
@@ -65,9 +54,6 @@ class SongQueryProvider extends ChangeNotifier{
   List<SongInfo> get currentQueue => _currentQueue;
 
   final List stringSongs = [];
-  
-  List<String> _artistArtWorkList = [];
-  List<String> get artistArtworkList => _artistArtWorkList;
 
   double _searchProgress = 0.0;
   double get searchProgress => _searchProgress;
@@ -88,11 +74,6 @@ class SongQueryProvider extends ChangeNotifier{
     _artistInfo = await flutterAudioQuery.getArtists();
     _albumInfo = await flutterAudioQuery.getAlbums();
     _playlistInfo = await flutterAudioQuery.getPlaylists();
-
-    _artistInfo.forEach((element) async {
-      final artWorkPath = await artistArtwork(element.name);
-      _artistArtWorkList.add(artWorkPath);
-    });
     print("GET DATA SONGS FROM FILES COMPLETED!");
     
     getAlbumArts();
@@ -213,7 +194,8 @@ class SongQueryProvider extends ChangeNotifier{
 
   List<MediaItem> _convertToMediaItemList(List<SongInfo> songInfoList){
     return songInfoList.map((e){
-      bool hasArtWork = File(artWork(e.albumId)).existsSync();
+      bool hasArtWork = File(songArtwork(e.id)).existsSync();
+      String artwork = songArtwork(e.id);
 
       return MediaItem(
         id: e.filePath,
@@ -227,7 +209,7 @@ class SongQueryProvider extends ChangeNotifier{
             ? File(e.albumArtwork).uri
             : File(_defaultAlbum).uri
           : hasArtWork
-            ? File(artWork(e.albumId)).uri
+            ? File(artwork).uri
             : File(_defaultAlbum).uri,
         duration: Duration(milliseconds: int.parse(e.duration))
       );
@@ -235,21 +217,20 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   MediaItem _convertToMediaItem(SongInfo newSongInfo){
-    bool hasArtWork = File(artWork(newSongInfo.albumId)).existsSync();
+    bool hasArtWork = File(songArtwork(newSongInfo.id)).existsSync();
+    String artwork = songArtwork(newSongInfo.id);
 
     return MediaItem(
       id: newSongInfo.filePath,
       title: newSongInfo.title,
-      artist: newSongInfo.artist != "<unknown>"
-        ? newSongInfo.artist
-        : "Unknown Artist",
+      artist: newSongInfo.artist,
       album: newSongInfo.album,
       artUri: _androidDeviceInfo.version.sdkInt < 29
         ? newSongInfo.albumArtwork != null
           ? File(newSongInfo.albumArtwork).uri
           : File(_defaultAlbum).uri
         : hasArtWork
-          ? File(artWork(newSongInfo.albumId)).uri
+          ? File(artwork).uri
           : File(_defaultAlbum).uri,
       duration: Duration(milliseconds: int.parse(newSongInfo.duration))
     );
@@ -315,15 +296,15 @@ class SongQueryProvider extends ChangeNotifier{
     if(_androidDeviceInfo.version.sdkInt >= 29){
       if(!valFile.existsSync()){
         int currentSearch = 0;
+        _locationSongSearch = "";
         _songInfo.forEach((element) async {
-          String filePath = "$dirPath/${element.albumId}.png";
+          String filePath = "$dirPath/${element.id}";
           File file = File(filePath);
-          bool isFileExist = await file.exists();
 
-          if(!isFileExist){
+          if(!file.existsSync()){
             Uint8List artWork = await flutterAudioQuery.getArtwork(
-              type: ResourceType.ALBUM,
-              id: element.albumId,
+              type: ResourceType.SONG,
+              id: element.id,
               size: Size(500, 500)
             );
 
@@ -333,8 +314,8 @@ class SongQueryProvider extends ChangeNotifier{
             notifyListeners();
 
             try{
-              if(artWork.isNotEmpty && artWork != null){
-                file.writeAsBytes(artWork);
+              if(artWork.isNotEmpty){
+                file.writeAsBytesSync(artWork);
                 print("FilePath: ${file.path}\nSong Name: ${element.title}");
               }
               
@@ -351,6 +332,50 @@ class SongQueryProvider extends ChangeNotifier{
             currentSearch += 1;
             _searchProgress = currentSearch / songInfo.length;
             notifyListeners();
+          }
+        });
+
+        _artistInfo.forEach((element) async {
+          String filePath = "$dirPath/ar${element.id}";
+          File file = File(filePath);
+
+          if(!file.existsSync()){
+            Uint8List artwork = await flutterAudioQuery.getArtwork(
+              id: element.id,
+              type: ResourceType.ARTIST,
+              size: Size(500, 500)
+            );
+
+            try{
+              if(artwork.isNotEmpty){
+                file.writeAsBytesSync(artwork);
+              }
+            }
+            catch(e){
+              print(e);
+            }
+          }
+        });
+
+        _albumInfo.forEach((element) async {
+          String filePath = "$dirPath/al${element.id}";
+          File file = File(filePath);
+
+          if(!file.existsSync()){
+            Uint8List artwork = await flutterAudioQuery.getArtwork(
+              id: element.id,
+              type: ResourceType.ALBUM,
+              size: Size(500, 500)
+            );
+
+            try{
+              if(artwork.isNotEmpty){
+                file.writeAsBytesSync(artwork);
+              }
+            }
+            catch(e){
+              print(e);
+            }
           }
         });
       }
@@ -389,5 +414,19 @@ class SongQueryProvider extends ChangeNotifier{
     _currentQueue.removeAt(oldIndex);
     _currentQueue.insert(newIndex, song);
     notifyListeners();
+  }
+
+  Future<void> resetCache() async {
+    var tempDir = await getTemporaryDirectory();
+
+    if(tempDir.existsSync()){
+      try{
+        if(AudioService.running) AudioService.stop();
+        tempDir.deleteSync(recursive: true);
+      }
+      catch(e){
+        print(e);
+      }
+    }
   }
 }

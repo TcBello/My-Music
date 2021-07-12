@@ -97,7 +97,7 @@ class MyDrawer extends StatelessWidget {
               ListTile(
                 onTap: () async {
                   var file = await songQuery.validatorFile();
-                  await file.delete();
+                  await songQuery.resetCache();
                   Navigator.pop(context);
                   songQuery.getSongs();
                 },

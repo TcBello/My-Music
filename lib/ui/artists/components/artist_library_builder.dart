@@ -31,23 +31,27 @@ class ArtistLibraryBuilder extends StatelessWidget {
               final artistName = notifier.albumFromArtist[index].artist;
               final albumName = notifier.albumFromArtist[index].title;
               final albumArtwork = notifier.albumFromArtist[index].albumArt;
-              final hasArtWork = File(notifier.artWork(notifier.albumFromArtist[index].id)).existsSync();
+              final albumArtwork2 = notifier.albumArtwork(notifier.albumFromArtist[index].id);
+              final hasArtWork = File(notifier.albumArtwork(notifier.albumFromArtist[index].id)).existsSync();
               final albumImage = isSdk28Below
                 ? albumArtwork != null
                   ? ImageGridFile(
-                    albumArtwork,
-                    notifier.albumFromArtist[index].id
+                    img: albumArtwork,
+                    heroID: notifier.albumFromArtist[index].id
                   )
                   : ImageGridFile(
-                    notifier.defaultAlbum,
-                    notifier.albumFromArtist[index].id
+                    img: notifier.defaultAlbum,
+                    heroID: notifier.albumFromArtist[index].id
                   )
                 : hasArtWork
                   ? ImageGridFile(
-                    notifier.artWork(notifier.albumFromArtist[index].id),
-                    notifier.albumFromArtist[index].id
+                    img: albumArtwork2,
+                    heroID: notifier.albumFromArtist[index].id
                   )
-                  : ImageGridFile(notifier.defaultAlbum, notifier.albumFromArtist[index].id);
+                  : ImageGridFile(
+                    img: notifier.defaultAlbum,
+                    heroID: notifier.albumFromArtist[index].id
+                  );
                 
               return InkWell(
                 onTap: () async{

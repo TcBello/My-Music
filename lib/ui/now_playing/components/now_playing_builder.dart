@@ -71,7 +71,8 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
               itemCount: songQuery.currentQueue.length,
               itemBuilder: (context, index){
                 final songArtwork = songQuery.currentQueue[index].albumArtwork;
-                final hasArtWork = File(songQuery.artWork(songQuery.currentQueue[index].albumId)).existsSync();
+                final songArtwork2 = songQuery.songArtwork(songQuery.currentQueue[index].id);
+                final hasArtWork = File(songQuery.songArtwork(songQuery.currentQueue[index].id)).existsSync();
 
                 return NowPlayingSongTile(
                   key: ValueKey("$index${songQuery.currentQueue[index].id}"),
@@ -86,7 +87,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
                       ? Image.file(File(songArtwork), fit: BoxFit.cover,)
                       : Image.file(File(songQuery.defaultAlbum))
                     : hasArtWork
-                      ? Image.file(File(songQuery.artWork(songQuery.currentQueue[index].albumId)), fit: BoxFit.cover,)
+                      ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
                       : Image.file(File(songQuery.defaultAlbum)),
                 );
               }

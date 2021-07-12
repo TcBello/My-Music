@@ -32,7 +32,8 @@ class _SongTileState extends State<SongTile> {
     final songTitle = widget.songInfo.title;
     final songArtist = widget.songInfo.artist;
     final songArtwork = widget.songInfo.albumArtwork;
-    final hasArtWork = File(songQueryProvider.artWork(widget.songInfo.albumId)).existsSync();
+    final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
+    final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
     final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
 
     return ListTile(
@@ -51,7 +52,7 @@ class _SongTileState extends State<SongTile> {
                 ? Image.file(File(songArtwork), fit: BoxFit.cover,)
                 : Image.file(File(songQueryProvider.defaultAlbum))
               : hasArtWork
-                ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
+                ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
                 : Image.file(File(songQueryProvider.defaultAlbum)),
           )
         ),
@@ -229,9 +230,10 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songTitle = widget.songInfo.title;
-    final hasArtWork = File(songQueryProvider.artWork(widget.songInfo.albumId)).existsSync();
+    final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
     final artistName = widget.songInfo.artist;
     final songArtwork = widget.songInfo.albumArtwork;
+    final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
     final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
 
     return ListTile(
@@ -246,7 +248,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                 ? Image.file(File(songArtwork), fit: BoxFit.cover,)
                 : Image.file(File(songQueryProvider.defaultAlbum))
               : hasArtWork
-                ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
+                ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
                 : Image.file(File(songQueryProvider.defaultAlbum)),
           )
         ),

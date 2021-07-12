@@ -15,7 +15,7 @@ class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
   int _currentAudioSessionID = 0;
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
-  String artWork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id.png";
+  String songArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id";
   int _minuteTimer = 0;
 
   Icon playPauseMiniPlayerIcon(bool isPlaying){
@@ -140,7 +140,7 @@ class SongPlayerProvider extends ChangeNotifier{
       _currentAudioSessionID = id;
       notifyListeners();
       print("EQUALIZER AUD ID: $id");
-      Equalizer.setAudioSessionId(id);
+      await Equalizer.setAudioSessionId(id);
     }
 
     if(!_isPlayOnce){
@@ -185,22 +185,21 @@ class SongPlayerProvider extends ChangeNotifier{
     final isSdk28Below = sdkInt < 29;
 
     songList = songInfoList.map((e){
-      bool hasArtWork = File(artWork(e.albumId)).existsSync();
-      final songArtwork = e.albumArtwork;
+      bool hasArtWork = File(songArtwork(e.id)).existsSync();
+      final songArtwork1 = e.albumArtwork;
+      final songArtwork2 = songArtwork(e.id);
 
       return MediaItem(
         id: e.filePath,
         title: e.title,
-        artist: e.artist != "<unknown>"
-          ? e.artist
-          : "Unknown Artist",
+        artist: e.artist,
         album: e.album,
         artUri: isSdk28Below
-          ? songArtwork != null
-            ? File(songArtwork).uri
+          ? songArtwork1 != null
+            ? File(songArtwork1).uri
             : File(_defaultAlbum).uri
           : hasArtWork
-            ? File(artWork(e.albumId)).uri
+            ? File(songArtwork2).uri
             : File(_defaultAlbum).uri,
         duration: Duration(milliseconds: int.parse(e.duration)),
       );

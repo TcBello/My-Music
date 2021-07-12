@@ -46,7 +46,8 @@ class LibrarySong extends StatelessWidget {
               flexibleSpace: Consumer<SongQueryProvider>(
                 builder: (context, notifier, snapshot) {
                   final albumArtwork = albumInfo.albumArt;
-                  final hasArtWork = File(notifier.artWork(albumInfo.id)).existsSync();
+                  final albumArtwork2 = notifier.albumArtwork(albumInfo.id);
+                  final hasArtWork = File(notifier.albumArtwork(albumInfo.id)).existsSync();
                   final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
 
                   return FlexibleSpaceBar(
@@ -75,7 +76,7 @@ class LibrarySong extends StatelessWidget {
                               )
                           : hasArtWork
                             ? Image.file(
-                                File(notifier.artWork(albumInfo.id)),
+                                File(albumArtwork2),
                                 fit: BoxFit.cover,
                               )
                             : Image.asset(

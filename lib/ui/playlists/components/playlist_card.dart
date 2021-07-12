@@ -24,7 +24,10 @@ class PlaylistCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ImageGridFile(songQueryProvider.defaultAlbum, "playlist$index"),
+          ImageGridFile(
+            img: songQueryProvider.defaultAlbum,
+            heroID: "playlist$index"
+          ),
           Expanded(
             child: Container(
               // color: Colors.green,

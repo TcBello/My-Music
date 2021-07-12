@@ -26,31 +26,32 @@ class Artists extends StatelessWidget {
               children: List.generate(notifier.artistInfo.length, (index){
                 final artistName = notifier.artistInfo[index].name;     
                 final artistArtwork = notifier.artistInfo[index].artistArtPath;
+                final artistArtwork2 = notifier.artistArtwork(notifier.artistInfo[index].id);
                 final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
-                final hasArtWork = File(notifier.artistArtworkList[index]).existsSync();
+                final hasArtWork = File(notifier.artistArtwork(notifier.artistInfo[index].id)).existsSync();
                 final backgroundSliver = isSdk28Below
                   ? artistArtwork
                   : hasArtWork
-                    ? notifier.artistArtworkList[index]
+                    ? artistArtwork2
                     : notifier.defaultAlbum;
                 final albumImage = isSdk28Below
                   ? artistArtwork != null
                     ? ImageGridFile(
-                      artistArtwork,
-                      "artist$index"
+                      img: artistArtwork,
+                      heroID: "artist$index"
                     )
                     : ImageGridFile(
-                      notifier.defaultAlbum,
-                      "artist$index"
+                      img: notifier.defaultAlbum,
+                      heroID: "artist$index"
                     )
                   : hasArtWork
                     ? ImageGridFile(
-                      notifier.artistArtworkList[index],
-                      "artist$index"
+                      img: artistArtwork2,
+                      heroID: "artist$index"
                     )
                     : ImageGridFile(
-                      notifier.defaultAlbum,
-                      "artist$index"
+                      img: notifier.defaultAlbum,
+                      heroID: "artist$index"
                     );
 
                 return InkWell(
