@@ -252,11 +252,10 @@ class SongQueryProvider extends ChangeNotifier{
     String dirPath = dir.path;
     String filePath = "$dirPath/defalbum.png";
     File file = File(filePath);
-    bool isExist = await file.exists();
 
-    if(!isExist){
+    if(!file.existsSync()){
       ByteData byteData = await rootBundle.load('assets/imgs/defalbum.png');
-      file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+      file.writeAsBytesSync(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
       notifyListeners();
     }
   }

@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/theme.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,10 +41,13 @@ class _BackgroundSkinState extends State<BackgroundSkin>
   }
 
   Future<void> prefInit() async {
+    final appDir = await getApplicationDocumentsDirectory();
     SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final currentBackgroundId = _prefs.getString('backgroundId');
     final currentList = _prefs.getStringList('images') ?? [];
-    final currentBG = _prefs.getString('currentbg');
+    // final currentBG = _prefs.getString('currentbg');
     final currentBlur = _prefs.getDouble('currentblur') ?? 0.0;
+    final image = "${appDir.path}/background-$currentBackgroundId";
 
     // if (currentList == null){
     //   return _imageList = [];
@@ -58,10 +62,10 @@ class _BackgroundSkinState extends State<BackgroundSkin>
     //   _imageList = _prefs.getStringList('images');
     // });
 
-    if(currentBG != null && currentBG != "assets/imgs/starry.jpg" && File(currentBG).existsSync()){
+    if(currentBackgroundId != null && File(image).existsSync()){
       setState(() {
-        _defaultImage = Image.file(File(currentBG), fit: BoxFit.cover,);
-        _currentBG = currentBG;
+        _defaultImage = Image.file(File(image), fit: BoxFit.cover,);
+        _currentBG = image;
         _imageList = currentList;
         _blurValue = currentBlur;
       });
@@ -80,7 +84,7 @@ class _BackgroundSkinState extends State<BackgroundSkin>
       await _prefs.setStringList('images', newList);
     }
     else{
-      newList.insert(0, _imgFile.path);
+      if(_imgFile != null) newList.insert(0, _imgFile.path);
 
       //DELETE IMAGE WHEN LIST LENGTH HIT 11
       if(newList.length >= 11){
@@ -270,26 +274,26 @@ class _BackgroundSkinState extends State<BackgroundSkin>
               initialData: [],
               stream: imageStream(),
               builder: (context, snapshot){
-                final x = snapshot.data;
+                final imageList = snapshot.data;
 
                 if(snapshot.hasData){
                   // bool fileIsExisting = File(x[0]).existsSync();
 
-                  if(x.isNotEmpty){
-                    if(File(x[0]).existsSync()){
+                  if(imageList.isNotEmpty){
+                    if(File(imageList[0]).existsSync()){
                       return Row(
-                        children: List.generate(x.length, (index) => InkWell(
+                        children: List.generate(imageList.length, (index) => InkWell(
                           onTap: (){
                             setState(() {
-                              _defaultImage = Image.file(File(x[index]), fit: BoxFit.cover,);
-                              _currentBG = x[index];
+                              _defaultImage = Image.file(File(imageList[index]), fit: BoxFit.cover,);
+                              _currentBG = imageList[index];
                             });
                           },
                           child: Container(
                               margin: EdgeInsets.only(left: 10),
                               width: 100,
                               height: 150,
-                              child: Image.file(File(x[index]), fit: BoxFit.cover,)
+                              child: Image.file(File(imageList[index]), fit: BoxFit.cover,)
                           ),
                         ),),
                       ); 
@@ -333,18 +337,20 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                   tooltip: "Apply Changes",
                   onPressed: () async {
                     if(_currentBG == "" && _blurValue == 0.0){
-                      await theme.updateBG("assets/imgs/starry.jpg", _blurValue);
-                      await theme.getCurrentBackground().then((value){
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      });
+                      await theme.updateBG("", _blurValue);
+                      await theme.getCurrentBackground();
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     }
                     else{
                       await theme.updateBG(_currentBG, _blurValue);
-                      await theme.getCurrentBackground().then((value){
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      });
+                      // await theme.getCurrentBackground().then((value){
+                      //   Navigator.pop(context);
+                      //   Navigator.pop(context);
+                      // });
+                      await theme.getCurrentBackground();
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     }
                   },
                 );

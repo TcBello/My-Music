@@ -15,12 +15,10 @@ class BackgroundWallpaper extends StatelessWidget {
         return Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          color: theme.backgroundFilePath == theme.defaultBgPath || theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
+          color: theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
             ? color1
             : Colors.transparent,
-          child: theme.backgroundFilePath == theme.defaultBgPath ||
-                  theme.backgroundFilePath == "" ||
-                  !File(theme.backgroundFilePath).existsSync()
+          child: theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
               ? Container()
               : ClipRect(
                 child: ImageFiltered(

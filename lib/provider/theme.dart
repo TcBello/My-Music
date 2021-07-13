@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class ThemeProvider with ChangeNotifier{
 
@@ -24,11 +28,14 @@ class ThemeProvider with ChangeNotifier{
 
   Future<void> getCurrentBackground() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    final _currentBG = _prefs.getString('currentbg');
+    final appDir = await getApplicationDocumentsDirectory();
+    // final _currentBG = _prefs.getString('currentbg');
+    final backgroundId = _prefs.getString('backgroundId');
     final _currentBlur = _prefs.getDouble('currentblur');
+    final _currentBG = "${appDir.path}/background-$backgroundId";
 
-    if(_currentBG == null){
-      backgroundFilePath = defaultBgPath;
+    if(!File(_currentBG).existsSync()){
+      backgroundFilePath = "";
       blurValue = 0.0;
     }
     else{
@@ -53,12 +60,37 @@ class ThemeProvider with ChangeNotifier{
 
   Future<void> updateBG(String bgPath, double blurValue) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    await _prefs.setString('currentbg', bgPath);
+    final appDir = await getApplicationDocumentsDirectory();
+    final currentBackgroundId = _prefs.getString('backgroundId');
+    final currentBackgroundFile = File("${appDir.path}/background-$currentBackgroundId");
+    
+    if(currentBackgroundId != null && currentBackgroundFile.existsSync() && bgPath != currentBackgroundFile.path){
+      currentBackgroundFile.deleteSync();
+    }
+
+    final uuid = Uuid().v4();
+    final imagePath = "${appDir.path}/background-$uuid";
+    // await _prefs.setString('backgroundId', uuid);
     await _prefs.setDouble('currentblur', blurValue);
+    
+    if(bgPath != "" && bgPath != currentBackgroundFile.path){
+      var imageBytes = await File(bgPath).readAsBytes();
+      File(imagePath).writeAsBytesSync(imageBytes);
+      await _prefs.setString('backgroundId', uuid);
+    }
+    // await _prefs.setString('currentbg', bgPath);
+    // await _prefs.setDouble('currentblur', blurValue);
   }
 
   Future<void> resetTheme() async {
-    await updateBG('assets/imgs/starry.jpg', 0.0);
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final appDir = await getApplicationDocumentsDirectory();
+    final currentBackgroundId = _prefs.getString('backgroundId');
+    final bgFile = File("${appDir.path}/background-$currentBackgroundId");
+
+    if(bgFile.existsSync()) bgFile.deleteSync();
+
+    await updateBG("", 0.0);
     await changeTextColor(4294967295);
     await getCurrentBackground();
     await getCurrentTextColor();

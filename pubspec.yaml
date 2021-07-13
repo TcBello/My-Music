@@ -46,6 +46,7 @@ dependencies:
   device_info: ^2.0.2
   drag_and_drop_lists: ^0.3.2
   audiotagger: ^2.2.1
+  uuid: ^3.0.4
 
   flutter_audio_query:
     git:
