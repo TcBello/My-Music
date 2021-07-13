@@ -74,7 +74,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
                   labelStyle: selectedTabTextStyle,
                   unselectedLabelStyle: unselectedTabTextStyle,
                   controller: tabController,
-                  indicatorColor: color3,
+                  indicatorColor: Colors.pinkAccent,
                   tabs: <Widget>[
                     Tab(
                       text: "Songs",

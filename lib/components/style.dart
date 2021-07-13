@@ -161,13 +161,13 @@ const TextStyle musicHeaderTextStyle = TextStyle(
 const TextStyle selectedTabTextStyle = TextStyle(
   fontFamily: defaultFont,
   color: color3,
-  fontWeight: FontWeight.w500
+  fontWeight: FontWeight.w600
 );
 
 const TextStyle unselectedTabTextStyle = TextStyle(
   fontFamily: defaultFont,
   color: color3,
-  fontWeight: FontWeight.w500
+  fontWeight: FontWeight.w600
 );
 
 const TextStyle themeTitleTextStyle = TextStyle(
