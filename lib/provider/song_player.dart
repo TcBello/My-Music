@@ -10,6 +10,9 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/audio_player_task/audio_player_task.dart';
 import 'package:my_music/main.dart';
+import 'package:my_music/model/audio_queue_state.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:uuid/uuid.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
@@ -32,9 +35,6 @@ class SongPlayerProvider extends ChangeNotifier{
 
   int _repeatIndex = 0;
   int _shuffleIndex = 0;
-
-  int _initPlayerIndex = 0;
-  int get initPlayerIndex => _initPlayerIndex;
 
   List<Icon> _repeatIcons = [
     // OFF
@@ -138,9 +138,13 @@ class SongPlayerProvider extends ChangeNotifier{
     int id = await AudioService.customAction("getAudioSessionId");
     if(_currentAudioSessionID != id){
       _currentAudioSessionID = id;
-      notifyListeners();
       print("EQUALIZER AUD ID: $id");
-      await Equalizer.setAudioSessionId(id);
+      try{
+        await Equalizer.setAudioSessionId(id);
+      }
+      catch(e){
+        print(e);
+      }
     }
 
     if(!_isPlayOnce){
@@ -152,6 +156,13 @@ class SongPlayerProvider extends ChangeNotifier{
     // playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
 
     // notifyListeners();
+  }
+
+  void playQueueSong(int index, List<MediaItem> queue){
+    AudioService.customAction("setIndex", index);
+    AudioService.customAction("setAudioSourceMode", 0);
+    AudioService.updateQueue(queue);
+    AudioService.play();
   }
 
   void stopSong(){
@@ -300,10 +311,14 @@ class SongPlayerProvider extends ChangeNotifier{
     // notifyListeners();
   }
 
-  Future<void> initIndex() async{
+  Future<int> getCurrentIndex() async{
     AudioService.customAction("initIndex");
-    _initPlayerIndex = (await AudioService.customAction("getCurrentIndex")) - 1;
-    notifyListeners();
+    int index = (await AudioService.customAction("getCurrentIndex")) - 1;
+    return index;
+  }
+
+  int getQueueLength(){
+    return AudioService.queue.length;
   }
 
   void setTimer(){
@@ -328,5 +343,16 @@ class SongPlayerProvider extends ChangeNotifier{
 
   void resetTimer(){
     _minuteTimer = 0;
+  }
+
+  Stream<AudioQueueData> nowPlayingStream(){
+    return Rx.combineLatest2<List<MediaItem>, dynamic, AudioQueueData>(
+      AudioService.queueStream,
+      AudioService.customEventStream,
+      (queue, index) => AudioQueueData(
+        queue: queue,
+        index: index
+      )
+    );
   }
 }

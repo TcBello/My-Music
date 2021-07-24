@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
@@ -67,6 +68,85 @@ class SongBottomSheetOptions extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               showPlaylistDialog(context);
+            },
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class QueueBottomSheetOptions extends StatelessWidget {
+  const QueueBottomSheetOptions({
+    @required this.songInfo,
+    @required this.mediaItem,
+    @required this.index
+  });
+
+  final SongInfo songInfo;
+  final MediaItem mediaItem;
+  final int index;
+
+  void showPlaylistDialog(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (context) => PlaylistDialog(songInfo: songInfo,),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final songQueryProvider = Provider.of<SongQueryProvider>(context);
+    final songTitle = songInfo.title;
+
+    return Container(
+      height: 305,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  MarqueeText(
+                    text: songTitle,
+                    style: headerBottomSheetTextStyle,
+                    speed: 20,
+                  ),
+                  SizedBox(height: 5),
+                  Divider(thickness: 1.0, color: Colors.grey)
+                ],
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text("Play Next", style: bottomSheetTextStyle,),
+            onTap: () {
+              songQueryProvider.playNextSong(songInfo);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: Text("Add to Queue", style: bottomSheetTextStyle,),
+            onTap: () {
+              songQueryProvider.addToQueueSong(songInfo);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: Text("Add to playlist", style: bottomSheetTextStyle,),
+            onTap: () {
+              Navigator.pop(context);
+              showPlaylistDialog(context);
+            },
+          ),
+          ListTile(
+            title: Text("Remove from queue", style: bottomSheetTextStyle,),
+            onTap: () {
+              songQueryProvider.removeQueueSong(mediaItem, index);
+              Navigator.pop(context);
             },
           )
         ],

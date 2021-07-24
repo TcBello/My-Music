@@ -111,18 +111,26 @@ class _SongTile2State extends State<SongTile2> {
 class NowPlayingSongTile extends StatefulWidget {
   const NowPlayingSongTile({
     Key key,
-    this.songInfo,
+    // this.songInfo,
     this.onTap,
     this.isPlaying,
     this.image,
-    this.index
+    this.index,
+    this.songTitle,
+    this.artistName,
+    this.path,
+    this.mediaItem
   }) : super(key: key);
 
-  final SongInfo songInfo;
+  // final SongInfo songInfo;
   final Function onTap;
   final bool isPlaying;
   final Image image;
   final int index;
+  final String songTitle;
+  final String artistName;
+  final String path;
+  final MediaItem mediaItem;
 
   @override
   _NowPlayingSongTileState createState() => _NowPlayingSongTileState();
@@ -131,8 +139,9 @@ class NowPlayingSongTile extends StatefulWidget {
 class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
   @override
   Widget build(BuildContext context) {
-    final songTitle = widget.songInfo.title;
-    final songArtist = widget.songInfo.artist;
+    // final songTitle = widget.songInfo.title;
+    // final songArtist = widget.songInfo.artist;
+    final songQuery = Provider.of<SongQueryProvider>(context);
     final imageSize = 50.0;
 
     return ListTile(
@@ -170,12 +179,12 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
           ),
         ),
         title: Text(
-          songTitle,
+          widget.songTitle,
           style: nowPlayingStyle,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          songArtist,
+          widget.artistName,
           style: nowPlayingStyle2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -209,7 +218,10 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
         //     width: 1,
         //   ),
         onTap: widget.onTap,
-        onLongPress: () => showSongBottomSheet(context, widget.songInfo),
+        onLongPress: (){
+          var songInfo = songQuery.getSongInfoByPath(widget.path);
+          showQueueBottomSheet(context, songInfo, widget.mediaItem, widget.index);
+        },
     );
   }
 }

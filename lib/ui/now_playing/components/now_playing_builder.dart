@@ -6,6 +6,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/model/audio_queue_state.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -31,69 +32,84 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
     final songQuery = context.read<SongQueryProvider>();
     scrollController = ScrollController();
 
-    await songPlayer.initIndex();
-    // final tileHeight = (MediaQuery.of(context).size.height * 0.0895) * songPlayer.initPlayerIndex;
-    final tileHeight = (72 * songPlayer.initPlayerIndex).toDouble();
-    if(songPlayer.initPlayerIndex == 0){
-      scrollController.jumpTo(scrollController.position.minScrollExtent);
+    var currentIndex = await songPlayer.getCurrentIndex();
+    var queueLength = songPlayer.getQueueLength();
+    
+    final tileHeight = (72 * currentIndex).toDouble();
+    if(currentIndex == 0){
+      // scrollController.jumpTo(scrollController.position.minScrollExtent);
+      Future.delayed(Duration(milliseconds: 50), (){
+        scrollController.jumpTo(scrollController.position.minScrollExtent);
+      });
+      print("JUMP MIN SCROLL");
     }
-    else if(songPlayer.initPlayerIndex >= (songQuery.currentQueue.length - 7)){
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    else if(currentIndex >= (queueLength - 7)){
+      // scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      Future.delayed(Duration(milliseconds: 50), (){
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
+      print("JUMP MAX SCROLL");
     }
     else{
-      scrollController.jumpTo(tileHeight);
+      // scrollController.jumpTo(tileHeight);
+      Future.delayed(Duration(milliseconds: 50), (){
+        scrollController.jumpTo(tileHeight);
+      });
+      print("JUMP CUSTOM SCROLL");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
+    print("TITLE: ${AudioService.currentMediaItem.title} - QUEUE ID: ${AudioService.currentMediaItem.extras['queueId']}");
 
-    return StreamBuilder(
-      initialData: songPlayerProvider.initPlayerIndex,
-      stream: songPlayerProvider.indexStream,
+    return StreamBuilder<AudioQueueData>(
+      stream: songPlayerProvider.nowPlayingStream(),
       builder: (context, snapshot) {
-        final currentIndex = snapshot.data;
+        if(snapshot.hasData){
+          final queue = snapshot.data.queue;
+          final currentIndex = snapshot.data.index;
 
-        return Consumer<SongQueryProvider>(
-          builder: (context, songQuery, child) {
-            final isSdk28Below = songQuery.androidDeviceInfo.version.sdkInt < 29;
-            final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+          return Consumer<SongQueryProvider>(
+            builder: (context, songQuery, child) {
+              return ReorderableListView.builder(
+                scrollController: scrollController,
+                buildDefaultDragHandles: false,
+                onReorder: (oldIndex, newIndex) => songQuery.reorderSong(
+                  oldIndex,
+                  newIndex,
+                ),
+                itemCount: queue.length,
+                itemBuilder: (context, index){
+                  final songArtwork = queue[index].artUri.path;
 
-            return ReorderableListView.builder(
-              scrollController: scrollController,
-              buildDefaultDragHandles: false,
-              onReorder: (oldIndex, newIndex) => songQuery.reorderSong(
-                oldIndex,
-                newIndex,
-                songQuery.currentQueue[oldIndex]
-              ),
-              itemCount: songQuery.currentQueue.length,
-              itemBuilder: (context, index){
-                final songArtwork = songQuery.currentQueue[index].albumArtwork;
-                final songArtwork2 = songQuery.songArtwork(songQuery.currentQueue[index].id);
-                final hasArtWork = File(songQuery.songArtwork(songQuery.currentQueue[index].id)).existsSync();
+                  return NowPlayingSongTile(
+                    key: ValueKey("$index - ${queue[index].title}"),
+                    index: index,
+                    // songInfo: songQuery.currentQueue[index],
+                    onTap: () {
+                      songPlayerProvider.playQueueSong(index, queue);
+                    },
+                    isPlaying: index == currentIndex,
+                    image: Image.file(File(songArtwork), fit: BoxFit.cover,),
+                    songTitle: queue[index].title,
+                    artistName: queue[index].artist,
+                    path: queue[index].id,
+                    mediaItem: queue[index],
+                  );
 
-                return NowPlayingSongTile(
-                  key: ValueKey("$index${songQuery.currentQueue[index].id}"),
-                  index: index,
-                  songInfo: songQuery.currentQueue[index],
-                  onTap: () {
-                    songPlayerProvider.playSong(songQuery.currentQueue, index, sdkInt);
-                  },
-                  isPlaying: index == currentIndex,
-                  image: isSdk28Below
-                    ? songArtwork != null
-                      ? Image.file(File(songArtwork), fit: BoxFit.cover,)
-                      : Image.file(File(songQuery.defaultAlbum))
-                    : hasArtWork
-                      ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
-                      : Image.file(File(songQuery.defaultAlbum)),
-                );
-              }
-            );
-          }
-        );
+                  // return ListTile(
+                  //   key: ValueKey("$index - ${queue[index].title}"),
+                  //   title: Text(queue[index].title, style: TextStyle(color: Colors.white),),
+                  // );
+                }
+              );
+            }
+          );
+        }
+
+        return Container();
       }
     );
   }

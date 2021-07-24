@@ -14,8 +14,10 @@ void audioPlayerTaskEntrypoint() async{
 class AudioPlayerTask extends BackgroundAudioTask{
   AudioPlayer audioPlayer = AudioPlayer();
   List<MediaItem> queue = [];
+  List<SongInfo> queue2 = [];
   AudioProcessingState skipState;
   int index = 0;
+  int _removeIndex;
   bool isQueueUpdated = false;
   // StreamSubscription<PlayerState> playerSubscription;
   StreamSubscription<PlaybackEvent> eventSubscription;
@@ -192,7 +194,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
         break;
     }
 
-    await AudioServiceBackground.setQueue(queue);
+    AudioServiceBackground.setQueue(queue);
   }
 
   // @override
@@ -258,6 +260,15 @@ class AudioPlayerTask extends BackgroundAudioTask{
     }
   }
 
+  // @override
+  Future<void> onRemoveQueueItem(MediaItem mediaItem) async {
+    queue.removeAt(_removeIndex);
+    await nowPlayingAudioSource.removeAt(_removeIndex);
+    _removeIndex = null;
+
+    AudioServiceBackground.setQueue(queue);
+  }
+
 
   @override
   Future onCustomAction(String name, arguments) {
@@ -300,6 +311,9 @@ class AudioPlayerTask extends BackgroundAudioTask{
             onStop();
           });
         }
+        break;
+      case "removeFromQueue":
+        _removeIndex = arguments;
         break;
     }
   }

@@ -10,6 +10,7 @@ import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:my_music/components/audio_player_task/audio_player_task.dart';
 import 'package:my_music/main.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class SongQueryProvider extends ChangeNotifier{
   final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
@@ -142,9 +143,9 @@ class SongQueryProvider extends ChangeNotifier{
       int nextIndex = await AudioService.customAction("getCurrentIndex");
       AudioService.addQueueItemAt(mediaItem, nextIndex);
 
-      _currentQueue.insert(nextIndex, nextSongInfo);
+      // _currentQueue.insert(nextIndex, nextSongInfo);
       // _songInfo = await flutterAudioQuery.getSongs();
-      notifyListeners();
+      // notifyListeners();
       // _songInfo = await flutterAudioQuery.getSongs();
 
       // notifyListeners();
@@ -156,7 +157,7 @@ class SongQueryProvider extends ChangeNotifier{
       MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
       AudioService.addQueueItem(mediaItem);
 
-      _currentQueue.add(addToQueueSongInfo);
+      // _currentQueue.add(addToQueueSongInfo);
       // _songInfo = await flutterAudioQuery.getSongs();
 
       notifyListeners();
@@ -171,7 +172,7 @@ class SongQueryProvider extends ChangeNotifier{
       AudioService.updateQueue(mediaList);
 
       int nextIndex = await AudioService.customAction("getCurrentIndex");
-      _currentQueue.insertAll(nextIndex, songInfoList);
+      // _currentQueue.insertAll(nextIndex, songInfoList);
       // _songInfo = await flutterAudioQuery.getSongs();
 
       notifyListeners();
@@ -185,7 +186,7 @@ class SongQueryProvider extends ChangeNotifier{
       AudioService.customAction("setAudioSourceMode", 2);
       AudioService.updateQueue(mediaList);
 
-      _currentQueue.addAll(songInfoList);
+      // _currentQueue.addAll(songInfoList);
       // _songInfo = await flutterAudioQuery.getSongs();
 
       notifyListeners();
@@ -211,7 +212,7 @@ class SongQueryProvider extends ChangeNotifier{
           : hasArtWork
             ? File(artwork).uri
             : File(_defaultAlbum).uri,
-        duration: Duration(milliseconds: int.parse(e.duration))
+        duration: Duration(milliseconds: int.parse(e.duration)),
       );
     }).toList();
   }
@@ -232,7 +233,7 @@ class SongQueryProvider extends ChangeNotifier{
         : hasArtWork
           ? File(artwork).uri
           : File(_defaultAlbum).uri,
-      duration: Duration(milliseconds: int.parse(newSongInfo.duration))
+      duration: Duration(milliseconds: int.parse(newSongInfo.duration)),
     );
   }
 
@@ -404,15 +405,20 @@ class SongQueryProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void reorderSong(int oldIndex, int newIndex, SongInfo song){
+  void reorderSong(int oldIndex, int newIndex){
     if(oldIndex < newIndex){
       newIndex--;
     }
     AudioService.customAction("reorderSong", [oldIndex, newIndex]);
 
-    _currentQueue.removeAt(oldIndex);
-    _currentQueue.insert(newIndex, song);
-    notifyListeners();
+    // _currentQueue.removeAt(oldIndex);
+    // _currentQueue.insert(newIndex, song);
+  }
+
+  void removeQueueSong(MediaItem mediaItem, int index){
+    AudioService.customAction("removeFromQueue", index);
+    print("REMOVE ${mediaItem.title} AT INDEX $index");
+    AudioService.removeQueueItem(mediaItem);
   }
 
   Future<void> resetCache() async {
@@ -427,5 +433,17 @@ class SongQueryProvider extends ChangeNotifier{
         print(e);
       }
     }
+  }
+
+  SongInfo getSongInfoByPath(String path){
+    SongInfo resultSongInfo;
+
+    _songInfo.forEach((element) {
+      if(element.filePath == path){
+        resultSongInfo = element;
+      }
+    });
+
+    return resultSongInfo;
   }
 }
