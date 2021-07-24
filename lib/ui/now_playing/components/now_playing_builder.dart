@@ -21,16 +21,27 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
 
   ScrollController scrollController;
 
+  Future<bool> delayDisplay() async {
+    await Future.delayed(Duration(seconds: 1));
+    return true;
+  }
+
   @override
   void initState() {
     init();
     super.initState();
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   void init() async{
     final songPlayer = context.read<SongPlayerProvider>();
     final songQuery = context.read<SongQueryProvider>();
-    scrollController = ScrollController();
+    // scrollController = ScrollController();
 
     var currentIndex = await songPlayer.getCurrentIndex();
     var queueLength = songPlayer.getQueueLength();
@@ -39,21 +50,24 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
     if(currentIndex == 0){
       // scrollController.jumpTo(scrollController.position.minScrollExtent);
       Future.delayed(Duration(milliseconds: 50), (){
-        scrollController.jumpTo(scrollController.position.minScrollExtent);
+        // scrollController.jumpTo(scrollController.position.minScrollExtent);
+        scrollController = ScrollController(initialScrollOffset: tileHeight);
       });
       print("JUMP MIN SCROLL");
     }
     else if(currentIndex >= (queueLength - 7)){
       // scrollController.jumpTo(scrollController.position.maxScrollExtent);
       Future.delayed(Duration(milliseconds: 50), (){
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        // scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        scrollController = ScrollController(initialScrollOffset: tileHeight);
       });
       print("JUMP MAX SCROLL");
     }
     else{
       // scrollController.jumpTo(tileHeight);
       Future.delayed(Duration(milliseconds: 50), (){
-        scrollController.jumpTo(tileHeight);
+        // scrollController.jumpTo(tileHeight);
+        scrollController = ScrollController(initialScrollOffset: tileHeight);
       });
       print("JUMP CUSTOM SCROLL");
     }
@@ -71,39 +85,88 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
           final queue = snapshot.data.queue;
           final currentIndex = snapshot.data.index;
 
-          return Consumer<SongQueryProvider>(
-            builder: (context, songQuery, child) {
-              return ReorderableListView.builder(
-                scrollController: scrollController,
-                buildDefaultDragHandles: false,
-                onReorder: (oldIndex, newIndex) => songQuery.reorderSong(
-                  oldIndex,
-                  newIndex,
-                ),
-                itemCount: queue.length,
-                itemBuilder: (context, index){
-                  final songArtwork = queue[index].artUri.path;
+          // return Consumer<SongQueryProvider>(
+          //   builder: (context, songQuery, child) {
+          //     return ReorderableListView.builder(
+          //       scrollController: scrollController,
+          //       buildDefaultDragHandles: false,
+          //       onReorder: (oldIndex, newIndex) => songQuery.reorderSong(
+          //         oldIndex,
+          //         newIndex,
+          //       ),
+          //       itemCount: queue.length,
+          //       itemBuilder: (context, index){
+          //         final songArtwork = queue[index].artUri.path;
 
-                  return NowPlayingSongTile(
-                    key: ValueKey("$index - ${queue[index].title}"),
-                    index: index,
-                    // songInfo: songQuery.currentQueue[index],
-                    onTap: () {
-                      songPlayerProvider.playQueueSong(index, queue);
-                    },
-                    isPlaying: index == currentIndex,
-                    image: Image.file(File(songArtwork), fit: BoxFit.cover,),
-                    songTitle: queue[index].title,
-                    artistName: queue[index].artist,
-                    path: queue[index].id,
-                    mediaItem: queue[index],
+          //         return NowPlayingSongTile(
+          //           key: ValueKey("$index - ${queue[index].title}"),
+          //           index: index,
+          //           // songInfo: songQuery.currentQueue[index],
+          //           onTap: () {
+          //             songPlayerProvider.playQueueSong(index, queue);
+          //           },
+          //           isPlaying: index == currentIndex,
+          //           image: Image.file(File(songArtwork), fit: BoxFit.cover,),
+          //           songTitle: queue[index].title,
+          //           artistName: queue[index].artist,
+          //           path: queue[index].id,
+          //           mediaItem: queue[index],
+          //         );
+
+          //         // return ListTile(
+          //         //   key: ValueKey("$index - ${queue[index].title}"),
+          //         //   title: Text(queue[index].title, style: TextStyle(color: Colors.white),),
+          //         // );
+          //       }
+          //     );
+          //   }
+          // );
+
+          return FutureBuilder<bool>(
+            future: delayDisplay(),
+            builder: (context, snapshot) {
+              print("Yey");
+              if(snapshot.hasData){
+                return Consumer<SongQueryProvider>(
+                builder: (context, songQuery, child) {
+                  return ReorderableListView.builder(
+                    scrollController: scrollController,
+                    buildDefaultDragHandles: false,
+                    onReorder: (oldIndex, newIndex) => songQuery.reorderSong(
+                      oldIndex,
+                      newIndex,
+                    ),
+                    itemCount: queue.length,
+                    itemBuilder: (context, index){
+                      final songArtwork = queue[index].artUri.path;
+          
+                      return NowPlayingSongTile(
+                        key: ValueKey("$index - ${queue[index].title}"),
+                        index: index,
+                        // songInfo: songQuery.currentQueue[index],
+                        onTap: () {
+                          songPlayerProvider.playQueueSong(index, queue);
+                        },
+                        isPlaying: index == currentIndex,
+                        image: Image.file(File(songArtwork), fit: BoxFit.cover,),
+                        songTitle: queue[index].title,
+                        artistName: queue[index].artist,
+                        path: queue[index].id,
+                        mediaItem: queue[index],
+                      );
+          
+                      // return ListTile(
+                      //   key: ValueKey("$index - ${queue[index].title}"),
+                      //   title: Text(queue[index].title, style: TextStyle(color: Colors.white),),
+                      // );
+                    }
                   );
-
-                  // return ListTile(
-                  //   key: ValueKey("$index - ${queue[index].title}"),
-                  //   title: Text(queue[index].title, style: TextStyle(color: Colors.white),),
-                  // );
                 }
+              );
+              }
+
+              return Center(
+                child: CircularProgressIndicator(color: Colors.white,)
               );
             }
           );
