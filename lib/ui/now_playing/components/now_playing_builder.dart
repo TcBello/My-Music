@@ -47,6 +47,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
     var queueLength = songPlayer.getQueueLength();
     
     final tileHeight = (72 * currentIndex).toDouble();
+    final tileMaxHeight = (72 * (currentIndex - 7)).toDouble();
     if(currentIndex == 0){
       // scrollController.jumpTo(scrollController.position.minScrollExtent);
       Future.delayed(Duration(milliseconds: 50), (){
@@ -59,7 +60,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
       // scrollController.jumpTo(scrollController.position.maxScrollExtent);
       Future.delayed(Duration(milliseconds: 50), (){
         // scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        scrollController = ScrollController(initialScrollOffset: tileHeight);
+        scrollController = ScrollController(initialScrollOffset: tileMaxHeight);
       });
       print("JUMP MAX SCROLL");
     }
