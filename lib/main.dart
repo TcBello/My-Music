@@ -130,14 +130,14 @@ class Splash extends StatelessWidget {
       seconds: 2,
       backgroundColor: Colors.white,
       loaderColor: Colors.white,
-      loadingText: Text("TCBELLO", style: TextStyle(fontSize: 20, letterSpacing: 2),),
+      loadingText: Text("TCBELLO", style: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.black),),
       // navigateAfterSeconds: Main(),
       navigateAfterSeconds: AudioServiceWidget(
         child: Material(
           child: MainScreen(),
         ),
       ),
-      title: Text("My Music\n(Test Phase)", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),),
+      title: Text("My Music\n(Test Phase)", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, color: Colors.black),),
     );
   }
 }
