@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class SearchSongUI extends StatelessWidget {
   const SearchSongUI({
@@ -19,7 +20,7 @@ class SearchSongUI extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AnimatedTextKit(
-            animatedTexts: [WavyAnimatedText("Searching Songs...", textStyle: searchTextStyle)],
+            animatedTexts: [WavyAnimatedText("Searching Songs...", textStyle: ThemeProvider.themeOf(context).data.textTheme.headline6)],
             repeatForever: true,
           ),
           Container(
@@ -31,7 +32,10 @@ class SearchSongUI extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
                   child: Consumer<SongQueryProvider>(
                     builder: (context, songQuery, child) {
-                      return Text(songQuery.locationSongSearch, style: searchSongTextStyle,);
+                      return Text(songQuery.locationSongSearch, style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14
+                      ),);
                     }
                   ),
                 ),

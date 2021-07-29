@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_music/ui/artists/components/artist_library_builder.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/components/style.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class ArtistProfile extends StatelessWidget {
   final String title;
@@ -55,13 +56,13 @@ class ArtistProfile extends StatelessWidget {
                 child: Center(
                   child: Text(
                     title,
-                    style: headerLibrarySongListTextStyle,
+                    style: ThemeProvider.themeOf(context).data.textTheme.headline6
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Text("Albums", style: headerLibrarySongListTextStyle,),
+                child: Text("Albums", style: ThemeProvider.themeOf(context).data.textTheme.headline6,),
               ),
               ArtistLibraryBuilder()
             ],

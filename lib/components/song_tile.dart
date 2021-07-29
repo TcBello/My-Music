@@ -11,6 +11,7 @@ import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class SongTile extends StatefulWidget {
   const SongTile({this.songInfo, this.onTap});
@@ -27,7 +28,7 @@ class _SongTileState extends State<SongTile> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<CustomThemeProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songTitle = widget.songInfo.title;
     final songArtist = widget.songInfo.artist;
@@ -58,12 +59,17 @@ class _SongTileState extends State<SongTile> {
         ),
         title: Text(
           songTitle,
-          style: musicTextStyle(themeProvider.textHexColor),
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Color(themeProvider.textHexColor)
+          ),
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
           songArtist,
-          style: artistMusicTextStyle(themeProvider.textHexColor),
+          style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+            color: Color(themeProvider.textHexColor)
+          ),
           overflow: TextOverflow.ellipsis,
         ),
         trailing: IconButton(
@@ -96,7 +102,9 @@ class _SongTile2State extends State<SongTile2> {
         title: Text(
           songTitle,
           overflow: TextOverflow.ellipsis,
-          style: librarySongTitleTextStyle,
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         trailing: IconButton(
           icon: Icon(Icons.more_vert, color: Colors.white),
@@ -180,12 +188,16 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
         ),
         title: Text(
           widget.songTitle,
-          style: nowPlayingStyle,
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
           widget.artistName,
-          style: nowPlayingStyle2,
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
           overflow: TextOverflow.ellipsis,
         ),
         trailing: ReorderableDragStartListener(
@@ -269,7 +281,9 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
           child: Text(
             songTitle,
             overflow: TextOverflow.ellipsis,
-            style: librarySongTitleTextStyle,
+            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              fontWeight: FontWeight.bold
+            )
           ),
         ),
         subtitle: Container(
@@ -277,7 +291,9 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
           child: Text(
             artistName,
             overflow: TextOverflow.ellipsis,
-            style: libraryArtistTextStyle,
+            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              fontWeight: FontWeight.w500
+            ),
           ),
         ),
         trailing: IconButton(
@@ -305,7 +321,10 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                               children: [
                                 MarqueeText(
                                   text: songTitle,
-                                  style: headerBottomSheetTextStyle,
+                                  style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500
+                                  ),
                                   speed: 20,
                                 ),
                                 SizedBox(height: 10),
@@ -317,7 +336,10 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                         ListTile(
                           title: Text(
                             "Play Next",
-                            style: bottomSheetTextStyle,
+                            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500
+                            )
                           ),
                           onTap: () {
                             songQueryProvider.playNextSong(widget.songInfo);
@@ -327,7 +349,10 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                         ListTile(
                           title: Text(
                             "Add to Queue",
-                            style: bottomSheetTextStyle,
+                            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500
+                            ),
                           ),
                           onTap: () {
                             songQueryProvider.addToQueueSong(widget.songInfo);
@@ -336,8 +361,11 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                         ),
                         ListTile(
                           title: Text(
-                            "Remove from playlist",
-                            style: bottomSheetTextStyle,
+                            "Remove from Playlist",
+                            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500
+                            ),
                           ),
                           onTap: () async {
                             Navigator.pop(context);
@@ -346,20 +374,19 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20)),
-                                  title: Text("Remove from playlist", style: dialogTitleTextStyle,),
+                                  shape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
+                                  title: Text("Remove from Playlist", style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
                                   content: Text(
                                     'Are you sure you want to remove "$songTitle" from this playlist?',
-                                    style: dialogContentTextStyle,
+                                    style: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle,
                                   ),
                                   actions: [
                                     FlatButton(
-                                      child: Text("Cancel", style: dialogButtonTextStyle,),
+                                      child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button),
                                       onPressed: () => Navigator.pop(context),
                                     ),
                                     FlatButton(
-                                      child: Text("Remove", style: dialogButtonTextStyle,),
+                                      child: Text("REMOVE", style: ThemeProvider.themeOf(context).data.textTheme.button,),
                                       onPressed: () async {
                                         await songQueryProvider
                                             .removeSongFromPlaylist(

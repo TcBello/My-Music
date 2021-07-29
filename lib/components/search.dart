@@ -14,6 +14,7 @@ import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class Search extends SearchDelegate<SongInfo>{
   final recent = [];
@@ -26,7 +27,7 @@ class Search extends SearchDelegate<SongInfo>{
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back, color: Colors.grey[700],),
+      icon: Icon(Icons.arrow_back, color: Colors.white,),
       onPressed: (){
         close(context, null);
       },
@@ -40,7 +41,7 @@ class Search extends SearchDelegate<SongInfo>{
     print(_songSearchList);
     
     Widget _backgroundWidget(){
-      return Consumer<ThemeProvider>(
+      return Consumer<CustomThemeProvider>(
         builder: (context, theme, snapshot) {
           return Container(
             height: MediaQuery.of(context).size.height,
@@ -83,7 +84,9 @@ class Search extends SearchDelegate<SongInfo>{
                     left: 20,
                     bottom: 10
                 ),
-                child: Text("Songs", style: headerSearchResult,),
+                child: Text("Songs", style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                  fontWeight: FontWeight.w600
+                ),),
               ),
               Consumer2<SongPlayerProvider, SongQueryProvider>(
                 builder: (context, songPlayer, songQuery, child){
@@ -151,16 +154,51 @@ class Search extends SearchDelegate<SongInfo>{
       itemBuilder: (context, index){
         return ListTile(
             leading: CircleAvatar(
-              backgroundColor: color2,
+              backgroundColor: color3,
               child: Icon(Icons.music_note, color: Colors.white,),
             ),
             onTap: (){
               query = _suggestionList[index];
               showResults(context);
             },
-            title: Text(_suggestionList[index], style: searchSuggestionTextStyle,)
+            title: Text(_suggestionList[index], style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              fontWeight: FontWeight.w500,
+            ))
         );
       },
     );
+  }
+
+  @override
+  String get searchFieldLabel => "Search Song";
+
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    final ThemeData themeData = ThemeProvider.themeOf(context).data.copyWith(
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: Colors.white
+      ),
+      textTheme: TextTheme(
+        headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          decoration: TextDecoration.none
+        )
+      ),
+      primaryColor: color2,
+      scaffoldBackgroundColor: color1,
+      hintColor: Colors.grey[400],
+      inputDecorationTheme: InputDecorationTheme(
+        border: InputBorder.none,
+        errorBorder: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
+      ),
+    );
+
+    return themeData;
   }
 }

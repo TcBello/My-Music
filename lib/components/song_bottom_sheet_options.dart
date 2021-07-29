@@ -9,6 +9,7 @@ import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class SongBottomSheetOptions extends StatelessWidget {
   const SongBottomSheetOptions({Key key, this.songInfo}) : super(key: key);
@@ -40,7 +41,10 @@ class SongBottomSheetOptions extends StatelessWidget {
                 children: [
                   MarqueeText(
                     text: songTitle,
-                    style: headerBottomSheetTextStyle,
+                    style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black
+                    ),
                     speed: 20,
                   ),
                   SizedBox(height: 5),
@@ -50,21 +54,30 @@ class SongBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Next", style: bottomSheetTextStyle,),
+            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              fontWeight: FontWeight.w500,
+              color: Colors.black
+            )),
             onTap: () {
               songQueryProvider.playNextSong(songInfo);
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Add to Queue", style: bottomSheetTextStyle,),
+            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            )),
             onTap: () {
               songQueryProvider.addToQueueSong(songInfo);
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Add to playlist", style: bottomSheetTextStyle,),
+            title: Text("Add to playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            ),),
             onTap: () {
               Navigator.pop(context);
               showPlaylistDialog(context);
@@ -112,7 +125,10 @@ class QueueBottomSheetOptions extends StatelessWidget {
                 children: [
                   MarqueeText(
                     text: songTitle,
-                    style: headerBottomSheetTextStyle,
+                    style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600
+                    ),
                     speed: 20,
                   ),
                   SizedBox(height: 5),
@@ -122,28 +138,40 @@ class QueueBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Next", style: bottomSheetTextStyle,),
+            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            ),),
             onTap: () {
               songQueryProvider.playNextSong(songInfo);
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Add to Queue", style: bottomSheetTextStyle,),
+            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            )),
             onTap: () {
               songQueryProvider.addToQueueSong(songInfo);
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Add to playlist", style: bottomSheetTextStyle,),
+            title: Text("Add to playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            ),),
             onTap: () {
               Navigator.pop(context);
               showPlaylistDialog(context);
             },
           ),
           ListTile(
-            title: Text("Remove from queue", style: bottomSheetTextStyle,),
+            title: Text("Remove from queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            )),
             onTap: () {
               songQueryProvider.removeQueueSong(mediaItem, index);
               Navigator.pop(context);

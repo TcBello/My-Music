@@ -17,6 +17,7 @@ import 'package:my_music/components/style.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 void main() async {
   runApp(
@@ -29,10 +30,54 @@ void main() async {
           create: (context) => SongPlayerProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => ThemeProvider(),
+          create: (context) => CustomThemeProvider(),
         ),
       ],
-      child: MaterialApp(home: Splash(),),
+      child: Consumer<CustomThemeProvider>(
+        builder: (context, theme, child) {
+          return ThemeProvider(
+            loadThemeOnInit: true,
+            saveThemesOnChange: true,
+            defaultThemeId: "default_theme",
+            themes: [
+              AppTheme(
+                id: "default_theme",
+                description: "Default Text Theme",
+                data: ThemeData(
+                  tabBarTheme: kTabBarTheme,
+                  appBarTheme: kAppBarTheme,
+                  textTheme: textTheme,
+                  dialogTheme: dialogTheme,
+                  cardTheme: cardTheme,
+                  unselectedWidgetColor: color5,
+                ),
+              ),
+              AppTheme(
+                id: "montserrat_theme",
+                description: "Montserrat Text Theme",
+                data: ThemeData(
+                  tabBarTheme: kTabBarTheme,
+                  appBarTheme: kAppBarTheme,
+                  textTheme: textTheme,
+                  fontFamily: "Montserrat",
+                  dialogTheme: dialogTheme,
+                  cardTheme: cardTheme,
+                  unselectedWidgetColor: color5,
+                ),
+              )
+            ],
+            child: Builder(
+              builder: (context) => ThemeConsumer(
+                child: MaterialApp(
+                  // showPerformanceOverlay: true,
+                  theme: ThemeProvider.themeOf(context).data,
+                  home: Splash(),
+                ),
+              ),
+            ),
+          );
+        }
+      )
     )
   );
 }
@@ -40,12 +85,19 @@ void main() async {
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return SplashScreen(
       seconds: 2,
       backgroundColor: Colors.white,
       loaderColor: Colors.white,
       loadingText: Text("TCBELLO", style: TextStyle(fontSize: 20, letterSpacing: 2),),
-      navigateAfterSeconds: Main(),
+      // navigateAfterSeconds: Main(),
+      navigateAfterSeconds: AudioServiceWidget(
+        child: Material(
+          child: MainScreen(),
+        ),
+      ),
       title: Text("My Music\n(Test Phase)", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),),
     );
   }
@@ -59,49 +111,17 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     
-    return MaterialApp(
-      // showPerformanceOverlay: true,
-        theme: ThemeData(
-          tabBarTheme: tabBarStyle,
-          appBarTheme: appBarStyle,
-          textTheme: textStyle,
-          fontFamily: "Montserrat",
-        ),
-        home: AudioServiceWidget(child: Material(child: MainScreen()),)
-    );
-  }
-}
-
-class Inits extends StatefulWidget {
-  @override
-  _InitsState createState() => _InitsState();
-}
-
-class _InitsState extends State<Inits> {
-
-  ThemeProvider _themeProvider;
-  SongQueryProvider songQueryProvider;
-
-  @override
-  void initState() {
-    init();
-    super.initState();
-  }
-
-  void init() async{
-    _themeProvider = context.read<ThemeProvider>();
-    songQueryProvider = context.read<SongQueryProvider>();
-    songQueryProvider.setDefaultAlbumArt();
-    await songQueryProvider.getSongs();
-    await _themeProvider.getCurrentBackground();
-    print("HAKDOG");
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MainScreen();
+    // return MaterialApp(
+    //     theme: ThemeData(
+    //       tabBarTheme: tabBarStyle,
+    //       appBarTheme: appBarStyle,
+    //       textTheme: textStyle,
+    //       fontFamily: "Montserrat",
+    //     ),
+    //     home: AudioServiceWidget(child: Material(child: MainScreen()),)
+    // );
   }
 }
 

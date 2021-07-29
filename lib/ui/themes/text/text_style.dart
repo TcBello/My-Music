@@ -1,10 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/theme.dart';
+import 'package:my_music/ui/font_selection/font_selection_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class TextStyleTheme extends StatefulWidget {
   @override
@@ -69,13 +72,15 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
   }
 
   void _openColorDialog(BuildContext context){
-    final _themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final _themeProvider = Provider.of<CustomThemeProvider>(context, listen: false);
 
     showDialog(
       context: context,
       builder: (context){
         return AlertDialog(
-          title: Text("Pick a color!"),
+          title: Text("Pick a color!", style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+            color: Colors.black
+          ),),
           content: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: ColorPicker(
@@ -85,7 +90,7 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
           ),
           actions: [
             FlatButton(
-              child: Text("Apply"),
+              child: Text("Apply", style: ThemeProvider.themeOf(context).data.textTheme.button),
               onPressed: () async {
                 await _themeProvider.changeTextColor(pickerColor.value);
                 await _themeProvider.getCurrentTextColor();
@@ -101,38 +106,38 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
     );
   }
 
-  void _openColorDialog2(BuildContext context){
-    final _themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+  // void _openColorDialog2(BuildContext context){
+  //   final _themeProvider = Provider.of<CustomThemeProvider>(context, listen: false);
 
-    showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            title: Text("Pick a color!"),
-            content: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: ColorPicker(
-                pickerColor: pickerColor2,
-                onColorChanged: changeTextColor2,
-              ),
-            ),
-            actions: [
-              FlatButton(
-                child: Text("Apply"),
-                onPressed: () async {
-                  await _themeProvider.changeTextColor2(pickerColor2.value);
-                  await _themeProvider.getCurrentTextColor2();
-                  setState(() {
-                    _hex2 = pickerColor2.value;
-                  });
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        }
-    );
-  }
+  //   showDialog(
+  //       context: context,
+  //       builder: (context){
+  //         return AlertDialog(
+  //           title: Text("Pick a color!"),
+  //           content: SingleChildScrollView(
+  //             scrollDirection: Axis.vertical,
+  //             child: ColorPicker(
+  //               pickerColor: pickerColor2,
+  //               onColorChanged: changeTextColor2,
+  //             ),
+  //           ),
+  //           actions: [
+  //             FlatButton(
+  //               child: Text("Apply"),
+  //               onPressed: () async {
+  //                 await _themeProvider.changeTextColor2(pickerColor2.value);
+  //                 await _themeProvider.getCurrentTextColor2();
+  //                 setState(() {
+  //                   _hex2 = pickerColor2.value;
+  //                 });
+  //                 Navigator.pop(context);
+  //               },
+  //             )
+  //           ],
+  //         );
+  //       }
+  //   );
+  // }
 
   Widget _primaryWidget(){
     return Column(
@@ -140,73 +145,85 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ListTile(
-          title: Text("Primary", style: headerBodyTextStyle),
+          title: Text("Primary", style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 18
+          )),
         ),
         SizedBox(height: 10,),
         Container(
           // color: _hex == _white ? Colors.black : null,
-          child: Text("Sample Text", style: sampleTextStyle(Color(_hex)),),
+          child: Text("Sample Text", style: ThemeProvider.themeOf(context).data.textTheme.headline5.copyWith(
+            fontWeight: FontWeight.w500,
+            color: Color(_hex),
+            fontSize: 30
+          )),
         ),
         SizedBox(height: 20,),
         ListTile(
-          title: Text("Color", style: themeTitleTextStyle,),
-          subtitle: Text("Customize text color", style: themeSubtitleTextStyle,),
+          title: Text("Color", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.bold
+          ),),
+          subtitle: Text("Customize text color", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+            color: Colors.white
+          ),),
           onTap: (){_openColorDialog(context);},
           focusColor: Colors.blue,
         ),
-        InkWell(
-          highlightColor: Colors.blue,
-          splashColor: Colors.blue,
-          onTap: (){},
-          child: ListTile(
-            title: Text("Font", style: themeTitleTextStyle,),
-            subtitle: Text("Customize font style", style: themeSubtitleTextStyle,),
-            // onTap: (){},
-          ),
+        ListTile(
+          title: Text("Font", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.bold
+          ),),
+          subtitle: Text("Customize font style", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+            color: Colors.white
+          ),),
+          onTap: (){
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => FontSelectionUI()));
+          },
         )
       ],
     );
   }
 
-  Widget _secondaryWidget(){
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ListTile(
-          title: Text("Secondary", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-        ),
-        SizedBox(height: 10,),
-        Container(
-          color: _hex2 == _white ? Colors.black : null,
-          child: Text(
-            "Sample Text",
-            style: TextStyle(
-                fontSize: 30.0,
-                color: Color(_hex2)
-            ),
-          ),
-        ),
-        SizedBox(height: 20,),
-        ListTile(
-          title: Text("Color"),
-          subtitle: Text("Customize text color"),
-          onTap: (){_openColorDialog2(context);},
-          focusColor: Colors.blue,
-        ),
-        InkWell(
-          highlightColor: Colors.blue,
-          splashColor: Colors.blue,
-          onTap: (){},
-          child: ListTile(
-            title: Text("Font"),
-            subtitle: Text("Customize font style"),
-            // onTap: (){},
-          ),
-        )
-      ],
-    );
-  }
+  // Widget _secondaryWidget(){
+  //   return Column(
+  //     mainAxisAlignment: MainAxisAlignment.start,
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: [
+  //       ListTile(
+  //         title: Text("Secondary", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+  //       ),
+  //       SizedBox(height: 10,),
+  //       Container(
+  //         color: _hex2 == _white ? Colors.black : null,
+  //         child: Text(
+  //           "Sample Text",
+  //           style: TextStyle(
+  //               fontSize: 30.0,
+  //               color: Color(_hex2)
+  //           ),
+  //         ),
+  //       ),
+  //       SizedBox(height: 20,),
+  //       ListTile(
+  //         title: Text("Color"),
+  //         subtitle: Text("Customize text color"),
+  //         onTap: (){_openColorDialog2(context);},
+  //         focusColor: Colors.blue,
+  //       ),
+  //       InkWell(
+  //         highlightColor: Colors.blue,
+  //         splashColor: Colors.blue,
+  //         onTap: (){},
+  //         child: ListTile(
+  //           title: Text("Font"),
+  //           subtitle: Text("Customize font style"),
+  //           // onTap: (){},
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +231,7 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
       backgroundColor: color1,
       appBar: AppBar(
         backgroundColor: color2,
-        title: Text("Text Style", style: headerAppBarTextStyle,),
+        title: Text("Text Style", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

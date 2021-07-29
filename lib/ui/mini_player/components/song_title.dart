@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/style.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class SongTitleMiniPlayer extends StatelessWidget {
   const SongTitleMiniPlayer({this.title, this.artist});
@@ -22,12 +23,18 @@ class SongTitleMiniPlayer extends StatelessWidget {
           MarqueeText(
             alwaysScroll: false,
             text: title,
-            style: songTitleMiniplayerTextStyle,
+            style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18
+            ),
             speed: 20,
           ),
           Text(
             artist,
-            style: artistMiniplayerTextStyle,
+            style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+              color: Colors.white
+            ),
             overflow: TextOverflow.ellipsis,
           )
         ],
@@ -48,7 +55,9 @@ class SongTitle extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.8,
       child: MarqueeText(
         text: title,
-        style: songTitleMiniplayerTextStyle2,
+        style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+          fontSize: 22
+        ),
         speed: 20,
       ),
     );

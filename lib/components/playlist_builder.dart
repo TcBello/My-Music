@@ -5,6 +5,7 @@ import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistBuilder extends StatelessWidget {
   const PlaylistBuilder({this.songInfo});
@@ -24,7 +25,7 @@ class PlaylistBuilder extends StatelessWidget {
             final playlistName = notifier.playlistInfo[playlistIndex].name;
 
             return ListTile(
-              title: Text(playlistName, style: dialogContentTextStyle,),
+              title: Text(playlistName, style: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle,),
               onTap: () async {
                 await notifier.addSongToPlaylist(songInfo, playlistIndex);
                 Fluttertoast.showToast(

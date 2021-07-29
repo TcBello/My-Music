@@ -3,15 +3,19 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:uuid/uuid.dart';
 
-class ThemeProvider with ChangeNotifier{
+class CustomThemeProvider with ChangeNotifier{
 
   int textHexColor = 4294967295;
   int textHexColor2 = 4294967295;
   double blurValue = 0.0;
   String backgroundFilePath = "";
   String defaultBgPath = "assets/imgs/starry.jpg";
+
+  String _font = "default_theme";
+  String get font => _font;
 
   Future<void> getCurrentTextColor() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -82,13 +86,21 @@ class ThemeProvider with ChangeNotifier{
     // await _prefs.setDouble('currentblur', blurValue);
   }
 
-  Future<void> resetTheme() async {
+  Future<void> resetTheme(BuildContext context) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final appDir = await getApplicationDocumentsDirectory();
     final currentBackgroundId = _prefs.getString('backgroundId');
     final bgFile = File("${appDir.path}/background-$currentBackgroundId");
 
     if(bgFile.existsSync()) bgFile.deleteSync();
+
+    var result = await _prefs.setString('font', "default_theme");
+
+    if(result){
+      _font = "default_theme";
+       notifyListeners();
+       ThemeProvider.controllerOf(context).setTheme("default_theme");
+    }
 
     await updateBG("", 0.0);
     await changeTextColor(4294967295);
@@ -112,5 +124,25 @@ class ThemeProvider with ChangeNotifier{
     }
   }
   
-  notifyListeners();
+  void changeFont(String value){
+    _font = value;
+    print(_font);
+    notifyListeners();
+  }
+
+  Future<bool> applyFont(BuildContext context) async{
+    var prefs = await SharedPreferences.getInstance();
+    var result = await prefs.setString('font', _font);
+    if(result)  ThemeProvider.controllerOf(context).setTheme(_font);
+    print(_font);
+
+    return result;
+  }
+
+  void initFont() async{
+    var prefs = await SharedPreferences.getInstance();
+    String currentFont = prefs.getString('font');
+
+    if(currentFont != null) _font = currentFont;
+  }
 }

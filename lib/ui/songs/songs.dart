@@ -14,13 +14,13 @@ class Songs extends StatefulWidget {
 }
 
 class _SongsState extends State<Songs> with TickerProviderStateMixin {
-  ThemeProvider _themeProvider;
+  CustomThemeProvider _themeProvider;
 
   @override
   void initState() {
     super.initState();
-    _themeProvider = context.read<ThemeProvider>();
-    _themeProvider.getCurrentTextColor();
+    // _themeProvider = context.read<CustomThemeProvider>();
+    // _themeProvider.getCurrentTextColor();
   }
 
   @override

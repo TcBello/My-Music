@@ -8,6 +8,7 @@ import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistBottomSheetOptions extends StatelessWidget {
   const PlaylistBottomSheetOptions({this.playlistInfo, this.index});
@@ -35,7 +36,10 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
                 children: [
                   MarqueeText(
                     text: playlistName,
-                    style: headerBottomSheetTextStyle,
+                    style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600
+                    ),
                     speed: 20,
                   ),
                   SizedBox(
@@ -50,7 +54,10 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Playlist", style: bottomSheetTextStyle,),
+            title: Text("Play Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            )),
             onTap: () async {
               await songQueryProvider.getSongFromPlaylist(index);
               // provider.setIndex(0);
@@ -63,7 +70,10 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Play Next", style: bottomSheetTextStyle,),
+            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            ),),
             onTap: () async {
               songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
                 songQueryProvider.playNextPlaylist(songQueryProvider.songInfoFromPlaylist);
@@ -72,7 +82,10 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to Queue", style: bottomSheetTextStyle,),
+            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500
+            ),),
             onTap: () {
               songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
                 songQueryProvider.addToQueuePlaylist(songQueryProvider.songInfoFromPlaylist);
@@ -85,14 +98,16 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               final playlistName = notifier.playlistInfo[index].name;
 
               return ListTile(
-                title: Text("Delete Playlist", style: bottomSheetTextStyle,),
+                title: Text("Delete Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500
+                ),),
                 onTap: () async {
                   Navigator.pop(context);
                   showDialog(
                     context: context,
                     builder: (context) {
                       return DeleteDialog(
-                        index: index,
                         title: "Delete $playlistName",
                         content: "Are you sure you want to delete this playlist?",
                         onPressedDelete: () async {

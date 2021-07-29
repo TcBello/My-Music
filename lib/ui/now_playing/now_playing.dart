@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/ui/now_playing/components/now_playing_builder.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class NowPlaying extends StatelessWidget {
   @override
@@ -11,7 +12,7 @@ class NowPlaying extends StatelessWidget {
         backgroundColor: color1,
         title: Text(
           "Up Next",
-          style: headerAppBarTextStyle,
+          style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,

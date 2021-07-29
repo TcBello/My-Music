@@ -7,6 +7,7 @@ import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistDialog extends StatelessWidget {
   const PlaylistDialog({this.songInfo});
@@ -16,8 +17,8 @@ class PlaylistDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text("Add to playlist", style: dialogTitleTextStyle,),
+      shape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
+      title: Text("Add to playlist", style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
       content: Container(
         height: 175,
         width: 150,
@@ -26,7 +27,7 @@ class PlaylistDialog extends StatelessWidget {
       actions: [
         FlatButton(
           onPressed: (){Navigator.pop(context);},
-          child: Text("Cancel", style: dialogButtonTextStyle,),
+          child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button,),
         ),
         FlatButton(
           onPressed: (){
@@ -35,7 +36,7 @@ class PlaylistDialog extends StatelessWidget {
               context: context,
               builder: (context) => AlertDialog(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                title: Text("Create Playlist", style: dialogTitleTextStyle,),
+                title: Text("Create Playlist", style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
                 content: TextField(
                   controller: playlistController,
                   decoration: InputDecoration(
@@ -45,7 +46,7 @@ class PlaylistDialog extends StatelessWidget {
                 actions: [
                   FlatButton(
                     onPressed: (){Navigator.pop(context);},
-                    child: Text("Cancel", style: dialogButtonTextStyle,),
+                    child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button,),
                   ),
                   Consumer<SongQueryProvider>(
                     builder: (context, notifier, child) {
@@ -65,7 +66,7 @@ class PlaylistDialog extends StatelessWidget {
                           playlistController.text = "";
                           Navigator.pop(context);
                         },
-                        child: Text("Create", style: dialogButtonTextStyle,),
+                        child: Text("CREATE", style:ThemeProvider.themeOf(context).data.textTheme.button,),
                       );
                     }
                   ),
@@ -73,7 +74,7 @@ class PlaylistDialog extends StatelessWidget {
               ),
             );
           },
-          child: Text("New", style: dialogButtonTextStyle,),
+          child: Text("NEW", style: ThemeProvider.themeOf(context).data.textTheme.button,),
         )
       ],
     );

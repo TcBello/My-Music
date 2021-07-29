@@ -38,11 +38,13 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void init(){
-    final themeProvider = context.read<ThemeProvider>();
+    final themeProvider = context.read<CustomThemeProvider>();
     final songQueryProvider = context.read<SongQueryProvider>();
     songQueryProvider.setDefaultAlbumArt();
-    songQueryProvider.getSongs();
     themeProvider.getCurrentBackground();
+    songQueryProvider.getSongs();
+    themeProvider.initFont();
+    themeProvider.getCurrentTextColor();
   }
 
   Future<bool> onWillScope(bool isPlayerExpand){

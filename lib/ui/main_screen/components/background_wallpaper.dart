@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class BackgroundWallpaper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
+    return Consumer<CustomThemeProvider>(
       builder: (context, theme, child) {
         return Container(
           height: MediaQuery.of(context).size.height,

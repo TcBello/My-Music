@@ -10,6 +10,7 @@ import 'package:my_music/provider/theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class BackgroundSkin extends StatefulWidget {
   @override
@@ -223,7 +224,7 @@ class _BackgroundSkinState extends State<BackgroundSkin>
         SizedBox(
           width: 20,
         ),
-        Text("Blur", style: headerBodyTextStyle,),
+        Text("Blur", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
         SizedBox(
           width: 15,
         ),
@@ -325,9 +326,9 @@ class _BackgroundSkinState extends State<BackgroundSkin>
       backgroundColor: color1,
         appBar: AppBar(
           backgroundColor: color2,
-          title: Text("Background Skin", style: headerAppBarTextStyle,),
+          title: Text("Background Skin", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
           actions: [
-            Consumer<ThemeProvider>(
+            Consumer<CustomThemeProvider>(
               builder: (context, theme, child) {
                 return IconButton(
                   icon: Icon(

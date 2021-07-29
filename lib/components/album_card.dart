@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class AlbumCard extends StatelessWidget {
   const AlbumCard({this.albumName, this.artistName, this.imageGrid});
@@ -11,7 +12,7 @@ class AlbumCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      shape: ThemeProvider.themeOf(context).data.cardTheme.shape,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,12 +30,15 @@ class AlbumCard extends StatelessWidget {
                   Text(
                     albumName,
                     overflow: TextOverflow.ellipsis,
-                    style: cardTitleTextStyle,
+                    style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black
+                    ),
                   ),
                   Text(
                     artistName,
                     overflow: TextOverflow.ellipsis,
-                    style: cardSubtitleTextStyle,
+                    style: ThemeProvider.themeOf(context).data.textTheme.caption
                   )
                 ],
               ),

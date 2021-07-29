@@ -19,6 +19,7 @@ import 'package:my_music/utils/utils.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:provider/provider.dart';
 import 'package:equalizer/equalizer.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class MiniPlayer extends StatelessWidget {
   final double playerMinHeight = 70.0;
@@ -170,7 +171,7 @@ class MiniPlayer extends StatelessWidget {
                                     child: Container(
                                       height: 70,
                                       child: Center(
-                                        child: Text("Now Playing", style: headerAppBarTextStyle)
+                                        child: Text("Now Playing", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle)
                                       )
                                     )
                                   ),
@@ -248,7 +249,11 @@ class MiniPlayer extends StatelessWidget {
                                                 left: 20.0, right: 20.0),
                                             child: Text(
                                               artistName,
-                                              style: artistMiniplayerTextStyle2,
+                                              style: ThemeProvider.themeOf(context).data.textTheme.subtitle1.copyWith(
+                                                color: color5,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18
+                                              ),
                                               overflow: TextOverflow.ellipsis,
                                               textAlign: TextAlign.center,
                                             ),
@@ -295,7 +300,9 @@ class MiniPlayer extends StatelessWidget {
                                                             child: Text(
                                                               // _songModel.currentPosition,
                                                               position,
-                                                              style: durationTextStyle
+                                                              style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                                                                fontWeight: FontWeight.w500
+                                                              )
                                                             )),
                                                         Container(
                                                             margin:
@@ -304,7 +311,9 @@ class MiniPlayer extends StatelessWidget {
                                                             child: Text(
                                                               // _songModel.songDuration,
                                                               duration,
-                                                              style: durationTextStyle,
+                                                              style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                                                                fontWeight: FontWeight.w500
+                                                              ),
                                                             ))
                                                       ],
                                                     ),

@@ -5,6 +5,7 @@ import 'package:my_music/components/image_gridview.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class ArtistCard extends StatelessWidget {
   const ArtistCard({this.imageGrid, this.artistName});
@@ -15,7 +16,7 @@ class ArtistCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      shape: ThemeProvider.themeOf(context).data.cardTheme.shape,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +32,10 @@ class ArtistCard extends StatelessWidget {
               child: Text(
                 artistName,
                 overflow: TextOverflow.ellipsis,
-                style: cardTitleTextStyle,
+                style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black
+                ),
               ),
             ),
           ),

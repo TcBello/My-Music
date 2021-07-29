@@ -13,6 +13,7 @@ import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/ui/songs/songs.dart';
 import 'package:my_music/ui/main_screen/components/my_drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class MainUI extends StatefulWidget {
   const MainUI({this.globalKey});
@@ -52,7 +53,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
               SliverAppBar(
                 backgroundColor: Colors.transparent,
                 forceElevated: true,
-                title: Text("Music", style: musicHeaderTextStyle,),
+                title: Text("Music", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
                 leading: IconButton(
                   onPressed: () {
                     // Scaffold.of(context).openDrawer();
@@ -71,8 +72,8 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
                   ),
                 ],
                 bottom: TabBar(
-                  labelStyle: selectedTabTextStyle,
-                  unselectedLabelStyle: unselectedTabTextStyle,
+                  labelStyle: ThemeProvider.themeOf(context).data.tabBarTheme.labelStyle,
+                  unselectedLabelStyle: ThemeProvider.themeOf(context).data.tabBarTheme.unselectedLabelStyle,
                   controller: tabController,
                   indicatorColor: Colors.pinkAccent,
                   tabs: <Widget>[

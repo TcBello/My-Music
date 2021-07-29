@@ -7,6 +7,7 @@ import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/themes/themes.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class MyDrawer extends StatelessWidget {
 
@@ -19,12 +20,14 @@ class MyDrawer extends StatelessWidget {
           
           return AlertDialog(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
             content: SizedBox(
               height: 300,
               child: Column(
                 children: [
-                  Text("Minutes", style: timerHeaderTextStyle),
+                  Text("Minutes", style: ThemeProvider.themeOf(context).data.textTheme.headline5.copyWith(
+                    fontSize: 25
+                  )),
                   Expanded(
                     child: CupertinoPicker(
                       itemExtent: 100,
@@ -32,7 +35,10 @@ class MyDrawer extends StatelessWidget {
                       children: List.generate(100, (index) => Center(
                         child: Text(
                           (index).toString(),
-                          style: timerTextStyle,
+                          style: ThemeProvider.themeOf(context).data.textTheme.headline5.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 22
+                          )
                         ),
                       )),
                     ),
@@ -42,11 +48,11 @@ class MyDrawer extends StatelessWidget {
             ),
             actions: [
               TextButton(
-                child: Text("Cancel", style: dialogButtonTextStyle,),
+                child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button,),
                 onPressed: () => Navigator.pop(context),
               ),
               TextButton(
-                child: Text("Apply", style: dialogButtonTextStyle,),
+                child: Text("APPLY", style: ThemeProvider.themeOf(context).data.textTheme.button),
                 onPressed: (){
                   songPlayer.setTimer();
                   Navigator.pop(context);
@@ -70,7 +76,7 @@ class MyDrawer extends StatelessWidget {
               Container(
                 margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
                 height: 100,
-                child: Center(child: Text("My Music", style: headerDrawerTextStyle)),
+                child: Center(child: Text("My Music", style: ThemeProvider.themeOf(context).data.textTheme.headline4)),
               ),
               ListTile(
                 onTap: () {
@@ -82,7 +88,9 @@ class MyDrawer extends StatelessWidget {
                   Icons.wallpaper,
                   color: Colors.white,
                 ),
-                title: Text("Themes", style: drawerTextStyle,),
+                title: Text("Themes", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w500
+                ),),
               ),
               ListTile(
                 onTap: (){
@@ -92,11 +100,12 @@ class MyDrawer extends StatelessWidget {
                   Icons.equalizer,
                   color: Colors.white,
                 ),
-                title: Text("Equalizer", style: drawerTextStyle,),
+                title: Text("Equalizer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w500
+                ),),
               ),  
               ListTile(
                 onTap: () async {
-                  var file = await songQuery.validatorFile();
                   await songQuery.resetCache();
                   Navigator.pop(context);
                   songQuery.getSongs();
@@ -105,11 +114,15 @@ class MyDrawer extends StatelessWidget {
                   Icons.search,
                   color: Colors.white,
                 ),
-                title: Text("Scan", style: drawerTextStyle,),
+                title: Text("Scan", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w500
+                ),),
               ),
               ListTile(
                 leading: Icon(Icons.timer_rounded, color: Colors.white,),
-                title: Text("Sleep Timer", style: drawerTextStyle,),
+                title: Text("Sleep Timer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w500
+                ),),
                 onTap: () => _showDialogTimer(context),
               )
             ],

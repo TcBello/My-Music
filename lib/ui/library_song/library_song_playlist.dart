@@ -10,6 +10,7 @@ import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/components/playlist_song_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class LibrarySongPlaylist extends StatelessWidget {
   final int indexFromOutside;
@@ -95,7 +96,12 @@ class LibrarySongPlaylist extends StatelessWidget {
                 return FlexibleSpaceBar(
                   centerTitle: true,
                   title: ConstrainedBox(
-                    child: Text(songQuery.playlistInfo[indexFromOutside].name, style: headerLibrarySongTextStyle2, ),
+                    child: Text(
+                      songQuery.playlistInfo[indexFromOutside].name,
+                      style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
                   ),
                   background: Container(

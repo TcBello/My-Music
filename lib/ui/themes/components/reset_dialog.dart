@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_music/components/style.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-class DeleteDialog extends StatelessWidget {
-  const DeleteDialog({this.onPressedDelete, this.title, this.content});
+class ResetDialog extends StatelessWidget {
+  const ResetDialog({this.index, this.onPressedDelete, this.title, this.content});
 
+  final int index;
   final Function onPressedDelete;
   final String title;
   final String content;
@@ -21,7 +21,7 @@ class DeleteDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         FlatButton(
-          child: Text("DELETE", style: ThemeProvider.themeOf(context).data.textTheme.button,),
+          child: Text("RESET", style: ThemeProvider.themeOf(context).data.textTheme.button,),
           onPressed: onPressedDelete
         ),
       ],

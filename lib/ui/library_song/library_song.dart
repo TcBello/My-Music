@@ -9,6 +9,7 @@ import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/components/header.dart';
 import 'package:my_music/ui/library_song/components/library_song_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class LibrarySong extends StatelessWidget {
   final AlbumInfo albumInfo;
@@ -56,7 +57,12 @@ class LibrarySong extends StatelessWidget {
                     //   child: Text(albumInfo.title, style: defTextStyle, overflow: TextOverflow.ellipsis,),
                     // ),
                     title: ConstrainedBox(
-                      child: Text(albumInfo.title, style: headerLibrarySongTextStyle2, ),
+                      child: Text(
+                        albumInfo.title,
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
                       constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
                     ),
                     centerTitle: true,
