@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 const String montserrat = "Montserrat";
+const String comfortaa = "Comfortaa";
+const String hkGrotesk= "HK Grotesk";
+const String chivo = "Chivo";
 
 const Color color1 = Color(0xFF363636);
 const Color color2 = Color(0xFF474747);
@@ -98,6 +101,27 @@ const TextStyle defaultStyle = TextStyle(
 const TextStyle monserratStyle = TextStyle(
   color: Colors.white,
   fontFamily: montserrat,
+  fontSize: 16,
+  fontWeight: FontWeight.w600
+);
+
+const TextStyle comfortaaStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: comfortaa,
+  fontSize: 16,
+  fontWeight: FontWeight.w600
+);
+
+const TextStyle hkGroteskStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: hkGrotesk,
+  fontSize: 16,
+  fontWeight: FontWeight.w600
+);
+
+const TextStyle chivoStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: chivo,
   fontSize: 16,
   fontWeight: FontWeight.w600
 );

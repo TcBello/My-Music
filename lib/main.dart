@@ -64,6 +64,45 @@ void main() async {
                   cardTheme: cardTheme,
                   unselectedWidgetColor: color5,
                 ),
+              ),
+              AppTheme(
+                id: "comfortaa_theme",
+                description: "Comfortaa Text Theme",
+                data: ThemeData(
+                  tabBarTheme: kTabBarTheme,
+                  appBarTheme: kAppBarTheme,
+                  textTheme: textTheme,
+                  fontFamily: "Comfortaa",
+                  dialogTheme: dialogTheme,
+                  cardTheme: cardTheme,
+                  unselectedWidgetColor: color5,
+                ),
+              ),
+              AppTheme(
+                id: "hkgrotesk_theme",
+                description: "HK Grotesk Text Theme",
+                data: ThemeData(
+                  tabBarTheme: kTabBarTheme,
+                  appBarTheme: kAppBarTheme,
+                  textTheme: textTheme,
+                  fontFamily: "HK Grotesk",
+                  dialogTheme: dialogTheme,
+                  cardTheme: cardTheme,
+                  unselectedWidgetColor: color5,
+                ),
+              ),
+              AppTheme(
+                id: "chivo_theme",
+                description: "Chivo Text Theme",
+                data: ThemeData(
+                  tabBarTheme: kTabBarTheme,
+                  appBarTheme: kAppBarTheme,
+                  textTheme: textTheme,
+                  fontFamily: "Chivo",
+                  dialogTheme: dialogTheme,
+                  cardTheme: cardTheme,
+                  unselectedWidgetColor: color5,
+                ),
               )
             ],
             child: Builder(

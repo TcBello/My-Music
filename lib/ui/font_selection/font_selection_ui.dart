@@ -47,36 +47,30 @@ class FontSelectionUI extends StatelessWidget {
                 activeColor: color4,
                 controlAffinity: ListTileControlAffinity.trailing,
               ),
-              // RadioListTile(
-              //   title: Text("Montserrat", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-              //     fontWeight: FontWeight.w600
-              //   ),),
-              //   value: "Montserrat",
-              //   groupValue: theme.font,
-              //   onChanged: theme.changeFont,
-              //   activeColor: color4,
-              //   controlAffinity: ListTileControlAffinity.trailing,
-              // ),
-              // RadioListTile(
-              //   title: Text("Montserrat", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-              //     fontWeight: FontWeight.w600
-              //   ),),
-              //   value: "Montserrat",
-              //   groupValue: theme.font,
-              //   onChanged: theme.changeFont,
-              //   activeColor: color4,
-              //   controlAffinity: ListTileControlAffinity.trailing,
-              // ),
-              // RadioListTile(
-              //   title: Text("Montserrat", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-              //     fontWeight: FontWeight.w600
-              //   ),),
-              //   value: "Montserrat",
-              //   groupValue: theme.font,
-              //   onChanged: theme.changeFont,
-              //   activeColor: color4,
-              //   controlAffinity: ListTileControlAffinity.trailing,
-              // )
+              RadioListTile(
+                title: Text("Comfortaa", style: comfortaaStyle),
+                value: "comfortaa_theme",
+                groupValue: theme.font,
+                onChanged: theme.changeFont,
+                activeColor: color4,
+                controlAffinity: ListTileControlAffinity.trailing,
+              ),
+              RadioListTile(
+                title: Text("HK Grotesk", style: hkGroteskStyle),
+                value: "hkgrotesk_theme",
+                groupValue: theme.font,
+                onChanged: theme.changeFont,
+                activeColor: color4,
+                controlAffinity: ListTileControlAffinity.trailing,
+              ),
+              RadioListTile(
+                title: Text("Chivo", style: chivoStyle),
+                value: "chivo_theme",
+                groupValue: theme.font,
+                onChanged: theme.changeFont,
+                activeColor: color4,
+                controlAffinity: ListTileControlAffinity.trailing,
+              )
             ],
           ),
         ),

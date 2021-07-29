@@ -158,7 +158,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Add to Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             ),),
@@ -168,7 +168,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Remove from queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Remove from Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             )),
