@@ -1,18 +1,16 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/playlist_dialog.dart';
-import 'package:my_music/main.dart';
-import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class SongBottomSheetOptions extends StatelessWidget {
-  const SongBottomSheetOptions({Key key, this.songInfo}) : super(key: key);
+  const SongBottomSheetOptions({
+    @required this.songInfo
+  });
 
   final SongInfo songInfo;
 
@@ -29,7 +27,7 @@ class SongBottomSheetOptions extends StatelessWidget {
     final songTitle = songInfo.title;
 
     return Container(
-      height: 260,
+      height: 230,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +72,7 @@ class SongBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Add to Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             ),),
@@ -113,7 +111,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
     final songTitle = songInfo.title;
 
     return Container(
-      height: 305,
+      height: 290,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,16 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/bottom_sheet.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
-import 'package:my_music/provider/theme.dart';
+import 'package:my_music/provider/custom_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class SongTile extends StatefulWidget {
-  const SongTile({this.songInfo, this.onTap});
+  const SongTile({
+    @required this.songInfo,
+    @required this.onTap
+  });
 
   final SongInfo songInfo;
   final Function onTap;
@@ -24,8 +25,6 @@ class SongTile extends StatefulWidget {
 }
 
 class _SongTileState extends State<SongTile> {
-  bool isTap = false;
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<CustomThemeProvider>(context);
@@ -45,9 +44,6 @@ class _SongTileState extends State<SongTile> {
           width: 50,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            // child: hasArtWork
-            //   ? Image.file(File(songQueryProvider.artWork(widget.songInfo.albumId)), fit: BoxFit.cover,)
-            //   : Image.file(File(songQueryProvider.defaultAlbum)),
             child: isSdk28Below
               ? songArtwork != null
                 ? Image.file(File(songArtwork), fit: BoxFit.cover,)
@@ -83,7 +79,10 @@ class _SongTileState extends State<SongTile> {
 }
 
 class SongTile2 extends StatefulWidget {
-  const SongTile2({this.songInfo, this.onTap});
+  const SongTile2({
+    @required this.songInfo,
+    @required this.onTap
+  });
 
   final SongInfo songInfo;
   final Function onTap;
@@ -98,39 +97,38 @@ class _SongTile2State extends State<SongTile2> {
     final songTitle = widget.songInfo.title;
 
     return ListTile(
-        contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
-        title: Text(
-          songTitle,
-          overflow: TextOverflow.ellipsis,
-          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+      contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
+      title: Text(
+        songTitle,
+        overflow: TextOverflow.ellipsis,
+        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          fontWeight: FontWeight.bold,
         ),
-        trailing: IconButton(
-          icon: Icon(Icons.more_vert, color: Colors.white),
-          onPressed: () {
-            showSongBottomSheet(context, widget.songInfo);
-          },
-        ),
-        onTap: widget.onTap);
+      ),
+      trailing: IconButton(
+        icon: Icon(Icons.more_vert, color: Colors.white),
+        onPressed: () {
+          showSongBottomSheet(context, widget.songInfo);
+        },
+      ),
+      onTap: widget.onTap
+    );
   }
 }
 
 class NowPlayingSongTile extends StatefulWidget {
   const NowPlayingSongTile({
-    Key key,
-    // this.songInfo,
-    this.onTap,
-    this.isPlaying,
-    this.image,
-    this.index,
-    this.songTitle,
-    this.artistName,
-    this.path,
-    this.mediaItem
+    @required Key key,
+    @required this.onTap,
+    @required this.isPlaying,
+    @required this.image,
+    @required this.index,
+    @required this.songTitle,
+    @required this.artistName,
+    @required this.path,
+    @required this.mediaItem
   }) : super(key: key);
 
-  // final SongInfo songInfo;
   final Function onTap;
   final bool isPlaying;
   final Image image;
@@ -147,99 +145,81 @@ class NowPlayingSongTile extends StatefulWidget {
 class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
   @override
   Widget build(BuildContext context) {
-    // final songTitle = widget.songInfo.title;
-    // final songArtist = widget.songInfo.artist;
     final songQuery = Provider.of<SongQueryProvider>(context);
     final imageSize = 50.0;
 
     return ListTile(
-        contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
-        tileColor: widget.isPlaying ? color4 : color1,
-        leading: Container(
-          height: imageSize,
-          width: imageSize,
-          child: Stack(
-            children: [
-              Container(
-                height: imageSize,
-                width: imageSize,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: widget.image
-                ),
+      contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
+      tileColor: widget.isPlaying ? color4 : color1,
+      leading: Container(
+        height: imageSize,
+        width: imageSize,
+        child: Stack(
+          children: [
+            Container(
+              height: imageSize,
+              width: imageSize,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: widget.image
               ),
-              widget.isPlaying
-                ? Container(
-                    height: imageSize,
-                    width: imageSize,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.black.withOpacity(0.35),
-                    ),
-                    child: Container(
-                      height: imageSize * 0.5,
-                      width: imageSize * 0.5,
-                      child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.fill,),
-                    ),
-                  )
-                : Container()
-            ],
-          ),
+            ),
+            widget.isPlaying
+              ? Container(
+                  height: imageSize,
+                  width: imageSize,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.black.withOpacity(0.35),
+                  ),
+                  child: Container(
+                    height: imageSize * 0.5,
+                    width: imageSize * 0.5,
+                    child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.fill,),
+                  ),
+              )
+              : Container()
+          ],
         ),
-        title: Text(
-          widget.songTitle,
-          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-          overflow: TextOverflow.ellipsis,
+      ),
+      title: Text(
+        widget.songTitle,
+        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          fontWeight: FontWeight.bold,
         ),
-        subtitle: Text(
-          widget.artistName,
-          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
-          overflow: TextOverflow.ellipsis,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        widget.artistName,
+        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          fontWeight: FontWeight.w500,
         ),
-        trailing: ReorderableDragStartListener(
-          index: widget.index,
-          child: Container(
-            width: 35,
-            height: 35,
-            margin: const EdgeInsets.all(10),
-            child: Icon(Icons.menu, color: Colors.white,),
-          ),
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: ReorderableDragStartListener(
+        index: widget.index,
+        child: Container(
+          width: 35,
+          height: 35,
+          margin: const EdgeInsets.all(10),
+          child: Icon(Icons.menu, color: Colors.white,),
         ),
-        // trailing: widget.isPlaying
-        //   ? Container(
-        //       margin: const EdgeInsets.all(10),
-        //       width: 35,
-        //       height: 35,
-        //       child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.contain,),
-        //     )
-        //   // : IconButton(
-        //   //     icon: Icon(
-        //   //       Icons.more_vert,
-        //   //       color: Colors.white,
-        //   //     ),
-        //   //     onPressed: () {
-        //   //       showSongBottomSheet(context, widget.songInfo);
-        //   //     },
-        //   //   ),
-        //   : Container(
-        //     height: 1,
-        //     width: 1,
-        //   ),
-        onTap: widget.onTap,
-        onLongPress: (){
-          var songInfo = songQuery.getSongInfoByPath(widget.path);
-          showQueueBottomSheet(context, songInfo, widget.mediaItem, widget.index);
-        },
+      ),
+      onTap: widget.onTap,
+      onLongPress: (){
+        var songInfo = songQuery.getSongInfoByPath(widget.path);
+        showQueueBottomSheet(context, songInfo, widget.mediaItem, widget.index);
+      },
     );
   }
 }
 
 class PlaylistSongTile extends StatefulWidget {
-  const PlaylistSongTile({this.songInfo, this.onTap, this.index});
+  const PlaylistSongTile({
+    @required this.songInfo,
+    @required this.onTap, 
+    @required this.index
+  });
 
   final SongInfo songInfo;
   final Function onTap;
@@ -261,163 +241,152 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
     final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
 
     return ListTile(
-        contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
-        leading: Container(
-          height: 50,
-          width: 50,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: isSdk28Below
-              ? songArtwork != null
-                ? Image.file(File(songArtwork), fit: BoxFit.cover,)
-                : Image.file(File(songQueryProvider.defaultAlbum))
-              : hasArtWork
-                ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
-                : Image.file(File(songQueryProvider.defaultAlbum)),
+      contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
+      leading: Container(
+        height: 50,
+        width: 50,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: isSdk28Below
+            ? songArtwork != null
+              ? Image.file(File(songArtwork), fit: BoxFit.cover,)
+              : Image.file(File(songQueryProvider.defaultAlbum))
+            : hasArtWork
+              ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
+              : Image.file(File(songQueryProvider.defaultAlbum)),
+        )
+      ),
+      title: Container(
+        padding: EdgeInsets.only(right: 8.0),
+        child: Text(
+          songTitle,
+          overflow: TextOverflow.ellipsis,
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.bold
           )
         ),
-        title: Container(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Text(
-            songTitle,
-            overflow: TextOverflow.ellipsis,
-            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-              fontWeight: FontWeight.bold
-            )
+      ),
+      subtitle: Container(
+        padding: EdgeInsets.only(right: 8.0),
+        child: Text(
+          artistName,
+          overflow: TextOverflow.ellipsis,
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.w500
           ),
         ),
-        subtitle: Container(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Text(
-            artistName,
-            overflow: TextOverflow.ellipsis,
-            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-              fontWeight: FontWeight.w500
+      ),
+      trailing: IconButton(
+        icon: Icon(Icons.more_vert, color: Colors.white),
+        onPressed: () {
+          showModalBottomSheet(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(30.0),
+                topLeft: Radius.circular(30.0)
+              )
             ),
-          ),
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.more_vert, color: Colors.white),
-          onPressed: () {
-            // showSongBottomSheet(context, widget.songInfo);
-            showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(30.0),
-                        topLeft: Radius.circular(30.0))),
-                backgroundColor: Colors.white,
-                context: context,
-                builder: (context) {
-                  return Container(
-                    height: 260, //250 orig height
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                MarqueeText(
-                                  text: songTitle,
-                                  style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500
-                                  ),
-                                  speed: 20,
-                                ),
-                                SizedBox(height: 10),
-                                Divider(thickness: 1.0, color: Colors.grey)
-                              ],
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            "Play Next",
-                            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500
-                            )
-                          ),
-                          onTap: () {
-                            songQueryProvider.playNextSong(widget.songInfo);
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            "Add to Queue",
-                            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            backgroundColor: Colors.white,
+            context: context,
+            builder: (context) {
+              return Container(
+                height: 260,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                        children: [
+                          MarqueeText(
+                            text: songTitle,
+                            style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
                               color: Colors.black,
                               fontWeight: FontWeight.w500
                             ),
+                            speed: 20,
                           ),
-                          onTap: () {
-                            songQueryProvider.addToQueueSong(widget.songInfo);
-                            Navigator.pop(context);
-                          },
+                          SizedBox(height: 10),
+                          Divider(thickness: 1.0, color: Colors.grey)
+                        ],
+                      ),
+                    ),
+                  ),
+                    ListTile(
+                      title: Text(
+                        "Play Next",
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500
+                        )
+                      ),
+                      onTap: () {
+                        songQueryProvider.playNextSong(widget.songInfo);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(
+                        "Add to Queue",
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500
                         ),
-                        ListTile(
-                          title: Text(
-                            "Remove from Playlist",
-                            style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500
-                            ),
-                          ),
-                          onTap: () async {
-                            Navigator.pop(context);
+                      ),
+                      onTap: () {
+                        songQueryProvider.addToQueueSong(widget.songInfo);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(
+                        "Remove from Playlist",
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500
+                        ),
+                      ),
+                      onTap: () async {
+                        Navigator.pop(context);
 
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  shape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
-                                  title: Text("Remove from Playlist", style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
-                                  content: Text(
-                                    'Are you sure you want to remove "$songTitle" from this playlist?',
-                                    style: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle,
-                                  ),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button),
-                                      onPressed: () => Navigator.pop(context),
-                                    ),
-                                    FlatButton(
-                                      child: Text("REMOVE", style: ThemeProvider.themeOf(context).data.textTheme.button,),
-                                      onPressed: () async {
-                                        await songQueryProvider
-                                            .removeSongFromPlaylist(
-                                                widget.songInfo, widget.index);
-                                        await songQueryProvider
-                                            .getSongFromPlaylist(widget.index);
-                                        songQueryProvider
-                                            .getSongs()
-                                            .whenComplete(
-                                                () => Navigator.pop(context));
-                                      },
-                                    )
-                                  ],
-                                );
-                              },
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              shape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
+                              title: Text("Remove from Playlist", style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
+                              content: Text(
+                                'Are you sure you want to remove "$songTitle" from this playlist?',
+                                style: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle,
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: Text("REMOVE", style: ThemeProvider.themeOf(context).data.textTheme.button,),
+                                  onPressed: () async {
+                                    await songQueryProvider.removeSongFromPlaylist(widget.songInfo, widget.index);
+                                    await songQueryProvider.getSongFromPlaylist(widget.index);
+                                    songQueryProvider.getSongs().whenComplete(() => Navigator.pop(context));
+                                  },
+                                )
+                              ],
                             );
                           },
-                        ),
-                        // ListTile(
-                        //   title: Text("Edit"),
-                        //   onTap: (){
-                        //     Navigator.pop(context);
-                        //     Navigator.push(context, MaterialPageRoute(builder: (context) => SongInfoEdit(title: song.songInfoFromPlaylist[index].title, index: index, isSong: false, fromArtist: true,)));
-                        //   },
-                        // )
-                      ],
-                    ),
-                  );
-                });
-          },
-        ),
-        onTap: widget.onTap);
+                        );
+                    },
+                  ),
+                ],
+              ),
+            );
+          });
+        },
+      ),
+      onTap: widget.onTap
+    );
   }
 }

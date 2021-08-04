@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistBuilder extends StatelessWidget {
-  const PlaylistBuilder({this.songInfo});
+  const PlaylistBuilder({
+    @required this.songInfo
+  });
 
   final SongInfo songInfo;
 
@@ -26,18 +25,10 @@ class PlaylistBuilder extends StatelessWidget {
 
             return ListTile(
               title: Text(playlistName, style: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle,),
-              onTap: () async {
-                await notifier.addSongToPlaylist(songInfo, playlistIndex);
-                Fluttertoast.showToast(
-                    msg: "1 song added to $playlistName",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.grey[800],
-                    textColor: Colors.white,
-                    fontSize: 16.0
-                );
+              onTap: (){
+                notifier.addSongToPlaylist(songInfo, playlistIndex, playlistName);
                 Navigator.pop(context);
-                await notifier.getSongs();
+                notifier.getSongs();
               },
             );
           },

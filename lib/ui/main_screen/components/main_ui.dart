@@ -1,7 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/albums/albums.dart';
@@ -9,14 +8,14 @@ import 'package:my_music/ui/artists/artists.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/ui/playlists/playlists.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/ui/songs/songs.dart';
-import 'package:my_music/ui/main_screen/components/my_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class MainUI extends StatefulWidget {
-  const MainUI({this.globalKey});
+  const MainUI({
+    @required this.globalKey
+  });
 
   final GlobalKey<InnerDrawerState> globalKey;
   @override
@@ -32,11 +31,6 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
@@ -51,12 +45,12 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
           headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
             return <Widget>[
               SliverAppBar(
+                elevation: 0.5,
                 backgroundColor: Colors.transparent,
                 forceElevated: true,
                 title: Text("Music", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
                 leading: IconButton(
                   onPressed: () {
-                    // Scaffold.of(context).openDrawer();
                     widget.globalKey.currentState.toggle(direction: InnerDrawerDirection.start);
                   },
                   icon: Icon(Icons.menu),

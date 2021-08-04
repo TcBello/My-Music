@@ -6,11 +6,8 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:flutter_isolate/flutter_isolate.dart';
-import 'package:my_music/components/audio_player_task/audio_player_task.dart';
-import 'package:my_music/main.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
 class SongQueryProvider extends ChangeNotifier{
   final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
@@ -71,7 +68,6 @@ class SongQueryProvider extends ChangeNotifier{
     _androidDeviceInfo = await deviceInfo.androidInfo;
     
     _songInfo = await flutterAudioQuery.getSongs();
-    // _songInfo = List.from(await flutterAudioQuery.getSongs(), growable: false);
     _artistInfo = await flutterAudioQuery.getArtists();
     _albumInfo = await flutterAudioQuery.getAlbums();
     _playlistInfo = await flutterAudioQuery.getPlaylists();
@@ -81,20 +77,16 @@ class SongQueryProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> createPlaylist(String name, SongInfo songInfo) async {
+  Future<void> createPlaylist(String name, SongInfo songInfo, String playlistName) async {
     var newPlaylist = await FlutterAudioQuery.createPlaylist(playlistName: name);
     newPlaylist.addSong(song: songInfo);
     await getSongs();
-
-    // _playlistInfo.forEach((element) {
-    //   if(element.name == name){
-    //     element.addSong(song: songInfo);
-    //   }
-    // });
+    showShortToast("1 song added to $playlistName");
   }
 
-  Future<void> addSongToPlaylist(SongInfo song, int index) async {
+  void addSongToPlaylist(SongInfo song, int index, String playlistName) async {
     await _playlistInfo[index].addSong(song: song);
+    showShortToast("1 song added to $playlistName");
   }
 
   Future<void> removeSongPlaylist(SongInfo song, int index) async {
@@ -142,13 +134,7 @@ class SongQueryProvider extends ChangeNotifier{
       MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
       int nextIndex = await AudioService.customAction("getCurrentIndex");
       AudioService.addQueueItemAt(mediaItem, nextIndex);
-
-      // _currentQueue.insert(nextIndex, nextSongInfo);
-      // _songInfo = await flutterAudioQuery.getSongs();
-      // notifyListeners();
-      // _songInfo = await flutterAudioQuery.getSongs();
-
-      // notifyListeners();
+      showShortToast("Song will play next");
     }
   }
 
@@ -156,40 +142,25 @@ class SongQueryProvider extends ChangeNotifier{
     if(AudioService.running){
       MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
       AudioService.addQueueItem(mediaItem);
-
-      // _currentQueue.add(addToQueueSongInfo);
-      // _songInfo = await flutterAudioQuery.getSongs();
-
-      notifyListeners();
+      showShortToast("Song added to queue");
     }
   }
 
   void playNextPlaylist(List<SongInfo> songInfoList) async{
     if(AudioService.running){
       List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-
       AudioService.customAction("setAudioSourceMode", 1);
       AudioService.updateQueue(mediaList);
-
-      int nextIndex = await AudioService.customAction("getCurrentIndex");
-      // _currentQueue.insertAll(nextIndex, songInfoList);
-      // _songInfo = await flutterAudioQuery.getSongs();
-
-      notifyListeners();
+      showShortToast("Playlist will play next");
     }
   }
 
   void addToQueuePlaylist(List<SongInfo> songInfoList) async{
     if(AudioService.running){
       List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-
       AudioService.customAction("setAudioSourceMode", 2);
       AudioService.updateQueue(mediaList);
-
-      // _currentQueue.addAll(songInfoList);
-      // _songInfo = await flutterAudioQuery.getSongs();
-
-      notifyListeners();
+      showShortToast("Playlist added to queue");
     }
   }
 
@@ -267,31 +238,6 @@ class SongQueryProvider extends ChangeNotifier{
     String dirPath = dir.path;
     _searchProgress = 0.0;
     notifyListeners();
-
-    // _songInfo.forEach((element) async {
-    //   String filePath = "$dirPath/${element.albumId}.png";
-    //   print(filePath);
-    //   File file = File(filePath);
-    //   // bool isExists = await file.exists();
-    //   bool isExists = file.existsSync();
-    //   Uint8List artWork = await flutterAudioQuery.getArtwork(
-    //     type: ResourceType.ALBUM,
-    //     id: element.albumId,
-    //     size: Size(500, 500)
-    //   );
-
-    //   if(!isExists){
-    //     try{
-    //       if(artWork.isNotEmpty && artWork != null){
-    //         file.writeAsBytes(artWork);
-    //         print("FilePath: ${file.path}\nSong Name: ${element.title}");
-    //       }
-    //     }
-    //     catch(e){
-    //       print(e);
-    //     }
-    //   }
-    // });
 
     if(_androidDeviceInfo.version.sdkInt >= 29){
       if(!valFile.existsSync()){
@@ -399,9 +345,7 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   void setQueue(List<SongInfo> songList){
-    // _currentQueue = songList;
     _currentQueue = List.from(songList);
-
     notifyListeners();
   }
 
@@ -410,9 +354,6 @@ class SongQueryProvider extends ChangeNotifier{
       newIndex--;
     }
     AudioService.customAction("reorderSong", [oldIndex, newIndex]);
-
-    // _currentQueue.removeAt(oldIndex);
-    // _currentQueue.insert(newIndex, song);
   }
 
   void removeQueueSong(MediaItem mediaItem, int index){

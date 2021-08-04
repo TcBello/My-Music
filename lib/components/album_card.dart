@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:my_music/components/style.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class AlbumCard extends StatelessWidget {
-  const AlbumCard({this.albumName, this.artistName, this.imageGrid});
+  const AlbumCard({
+    @required this.albumName,
+    @required this.artistName,
+    @required this.imageGrid
+  });
 
   final String albumName;
   final String artistName;
@@ -20,8 +23,6 @@ class AlbumCard extends StatelessWidget {
           imageGrid,
           Expanded(
             child: Container(
-              // height: MediaQuery.of(context).size.height * 0.05,
-              // color: Colors.green,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -44,29 +45,6 @@ class AlbumCard extends StatelessWidget {
               ),
             ),
           ),
-          // Align(
-          //   alignment: Alignment.centerLeft,
-          //   child: Padding(
-          //       // padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          //       padding: const EdgeInsets.symmetric(horizontal: 10),
-          //       child: Container(
-          //         padding: EdgeInsets.only(right: 5.0),
-          //         child: Text(
-          //           albumName,
-          //           overflow: TextOverflow.ellipsis,
-          //           style: cardTitleTextStyle,
-          //         ),
-          //         width: MediaQuery.of(context).size.width,
-          //         height: 20
-          //       )),
-          // ),
-          // Padding(
-          //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          //     child: Text(
-          //       artistName,
-          //       overflow: TextOverflow.ellipsis,
-          //       style: cardSubtitleTextStyle,
-          //     )),
         ],
       ),
     );

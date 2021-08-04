@@ -11,7 +11,12 @@ class ArtistProfile extends StatelessWidget {
   final String title;
   final int index;
   final String backgroundSliver;
-  ArtistProfile({this.title, this.index, this.backgroundSliver});
+  
+  const ArtistProfile({
+    @required this.title,
+    @required this.index,
+    @required this.backgroundSliver
+  });
 
   @override
   Widget build(BuildContext context) {

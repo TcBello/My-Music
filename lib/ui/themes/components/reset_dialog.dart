@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class ResetDialog extends StatelessWidget {
-  const ResetDialog({this.index, this.onPressedDelete, this.title, this.content});
+  const ResetDialog({
+    @required this.onPressedDelete,
+    @required this.title,
+    @required this.content
+  });
 
-  final int index;
   final Function onPressedDelete;
   final String title;
   final String content;
@@ -16,11 +19,11 @@ class ResetDialog extends StatelessWidget {
       title: Text(title, style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
       content: Text(content, style: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
+        TextButton(
           child: Text("RESET", style: ThemeProvider.themeOf(context).data.textTheme.button,),
           onPressed: onPressedDelete
         ),

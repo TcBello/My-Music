@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/artists/artist_profile.dart';
 import 'package:my_music/components/image_gridview.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/ui/artists/components/artist_card.dart';
 import 'package:provider/provider.dart';
 

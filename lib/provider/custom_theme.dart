@@ -33,7 +33,6 @@ class CustomThemeProvider with ChangeNotifier{
   Future<void> getCurrentBackground() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final appDir = await getApplicationDocumentsDirectory();
-    // final _currentBG = _prefs.getString('currentbg');
     final backgroundId = _prefs.getString('backgroundId');
     final _currentBlur = _prefs.getDouble('currentblur');
     final _currentBG = "${appDir.path}/background-$backgroundId";
@@ -74,7 +73,7 @@ class CustomThemeProvider with ChangeNotifier{
 
     final uuid = Uuid().v4();
     final imagePath = "${appDir.path}/background-$uuid";
-    // await _prefs.setString('backgroundId', uuid);
+    
     await _prefs.setDouble('currentblur', blurValue);
     
     if(bgPath != "" && bgPath != currentBackgroundFile.path){

@@ -3,8 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/provider/theme.dart';
+import 'package:my_music/provider/custom_theme.dart';
 import 'package:provider/provider.dart';
 
 class BackgroundWallpaper extends StatelessWidget {

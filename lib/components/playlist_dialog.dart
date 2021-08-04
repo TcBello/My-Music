@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/playlist_builder.dart';
-import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistDialog extends StatelessWidget {
-  const PlaylistDialog({this.songInfo});
+  const PlaylistDialog({
+    @required this.songInfo
+  });
 
   final SongInfo songInfo;
 
@@ -18,18 +17,18 @@ class PlaylistDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
-      title: Text("Add to playlist", style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
+      title: Text("Add to Playlist", style: ThemeProvider.themeOf(context).data.dialogTheme.titleTextStyle,),
       content: Container(
         height: 175,
         width: 150,
         child: PlaylistBuilder(songInfo: songInfo,),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: (){Navigator.pop(context);},
           child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button,),
         ),
-        FlatButton(
+        TextButton(
           onPressed: (){
             Navigator.pop(context);
             showDialog(
@@ -44,25 +43,15 @@ class PlaylistDialog extends StatelessWidget {
                   ),
                 ),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     onPressed: (){Navigator.pop(context);},
                     child: Text("CANCEL", style: ThemeProvider.themeOf(context).data.textTheme.button,),
                   ),
                   Consumer<SongQueryProvider>(
                     builder: (context, notifier, child) {
-                      return FlatButton(
+                      return TextButton(
                         onPressed: () async {
-                          // await _songModel.addSongAndCreatePlaylist(_songModel.songInfo[index], _getText.text);
-                          await notifier.createPlaylist(playlistController.text, songInfo);
-                          // await notifier.getDataSong();
-                          Fluttertoast.showToast(
-                              msg: "1 song added to ${playlistController.text}",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              backgroundColor: Colors.grey[800],
-                              textColor: Colors.white,
-                              fontSize: 16.0
-                          );
+                          await notifier.createPlaylist(playlistController.text, songInfo, playlistController.text);
                           playlistController.text = "";
                           Navigator.pop(context);
                         },

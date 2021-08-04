@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 double valueFromPercentageInRange(
     {@required final double min, max, percentage}) {
@@ -15,46 +16,24 @@ String toMinSecFormat(Duration duration) {
     ?.group(1) ?? '$duration';
 }
 
-  // String toMinSecFormatWhileDragging(double dragPosition, Duration duration) {
-  //   if ((Duration(milliseconds: dragPosition.toInt()).inMinutes) < 60) {
-  //     if (duration.inSeconds.toDouble() > dragPosition) {
-  //       double newDouble = duration.inSeconds.toDouble() - dragPosition;
-  //       Duration newDuration = Duration(milliseconds: newDouble.toInt());
-  //       String minutes = (newDuration.inSeconds / 60).truncate().toString();
-  //       String seconds =
-  //           (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
+void showShortToast(String msg){
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.grey[800],
+    textColor: Colors.white,
+    fontSize: 16.0
+  );
+}
 
-  //       return "$minutes:$seconds";
-  //     } else {
-  //       double newDouble = duration.inSeconds.toDouble() + dragPosition;
-  //       Duration newDuration = Duration(milliseconds: newDouble.toInt());
-  //       String minutes = (newDuration.inSeconds / 60).truncate().toString();
-  //       String seconds =
-  //           (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-  //       return "$minutes:$seconds";
-  //     }
-  //   } else {
-  //     if (duration.inSeconds.toDouble() > dragPosition) {
-  //       double newDouble = duration.inSeconds.toDouble() - dragPosition;
-  //       Duration newDuration = Duration(milliseconds: newDouble.toInt());
-  //       String hours = (newDuration.inMinutes / 60).truncate().toString();
-  //       String minutes =
-  //           (newDuration.inMinutes % 60).truncate().toString().padLeft(2, '0');
-  //       String seconds =
-  //           (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-  //       return "$hours:$minutes:$seconds";
-  //     } else {
-  //       double newDouble = duration.inSeconds.toDouble() + dragPosition;
-  //       Duration newDuration = Duration(milliseconds: newDouble.toInt());
-  //       String hours = (newDuration.inMinutes / 60).truncate().toString();
-  //       String minutes =
-  //           (newDuration.inMinutes % 60).truncate().toString().padLeft(2, '0');
-  //       String seconds =
-  //           (newDuration.inSeconds % 60).truncate().toString().padLeft(2, '0');
-
-  //       return "$hours:$minutes:$seconds";
-  //     }
-  //   }
-  // }
+void showLongToast(String msg){
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.grey[800],
+    textColor: Colors.white,
+    fontSize: 16.0
+  );
+}

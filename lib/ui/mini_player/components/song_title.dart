@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 import 'package:marquee_text/marquee_text.dart';
-import 'package:my_music/components/style.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class SongTitleMiniPlayer extends StatelessWidget {
-  const SongTitleMiniPlayer({this.title, this.artist});
+  const SongTitleMiniPlayer({
+    @required this.title,
+    @required this.artist
+  });
 
   final String title;
   final String artist;
@@ -44,7 +45,9 @@ class SongTitleMiniPlayer extends StatelessWidget {
 }
 
 class SongTitle extends StatelessWidget {
-  const SongTitle({this.title});
+  const SongTitle({
+    @required this.title
+  });
 
   final String title;
 

@@ -2,17 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:device_info/device_info.dart';
 import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/audio_player_task/audio_player_task.dart';
-import 'package:my_music/main.dart';
-import 'package:my_music/model/audio_queue_state.dart';
+import 'package:my_music/model/audio_queue_data.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:uuid/uuid.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
@@ -97,6 +94,13 @@ class SongPlayerProvider extends ChangeNotifier{
           size: 40,
         );
         break;
+      default:
+        return Icon(
+          Icons.shuffle,
+          color: Colors.grey,
+          size: 40,
+        );
+        break;
     }
   }
 
@@ -111,7 +115,6 @@ class SongPlayerProvider extends ChangeNotifier{
   bool get isPlayerExpand => _isPlayerExpand;
 
   Stream<Duration> get positionStream => AudioService.positionStream;
-  Stream<bool> get isPlayingStream => AudioPlayerTask().audioPlayer.playingStream;
 
   bool get isBackgroundRunning => AudioService.running;
   AudioProcessingState get processingState => AudioService.playbackState.processingState;
@@ -151,11 +154,6 @@ class SongPlayerProvider extends ChangeNotifier{
       _isPlayOnce = true;
       notifyListeners();
     }
-
-    // playPauseMiniPlayerIcon = Icon(Icons.pause, color: Colors.pinkAccent,);
-    // playPausePlayerIcon = Icon(Icons.pause, color: Colors.white, size: 60,);
-
-    // notifyListeners();
   }
 
   void playQueueSong(int index, List<MediaItem> queue){
@@ -165,21 +163,13 @@ class SongPlayerProvider extends ChangeNotifier{
     AudioService.play();
   }
 
-  void stopSong(){
-    AudioService.stop();
-  }
+  void stopSong() => AudioService.stop();
 
-  void skipNext(){
-    AudioService.skipToNext();
-  }
+  void skipNext() => AudioService.skipToNext();
 
-  void skipPrevious(){
-    AudioService.skipToPrevious();
-  }
+  void skipPrevious() => AudioService.skipToPrevious();
 
-  void seek(Duration position) async{
-    AudioService.seekTo(position);
-  }
+  void seek(Duration position) async => AudioService.seekTo(position);
 
   void pauseResume() async{
     if(await AudioService.customAction("isPlaying")){
@@ -260,20 +250,15 @@ class SongPlayerProvider extends ChangeNotifier{
     }
 
     notifyListeners();
-    // AudioService.customAction("setShuffle");
 
     switch(_shuffleIndex){
       case 0:
         AudioService.setShuffleMode(AudioServiceShuffleMode.none);
-        // _shuffleIndex = 0;
         break;
       case 1:
         AudioService.setShuffleMode(AudioServiceShuffleMode.all);
-        // _shuffleIndex = 1;
         break;
     }
-
-    // notifyListeners();
   }
 
   void setPlayerExpandBool(bool value){
@@ -284,31 +269,6 @@ class SongPlayerProvider extends ChangeNotifier{
   Future<void> defaultModes() async{
     _repeatIndex = 0;
     _shuffleIndex = 0;
-    // bool isPlaying = await AudioService.customAction("isPlaying");
-    // print("ISPLAYING: $isPlaying");
-
-    // if(isPlaying){
-    //   int id = await AudioService.customAction("getAudioSessionId");
-    //   Equalizer.init(id);
-    //   Equalizer.setEnabled(true);
-    //   Equalizer.setAudioSessionId(id);
-    //   print("ISPLAYING: $isPlaying\nID: $id");
-    // }
-
-    // Future.delayed(Duration(seconds: 1), () async {
-    //   bool isPlaying = await AudioService.customAction("isPlaying");
-    //   print("ISPLAYING: $isPlaying");
-
-    //   if(isPlaying){
-    //     int id = await AudioService.customAction("getAudioSessionId");
-    //     Equalizer.init(id);
-    //     Equalizer.setEnabled(true);
-    //     Equalizer.setAudioSessionId(id);
-    //     print("ISPLAYING: $isPlaying\nID: $id");
-    //   }
-    // });
-
-    // notifyListeners();
   }
 
   Future<int> getCurrentIndex() async{
@@ -325,14 +285,13 @@ class SongPlayerProvider extends ChangeNotifier{
     if(AudioService.running){
       AudioService.customAction("setTimer", _minuteTimer);
       if(_minuteTimer != 0){
-        Fluttertoast.showToast(
-          msg: "Music will stop at $_minuteTimer minutes",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.grey[800],
-          textColor: Colors.white,
-          fontSize: 16.0
-        );
+        showShortToast("Music will stop at $_minuteTimer minutes");
+      }
+      else if(_minuteTimer == 1){
+        showShortToast("Music will stop at $_minuteTimer minutes");
+      }
+      else{
+        showShortToast("Music will not stop");
       }
     }
   }

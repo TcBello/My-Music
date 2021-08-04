@@ -5,19 +5,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/provider/theme.dart';
+import 'package:my_music/provider/custom_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-class BackgroundSkin extends StatefulWidget {
+class Background extends StatefulWidget {
   @override
-  _BackgroundSkinState createState() => _BackgroundSkinState();
+  _BackgroundState createState() => _BackgroundState();
 }
 
-class _BackgroundSkinState extends State<BackgroundSkin>
+class _BackgroundState extends State<Background>
     with TickerProviderStateMixin {
   TabController _tabController;
   double _blurValue = 0.0;
@@ -37,8 +36,6 @@ class _BackgroundSkinState extends State<BackgroundSkin>
   void dispose() {
     super.dispose();
     _tabController.dispose();
-    // prefInit();
-    // imageStream();
   }
 
   Future<void> prefInit() async {
@@ -46,22 +43,8 @@ class _BackgroundSkinState extends State<BackgroundSkin>
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final currentBackgroundId = _prefs.getString('backgroundId');
     final currentList = _prefs.getStringList('images') ?? [];
-    // final currentBG = _prefs.getString('currentbg');
     final currentBlur = _prefs.getDouble('currentblur') ?? 0.0;
     final image = "${appDir.path}/background-$currentBackgroundId";
-
-    // if (currentList == null){
-    //   return _imageList = [];
-    //   // return [];
-    // }
-    // else{
-    //   setState(() {
-    //     _imageList = _prefs.getStringList('images');
-    //   });
-    // }
-    // setState(() {
-    //   _imageList = _prefs.getStringList('images');
-    // });
 
     if(currentBackgroundId != null && File(image).existsSync()){
       setState(() {
@@ -139,72 +122,55 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                       ),
                     ),
                   ),
-                  // Container(
-                  //       height: 500,
-                  //       width: 300,
-                  //       child: _isChangeOnce ? Image.file(File(_currentBG)) : _defaultImage
-                  // ),
-                  // BackdropFilter(
-                  //   filter: ImageFilter.blur(
-                  //     sigmaX: _blurValue,
-                  //     sigmaY: _blurValue
-                  //   ),
-                  //   child: Container(
-                  //     height: 500,
-                  //     width: 300,
-                  //     color: Colors.white.withOpacity(0.0),
-                  //   ),
-                  // ),
                   Scaffold(
                     resizeToAvoidBottomInset: false,
                     backgroundColor: Colors.transparent,
                     body: NestedScrollView(
-                        headerSliverBuilder:
-                            (BuildContext context, bool isScreenScrolled) {
-                          return <Widget>[
-                            SliverAppBar(
-                              backgroundColor: Colors.transparent,
-                              forceElevated: true,
-                              title: Text("Music"),
-                              leading: IconButton(
-                                onPressed: () {
-                                  Scaffold.of(context).openDrawer();
-                                },
-                                icon: Icon(Icons.menu),
-                              ),
-                              actions: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.search),
-                                  onPressed: () {},
+                      headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
+                        return <Widget>[
+                          SliverAppBar(
+                            backgroundColor: Colors.transparent,
+                            forceElevated: true,
+                            title: Text("Music"),
+                            leading: IconButton(
+                              onPressed: () {
+                                Scaffold.of(context).openDrawer();
+                              },
+                              icon: Icon(Icons.menu),
+                            ),
+                            actions: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.search),
+                                onPressed: () {},
+                              )
+                            ],
+                            bottom: TabBar(
+                              controller: _tabController,
+                              indicatorColor: Colors.pinkAccent,
+                              tabs: <Widget>[
+                                Tab(
+                                  text: "Songs",
+                                ),
+                                Tab(
+                                  text: "Artists",
+                                ),
+                                Tab(
+                                  text: "Albums",
+                                ),
+                                Tab(
+                                  text: "Playlists",
                                 )
                               ],
-                              bottom: TabBar(
-                                controller: _tabController,
-                                indicatorColor: Colors.pinkAccent,
-                                tabs: <Widget>[
-                                  Tab(
-                                    text: "Songs",
-                                  ),
-                                  Tab(
-                                    text: "Artists",
-                                  ),
-                                  Tab(
-                                    text: "Albums",
-                                  ),
-                                  Tab(
-                                    text: "Playlists",
-                                  )
-                                ],
-                              ),
-                            )
-                          ];
-                        },
-                        body: TabBarView(controller: _tabController, children: [
-                          Container(),
-                          Container(),
-                          Container(),
-                          Container()
-                        ])),
+                            ),
+                          )
+                        ];
+                      },
+                      body: TabBarView(controller: _tabController, children: [
+                        Container(),
+                        Container(),
+                        Container(),
+                        Container()
+                      ])),
                     drawer: Drawer(),
                   ),
                 ],
@@ -233,8 +199,6 @@ class _BackgroundSkinState extends State<BackgroundSkin>
             value: _blurValue,
             activeColor: color3,
             inactiveColor: color5,
-            // min: 0.0,
-            // max: 12.5,
             min: 0.0,
             max: 12.0,
             divisions: 3,
@@ -253,6 +217,7 @@ class _BackgroundSkinState extends State<BackgroundSkin>
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -265,7 +230,10 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                 margin: EdgeInsets.only(left: 10),
                 width: 100,
                 height: 150,
-                color: color5,
+                decoration: BoxDecoration(
+                  color: color5,
+                  borderRadius: BorderRadius.circular(8)
+                ),
                 child: Center(
                   child: Icon(Icons.add, color: Colors.white),
                 ),
@@ -278,7 +246,6 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                 final imageList = snapshot.data;
 
                 if(snapshot.hasData){
-                  // bool fileIsExisting = File(x[0]).existsSync();
 
                   if(imageList.isNotEmpty){
                     if(File(imageList[0]).existsSync()){
@@ -294,7 +261,16 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                               margin: EdgeInsets.only(left: 10),
                               width: 100,
                               height: 150,
-                              child: Image.file(File(imageList[index]), fit: BoxFit.cover,)
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8)
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(
+                                  File(imageList[index]),
+                                  fit: BoxFit.cover,
+                                )
+                              )
                           ),
                         ),),
                       ); 
@@ -326,7 +302,7 @@ class _BackgroundSkinState extends State<BackgroundSkin>
       backgroundColor: color1,
         appBar: AppBar(
           backgroundColor: color2,
-          title: Text("Background Skin", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
+          title: Text("Background", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
           actions: [
             Consumer<CustomThemeProvider>(
               builder: (context, theme, child) {
@@ -345,10 +321,6 @@ class _BackgroundSkinState extends State<BackgroundSkin>
                     }
                     else{
                       await theme.updateBG(_currentBG, _blurValue);
-                      // await theme.getCurrentBackground().then((value){
-                      //   Navigator.pop(context);
-                      //   Navigator.pop(context);
-                      // });
                       await theme.getCurrentBackground();
                       Navigator.pop(context);
                       Navigator.pop(context);
@@ -366,8 +338,22 @@ class _BackgroundSkinState extends State<BackgroundSkin>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 15),
+                  child: Text(
+                    "Preview",
+                    style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,
+                  ),
+                ),
                 _previewWidget(context),
                 _blurWidget(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 10, bottom: 15),
+                  child: Text(
+                    "Wallpapers",
+                    style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,
+                  ),
+                ),
                 _wallpaperWidget(context),
               ],
             ),

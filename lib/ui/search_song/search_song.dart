@@ -6,10 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class SearchSongUI extends StatelessWidget {
-  const SearchSongUI({
-    Key key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +16,14 @@ class SearchSongUI extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AnimatedTextKit(
-            animatedTexts: [WavyAnimatedText("Searching Songs...", textStyle: ThemeProvider.themeOf(context).data.textTheme.headline6)],
+            pause: Duration(milliseconds: 300),
+            animatedTexts: [
+              WavyAnimatedText(
+                "Searching Songs...",
+                textStyle: ThemeProvider.themeOf(context).data.textTheme.headline6,
+                speed: Duration(milliseconds: 150)
+              )
+            ],
             repeatForever: true,
           ),
           Container(

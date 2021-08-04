@@ -1,7 +1,5 @@
-import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -81,8 +79,7 @@ class MyDrawer extends StatelessWidget {
               ListTile(
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(
-                      context, CupertinoPageRoute(builder: (context) => Themes()));
+                  Navigator.push(context, CupertinoPageRoute(builder: (context) => Themes()));
                 },
                 leading: Icon(
                   Icons.wallpaper,

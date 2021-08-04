@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/library_song_playlist.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/ui/playlists/components/playlist_card.dart';
 import 'package:provider/provider.dart';
 
@@ -24,8 +23,7 @@ class Playlists extends StatelessWidget {
                 return InkWell(
                   onTap: () async{
                     await notifier.getSongFromPlaylist(index);
-                    // Navigator.push(context, CupertinoPageRoute(builder: (context) => LibrarySongList(indexFromOutside: index, isFromArtist: false, isFromPlaylist: true,)));
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySongPlaylist(index)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySongPlaylist(indexFromOutside: index,)));
                   },
                   child: PlaylistCard(
                     playlistName: playlistName,

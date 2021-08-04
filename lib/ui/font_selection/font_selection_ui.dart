@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/theme.dart';
+import 'package:my_music/provider/custom_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -8,7 +8,6 @@ class FontSelectionUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeProvider>(context);
-    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: color1,
@@ -27,7 +26,7 @@ class FontSelectionUI extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
-          width: _size.width,
+          width: MediaQuery.of(context).size.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

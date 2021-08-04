@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_model.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/components/header.dart';
 import 'package:my_music/ui/library_song/components/library_song_builder.dart';
@@ -14,7 +14,11 @@ import 'package:theme_provider/theme_provider.dart';
 class LibrarySong extends StatelessWidget {
   final AlbumInfo albumInfo;
   final List<SongInfo> songInfoList;
-  const LibrarySong(this.albumInfo, this.songInfoList);
+
+  const LibrarySong({
+    @required this.albumInfo,
+    @required this.songInfoList
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +56,17 @@ class LibrarySong extends StatelessWidget {
                   final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
 
                   return FlexibleSpaceBar(
-                    // title: Container(
-                    //   margin: const EdgeInsets.symmetric(horizontal: 50),
-                    //   child: Text(albumInfo.title, style: defTextStyle, overflow: TextOverflow.ellipsis,),
-                    // ),
                     title: ConstrainedBox(
-                      child: Text(
+                      child: AutoSizeText(
                         albumInfo.title,
                         style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.7,
+                        maxHeight: 35
+                      ),
                     ),
                     centerTitle: true,
                     background: Container(
@@ -85,8 +88,8 @@ class LibrarySong extends StatelessWidget {
                                 File(albumArtwork2),
                                 fit: BoxFit.cover,
                               )
-                            : Image.asset(
-                                "assets/imgs/defalbum.png",
+                            : Image.file(
+                                File(notifier.defaultAlbum),
                                 fit: BoxFit.cover,
                               ),
                       ),
@@ -98,19 +101,21 @@ class LibrarySong extends StatelessWidget {
           ];
         },
         body: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Header(
-                  albumInfo: albumInfo,
-                ),
-                LibrarySongBuilder(
-                  songInfoList: songInfoList,
-                )
-              ],
-            )),
-    ));
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Header(
+                albumInfo: albumInfo,
+              ),
+              LibrarySongBuilder(
+                songInfoList: songInfoList,
+              )
+            ],
+          )
+        ),
+      )
+    );
   }
 }

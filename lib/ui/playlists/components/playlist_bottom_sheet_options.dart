@@ -1,17 +1,17 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/delete_dialog.dart';
-import 'package:my_music/provider/song_model.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistBottomSheetOptions extends StatelessWidget {
-  const PlaylistBottomSheetOptions({this.playlistInfo, this.index});
+  const PlaylistBottomSheetOptions({
+    @required this.playlistInfo,
+    @required this.index
+  });
 
   final PlaylistInfo playlistInfo;
   final int index;
@@ -24,7 +24,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
     final sdkInt = songQueryProvider.androidDeviceInfo.version.sdkInt;
 
     return Container(
-      height: 305,
+      height: 290,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,10 +60,6 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             )),
             onTap: () async {
               await songQueryProvider.getSongFromPlaylist(index);
-              // provider.setIndex(0);
-              // await provider
-              //     .playSong(provider.songInfoFromPlaylist)
-              //     .whenComplete(() => Navigator.pop(context));
               songQueryProvider.setQueue(songQueryProvider.songInfoFromPlaylist);
               songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist, 0, sdkInt);
               Navigator.pop(context);

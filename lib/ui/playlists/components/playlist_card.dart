@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/bottom_sheet.dart';
 import 'package:my_music/components/image_gridview.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistCard extends StatelessWidget {
-  const PlaylistCard({this.playlistName, this.songNumber, this.playlistInfo, this.index});
+  const PlaylistCard({
+    @required this.playlistName,
+    @required this.songNumber,
+    @required this.playlistInfo,
+    @required this.index
+  });
 
   final String playlistName;
   final int songNumber;
@@ -31,7 +35,6 @@ class PlaylistCard extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              // color: Colors.green,
               child: Stack(
                 children: [
                   Column(
@@ -39,15 +42,15 @@ class PlaylistCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: Container(
-                            child: Text(playlistName, style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.bold,
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Container(
+                          child: Text(playlistName, style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.bold,
                               color: Colors.black
-                            ),),
-                            width: MediaQuery.of(context).size.width,
-                            height: 20,
-                          )),
+                          ),),
+                          width: MediaQuery.of(context).size.width,
+                          height: 20,
+                        )),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Text("$songNumber songs", style: ThemeProvider.themeOf(context).data.textTheme.caption,)
