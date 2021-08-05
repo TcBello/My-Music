@@ -109,7 +109,9 @@ class _BackgroundState extends State<Background>
               width: 300,
               child: Stack(
                 children: [
-                  ClipRect(
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    clipBehavior: Clip.hardEdge,
                     child: ImageFiltered(
                       imageFilter: ImageFilter.blur(
                         sigmaX: _blurValue,
@@ -118,60 +120,68 @@ class _BackgroundState extends State<Background>
                       child: Container(
                           height: 500,
                           width: 300,
-                          child: _isChangeOnce ? Image.file(File(_currentBG)) : _defaultImage
+                          child: _isChangeOnce
+                            ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.file(File(_currentBG)),
+                            )
+                            : _defaultImage
                       ),
                     ),
                   ),
-                  Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    backgroundColor: Colors.transparent,
-                    body: NestedScrollView(
-                      headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
-                        return <Widget>[
-                          SliverAppBar(
-                            backgroundColor: Colors.transparent,
-                            forceElevated: true,
-                            title: Text("Music"),
-                            leading: IconButton(
-                              onPressed: () {
-                                Scaffold.of(context).openDrawer();
-                              },
-                              icon: Icon(Icons.menu),
-                            ),
-                            actions: <Widget>[
-                              IconButton(
-                                icon: Icon(Icons.search),
-                                onPressed: () {},
-                              )
-                            ],
-                            bottom: TabBar(
-                              controller: _tabController,
-                              indicatorColor: Colors.pinkAccent,
-                              tabs: <Widget>[
-                                Tab(
-                                  text: "Songs",
-                                ),
-                                Tab(
-                                  text: "Artists",
-                                ),
-                                Tab(
-                                  text: "Albums",
-                                ),
-                                Tab(
-                                  text: "Playlists",
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      backgroundColor: Colors.transparent,
+                      body: NestedScrollView(
+                        headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
+                          return <Widget>[
+                            SliverAppBar(
+                              backgroundColor: Colors.transparent,
+                              forceElevated: true,
+                              title: Text("Music"),
+                              leading: IconButton(
+                                onPressed: () {
+                                  Scaffold.of(context).openDrawer();
+                                },
+                                icon: Icon(Icons.menu),
+                              ),
+                              actions: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.search),
+                                  onPressed: () {},
                                 )
                               ],
-                            ),
-                          )
-                        ];
-                      },
-                      body: TabBarView(controller: _tabController, children: [
-                        Container(),
-                        Container(),
-                        Container(),
-                        Container()
-                      ])),
-                    drawer: Drawer(),
+                              bottom: TabBar(
+                                controller: _tabController,
+                                indicatorColor: Colors.pinkAccent,
+                                tabs: <Widget>[
+                                  Tab(
+                                    text: "Songs",
+                                  ),
+                                  Tab(
+                                    text: "Artists",
+                                  ),
+                                  Tab(
+                                    text: "Albums",
+                                  ),
+                                  Tab(
+                                    text: "Playlists",
+                                  )
+                                ],
+                              ),
+                            )
+                          ];
+                        },
+                        body: TabBarView(controller: _tabController, children: [
+                          Container(),
+                          Container(),
+                          Container(),
+                          Container()
+                        ])),
+                      drawer: Drawer(),
+                    ),
                   ),
                 ],
               ),
