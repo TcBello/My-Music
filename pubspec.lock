@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.5"
+  audiotagger:
+    dependency: "direct main"
+    description:
+      name: audiotagger
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.1"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -106,6 +113,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  drag_and_drop_lists:
+    dependency: "direct main"
+    description:
+      name: drag_and_drop_lists
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   equalizer:
     dependency: "direct main"
     description:
@@ -113,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.2+2"
+  fading_edge_scrollview:
+    dependency: transitive
+    description:
+      name: fading_edge_scrollview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -170,7 +191,7 @@ packages:
     source: hosted
     version: "1.0.0+1"
   flutter_isolate:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_isolate
       url: "https://pub.dartlang.org"
@@ -270,6 +291,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.1"
+  marquee:
+    dependency: "direct main"
+    description:
+      name: marquee
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   marquee_text:
     dependency: "direct main"
     description:
@@ -390,7 +418,7 @@ packages:
     source: hosted
     version: "4.3.3"
   rxdart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
@@ -534,13 +562,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
-  theme_provider:
-    dependency: "direct main"
-    description:
-      name: theme_provider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.0"
   typed_data:
     dependency: transitive
     description:
