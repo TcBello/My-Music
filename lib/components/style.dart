@@ -94,7 +94,8 @@ CardTheme cardTheme = CardTheme(
 const TextStyle defaultStyle = TextStyle(
   color: Colors.white,
   fontSize: 16,
-  fontWeight: FontWeight.w600
+  fontWeight: FontWeight.w600,
+  fontFamily: ""
 );
 
 const TextStyle monserratStyle = TextStyle(
