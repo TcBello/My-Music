@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/custom_theme.dart';
 import 'package:provider/provider.dart';
@@ -12,14 +13,25 @@ class FontSelectionUI extends StatelessWidget {
     return Scaffold(
       backgroundColor: color1,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text("Font Selection", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
         backgroundColor: color2,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.check, color: Colors.white),
             onPressed: () async {
               var result = await theme.applyFont(context);
-              if(result)  Navigator.pop(context);
+              if(result){
+                Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+                  Navigator.pop(context);
+                });
+              }
             },
           )
         ],

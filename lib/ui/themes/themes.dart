@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/custom_theme.dart';
 import 'package:my_music/ui/themes/background/background.dart';
@@ -23,7 +24,9 @@ class Themes extends StatelessWidget {
             color: Colors.white
           ),),
           onTap: (){
-            Navigator.push(context, CupertinoPageRoute(builder: (context) => Background()));
+            Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => Background()));
+            });
           },
         ),
         ListTile(
@@ -33,7 +36,11 @@ class Themes extends StatelessWidget {
           subtitle: Text("Customize text style", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
             color: Colors.white
           ),),
-          onTap: (){Navigator.push(context, CupertinoPageRoute(builder: (context) => TextStyleTheme()));},
+          onTap: (){
+            Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => TextStyleTheme()));
+            });
+          },
         ),
         Consumer<CustomThemeProvider>(
           builder: (context, theme, snapshot) {

@@ -23,6 +23,7 @@ class MyDrawer extends StatelessWidget {
               height: 300,
               child: Column(
                 children: [
+                  SizedBox(height: 10,),
                   Text("Minutes", style: ThemeProvider.themeOf(context).data.textTheme.headline5.copyWith(
                     fontSize: 25
                   )),

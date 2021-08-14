@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -78,6 +79,15 @@ class Search extends SearchDelegate<SongInfo>{
           decoration: TextDecoration.none
         )
       ),
+      appBarTheme: AppBarTheme(
+        color: color2,
+        backwardsCompatibility: false,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.grey[900],
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+        ),
+      ),
       primaryColor: color2,
       scaffoldBackgroundColor: color1,
       hintColor: Colors.grey[400],
@@ -95,4 +105,6 @@ class Search extends SearchDelegate<SongInfo>{
 
     return themeData;
   }
+
+  
 }

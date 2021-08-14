@@ -7,13 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/audio_player_task/audio_player_task.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/model/audio_queue_data.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
-  int _currentAudioSessionID = 0;
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
   String songArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id";
   int _minuteTimer = 0;
@@ -120,37 +120,27 @@ class SongPlayerProvider extends ChangeNotifier{
   void playSong(List<SongInfo> songInfoList, int index, int sdkInt) async{
     _convertToMediaItemList(songInfoList, sdkInt);
 
-    if(!AudioService.running){
-      _repeatIndex = 0;
-      _shuffleIndex = 0;
-      await AudioService.start(
-        backgroundTaskEntrypoint: audioPlayerTaskEntrypoint,
-        androidStopForegroundOnPause: true
-      );
-    }
-
-    AudioService.customAction("setIndex", index);
-    AudioService.customAction("setAudioSourceMode", 0);
-    AudioService.updateQueue(songList);
-
-    await AudioService.play();
-
-    int id = await AudioService.customAction("getAudioSessionId");
-    if(_currentAudioSessionID != id){
-      _currentAudioSessionID = id;
-      print("EQUALIZER AUD ID: $id");
-      try{
-        await Equalizer.setAudioSessionId(id);
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
+      if(!AudioService.running){
+        _repeatIndex = 0;
+        _shuffleIndex = 0;
+        await AudioService.start(
+          backgroundTaskEntrypoint: audioPlayerTaskEntrypoint,
+          androidStopForegroundOnPause: true
+        );
       }
-      catch(e){
-        print(e);
-      }
-    }
 
-    if(!_isPlayOnce){
-      _isPlayOnce = true;
-      notifyListeners();
-    }
+      AudioService.customAction("setIndex", index);
+      AudioService.customAction("setAudioSourceMode", 0);
+      AudioService.updateQueue(songList);
+
+      AudioService.play();
+
+      if(!_isPlayOnce){
+        _isPlayOnce = true;
+        notifyListeners();
+      }
+    });
   }
 
   void playQueueSong(int index, List<MediaItem> queue){

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:equalizer/equalizer.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:my_music/components/controller.dart';
 
@@ -53,11 +54,15 @@ class AudioPlayerTask extends BackgroundAudioTask{
       _broadcastState();
     });
 
+    _audioPlayer.androidAudioSessionIdStream.listen((id) {
+      if(id != null)  Equalizer.setAudioSessionId(id);
+    });
+
     _audioPlayer.currentIndexStream.listen((i) {
       print("CURRENT INDEX: $i");
       if(i != null){
          AudioServiceBackground.setMediaItem(_queue[i]);
-         AudioServiceBackground.sendCustomEvent(i ?? _index);
+         AudioServiceBackground.sendCustomEvent(i);
       }
     });
   }

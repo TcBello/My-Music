@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/custom_theme.dart';
 import 'package:my_music/ui/font_selection/font_selection_ui.dart';
@@ -120,7 +121,9 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
             color: Colors.white
           ),),
           onTap: (){
-            Navigator.push(context, CupertinoPageRoute(builder: (context) => FontSelectionUI()));
+            Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => FontSelectionUI()));
+            });
           },
         )
       ],

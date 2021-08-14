@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/custom_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -232,12 +233,12 @@ class _BackgroundState extends State<Background>
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(width: 10,),
             InkWell(
               onTap: () async {
                 await _openGallery();
               },
               child: Container(
-                margin: EdgeInsets.only(left: 10),
                 width: 100,
                 height: 150,
                 decoration: BoxDecoration(
@@ -260,28 +261,32 @@ class _BackgroundState extends State<Background>
                   if(imageList.isNotEmpty){
                     if(File(imageList[0]).existsSync()){
                       return Row(
-                        children: List.generate(imageList.length, (index) => InkWell(
-                          onTap: (){
-                            setState(() {
-                              _defaultImage = Image.file(File(imageList[index]), fit: BoxFit.cover,);
-                              _currentBG = imageList[index];
-                            });
-                          },
-                          child: Container(
-                              margin: EdgeInsets.only(left: 10),
-                              width: 100,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8)
+                        children: List.generate(imageList.length, (index) => Row(
+                          children: [
+                            SizedBox(width: 10,),
+                            InkWell(
+                              onTap: (){
+                                setState(() {
+                                  _defaultImage = Image.file(File(imageList[index]), fit: BoxFit.cover,);
+                                  _currentBG = imageList[index];
+                                });
+                              },
+                              child: Container(
+                                  width: 100,
+                                  height: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8)
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      File(imageList[index]),
+                                      fit: BoxFit.cover,
+                                    )
+                                  )
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  File(imageList[index]),
-                                  fit: BoxFit.cover,
-                                )
-                              )
-                          ),
+                            ),
+                          ],
                         ),),
                       ); 
                     }
@@ -326,14 +331,18 @@ class _BackgroundState extends State<Background>
                     if(_currentBG == "" && _blurValue == 0.0){
                       await theme.updateBG("", _blurValue);
                       await theme.getCurrentBackground();
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      });
                     }
                     else{
                       await theme.updateBG(_currentBG, _blurValue);
                       await theme.getCurrentBackground();
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      });
                     }
                   },
                 );

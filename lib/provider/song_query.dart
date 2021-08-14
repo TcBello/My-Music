@@ -6,6 +6,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -130,38 +131,46 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   void playNextSong(SongInfo nextSongInfo) async{
-    if(AudioService.running){
-      MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
-      int nextIndex = await AudioService.customAction("getCurrentIndex");
-      AudioService.addQueueItemAt(mediaItem, nextIndex);
-      showShortToast("Song will play next");
-    }
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
+      if(AudioService.running){
+        MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
+        int nextIndex = await AudioService.customAction("getCurrentIndex");
+        AudioService.addQueueItemAt(mediaItem, nextIndex);
+        showShortToast("Song will play next");
+      }
+    });
   }
 
   void addToQueueSong(SongInfo addToQueueSongInfo) async{
-    if(AudioService.running){
-      MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
-      AudioService.addQueueItem(mediaItem);
-      showShortToast("Song added to queue");
-    }
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+      if(AudioService.running){
+        MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
+        AudioService.addQueueItem(mediaItem);
+        showShortToast("Song added to queue");
+      }
+    });
   }
 
   void playNextPlaylist(List<SongInfo> songInfoList) async{
-    if(AudioService.running){
-      List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-      AudioService.customAction("setAudioSourceMode", 1);
-      AudioService.updateQueue(mediaList);
-      showShortToast("Playlist will play next");
-    }
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+      if(AudioService.running){
+        List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+        AudioService.customAction("setAudioSourceMode", 1);
+        AudioService.updateQueue(mediaList);
+        showShortToast("Playlist will play next");
+      }
+    });
   }
 
   void addToQueuePlaylist(List<SongInfo> songInfoList) async{
-    if(AudioService.running){
-      List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-      AudioService.customAction("setAudioSourceMode", 2);
-      AudioService.updateQueue(mediaList);
-      showShortToast("Playlist added to queue");
-    }
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+      if(AudioService.running){
+        List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+        AudioService.customAction("setAudioSourceMode", 2);
+        AudioService.updateQueue(mediaList);
+        showShortToast("Playlist added to queue");
+      }
+    });
   }
 
   List<MediaItem> _convertToMediaItemList(List<SongInfo> songInfoList){

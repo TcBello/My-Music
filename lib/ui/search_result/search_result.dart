@@ -19,32 +19,32 @@ class SearchResult extends StatelessWidget {
   final List<SongInfo> songSearchList;
 
   Widget _backgroundWidget(){
-      return Consumer<CustomThemeProvider>(
-        builder: (context, theme, snapshot) {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
-              ? color1
-              : Colors.transparent,
-            child: theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
-              ? Container()
-              : ClipRect(
-                child: ImageFiltered(
-                  imageFilter: ImageFilter.blur(
-                    sigmaX: theme.blurValue,
-                    sigmaY: theme.blurValue
-                  ),
-                  child: Image.file(
-                    File(theme.backgroundFilePath),
-                    fit: BoxFit.cover,
-                  ),
+    return Consumer<CustomThemeProvider>(
+      builder: (context, theme, snapshot) {
+        return Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
+            ? color1
+            : Colors.transparent,
+          child: theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
+            ? Container()
+            : ClipRect(
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(
+                  sigmaX: theme.blurValue,
+                  sigmaY: theme.blurValue
                 ),
-              )
+                child: Image.file(
+                  File(theme.backgroundFilePath),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
           );
         }
       );
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class SearchResult extends StatelessWidget {
                     left: 20,
                     bottom: 10
                   ),
-                  child: Text("Songs", style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                  child: Text("Search Result", style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
                     fontWeight: FontWeight.w600
                   ),),
                 ),
@@ -73,7 +73,7 @@ class SearchResult extends StatelessWidget {
                   builder: (context, songPlayer, songQuery, child){
                     final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
 
-                    return ListBody(
+                    return Column(
                       children: List.generate(songSearchList.length, (index) => SongTile(
                         songInfo: songSearchList[index],
                         onTap: (){
@@ -83,7 +83,7 @@ class SearchResult extends StatelessWidget {
                       )),
                     );
                   },
-                )
+                ),
               ],
             ),
           ),
