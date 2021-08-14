@@ -111,9 +111,6 @@ class SongPlayerProvider extends ChangeNotifier{
   bool _isPlayOnce = false;
   bool get isPlayOnce => _isPlayOnce;
 
-  bool _isPlayerExpand = false;
-  bool get isPlayerExpand => _isPlayerExpand;
-
   Stream<Duration> get positionStream => AudioService.positionStream;
 
   bool get isBackgroundRunning => AudioService.running;
@@ -259,11 +256,6 @@ class SongPlayerProvider extends ChangeNotifier{
         AudioService.setShuffleMode(AudioServiceShuffleMode.all);
         break;
     }
-  }
-
-  void setPlayerExpandBool(bool value){
-    _isPlayerExpand = value;
-    notifyListeners();
   }
 
   Future<void> defaultModes() async{

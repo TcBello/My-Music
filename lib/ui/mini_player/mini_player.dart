@@ -111,7 +111,6 @@ class MiniPlayer extends StatelessWidget {
                     imageSize: imageSize,
                     onPressed: (){
                       collapseMiniPlayer();
-                      songPlayer.setPlayerExpandBool(false);
                     },
                     songTitle: songTitle,
                     artistName: artistName,
@@ -141,7 +140,6 @@ class MiniPlayer extends StatelessWidget {
                   elementOpacity: elementOpacity,
                   onPressed: (){
                     expandMiniPlayer();
-                    songPlayer.setPlayerExpandBool(true);
                   },
                   songTitle: songTitle,
                   artistName: artistName,

@@ -1,7 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/albums/albums.dart';
 import 'package:my_music/ui/artists/artists.dart';
@@ -34,10 +33,8 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
 
     return Scaffold(
-      drawerEnableOpenDragGesture: songPlayerProvider.isPlayerExpand,
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: NestedScrollView(

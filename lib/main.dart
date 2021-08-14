@@ -11,6 +11,7 @@ import 'package:splashscreen/splashscreen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 void main() async {
+  WidgetsBinding.instance;
   runApp(
     MultiProvider(
       providers: [
@@ -36,7 +37,7 @@ void main() async {
                 description: "Default Text Theme",
                 data: ThemeData(
                   tabBarTheme: kTabBarTheme,
-                  appBarTheme: kAppBarTheme,
+                  appBarTheme: appBarTheme,
                   textTheme: textTheme,
                   dialogTheme: dialogTheme,
                   cardTheme: cardTheme,
@@ -50,7 +51,7 @@ void main() async {
                 description: "Montserrat Text Theme",
                 data: ThemeData(
                   tabBarTheme: kTabBarTheme,
-                  appBarTheme: kAppBarTheme,
+                  appBarTheme: appBarTheme,
                   textTheme: textTheme,
                   fontFamily: "Montserrat",
                   dialogTheme: dialogTheme,
@@ -65,7 +66,7 @@ void main() async {
                 description: "Comfortaa Text Theme",
                 data: ThemeData(
                   tabBarTheme: kTabBarTheme,
-                  appBarTheme: kAppBarTheme,
+                  appBarTheme: appBarTheme,
                   textTheme: textTheme,
                   fontFamily: "Comfortaa",
                   dialogTheme: dialogTheme,
@@ -80,7 +81,7 @@ void main() async {
                 description: "HK Grotesk Text Theme",
                 data: ThemeData(
                   tabBarTheme: kTabBarTheme,
-                  appBarTheme: kAppBarTheme,
+                  appBarTheme: appBarTheme,
                   textTheme: textTheme,
                   fontFamily: "HK Grotesk",
                   dialogTheme: dialogTheme,
@@ -95,7 +96,7 @@ void main() async {
                 description: "Chivo Text Theme",
                 data: ThemeData(
                   tabBarTheme: kTabBarTheme,
-                  appBarTheme: kAppBarTheme,
+                  appBarTheme: appBarTheme,
                   textTheme: textTheme,
                   fontFamily: "Chivo",
                   dialogTheme: dialogTheme,
@@ -119,13 +120,13 @@ void main() async {
       )
     )
   );
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
 
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
     return SplashScreen(
       seconds: 2,
       backgroundColor: Colors.white,

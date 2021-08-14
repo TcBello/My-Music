@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 const String montserrat = "Montserrat";
 const String comfortaa = "Comfortaa";
@@ -24,7 +25,13 @@ const TabBarTheme kTabBarTheme = TabBarTheme(
   ),
 );
 
-const AppBarTheme kAppBarTheme = AppBarTheme(
+AppBarTheme appBarTheme = AppBarTheme(
+  backwardsCompatibility: false,
+  systemOverlayStyle: SystemUiOverlayStyle(
+    statusBarColor: Colors.grey[900],
+    statusBarBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.light,
+  ),
   textTheme: TextTheme(
     headline6: TextStyle(
       color: Colors.white,
