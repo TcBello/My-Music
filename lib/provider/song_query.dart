@@ -9,6 +9,7 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SongQueryProvider extends ChangeNotifier{
   final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
@@ -16,6 +17,12 @@ class SongQueryProvider extends ChangeNotifier{
   String songArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id";
   String albumArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/al$id";
   String artistArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/ar$id";
+
+  bool _isIgnoreSongDuration30s = true;
+  bool get isIgnoreSongDuration30s => _isIgnoreSongDuration30s;
+
+  bool _isIgnoreSongDuration45s = true;
+  bool get isIgnoreSongDuration45s => _isIgnoreSongDuration45s;
 
   bool isConvertToStringOnce = false;
 
@@ -25,7 +32,7 @@ class SongQueryProvider extends ChangeNotifier{
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
   String get defaultAlbum => _defaultAlbum;
 
-  List<SongInfo> _songInfo;
+  List<SongInfo> _songInfo = [];
   List<SongInfo> get songInfo => _songInfo;
 
   List<SongInfo> _songInfoFromAlbum;
@@ -37,10 +44,10 @@ class SongQueryProvider extends ChangeNotifier{
   List<SongInfo> _songInfoFromPlaylist;
   List<SongInfo> get songInfoFromPlaylist => _songInfoFromPlaylist;
 
-  List<ArtistInfo> _artistInfo;
+  List<ArtistInfo> _artistInfo = [];
   List<ArtistInfo> get artistInfo => _artistInfo;
 
-  List<AlbumInfo> _albumInfo;
+  List<AlbumInfo> _albumInfo = [];
   List<AlbumInfo> get albumInfo => _albumInfo;
 
   List<AlbumInfo> _albumFromArtist;
@@ -68,14 +75,58 @@ class SongQueryProvider extends ChangeNotifier{
   Future<void> getSongs() async {
     _androidDeviceInfo = await deviceInfo.androidInfo;
     
-    _songInfo = await flutterAudioQuery.getSongs();
-    _artistInfo = await flutterAudioQuery.getArtists();
-    _albumInfo = await flutterAudioQuery.getAlbums();
+    var songData = await flutterAudioQuery.getSongs();
+    var artistData = await flutterAudioQuery.getArtists();
+    var albumData = await flutterAudioQuery.getAlbums();
     _playlistInfo = await flutterAudioQuery.getPlaylists();
+
+    _filterData(songData, artistData, albumData);
+
     print("GET DATA SONGS FROM FILES COMPLETED!");
     
     getAlbumArts();
     notifyListeners();
+  }
+
+  void _filterData(List<SongInfo> songData, List<ArtistInfo> artistData, List<AlbumInfo> albumData) async{
+    var prefs = await SharedPreferences.getInstance();
+    bool isIgnore30 = prefs.getBool('isIgnoreSongDuration30s') ?? true;
+    bool isIgnore45 = prefs.getBool('isIgnoreSongDuration45s') ?? true;
+
+    _isIgnoreSongDuration45s = isIgnore45;
+    _isIgnoreSongDuration30s = isIgnore30;
+
+    if(isIgnore45){
+      songData.forEach((song) {
+        if(int.parse(song.duration) > 45000){
+          _songInfo.add(song);
+        }
+      });
+    }
+    else if(isIgnore30){
+      songData.forEach((song) {
+        if(int.parse(song.duration) > 30000){
+          _songInfo.add(song);
+        }
+      });
+    }
+    else{
+      songData.forEach((song) {
+        _songInfo.add(song);
+      });
+    }
+
+    artistData.forEach((artist) {
+      if(artist.name != "Unknown Artist"){
+        _artistInfo.add(artist);
+      }
+    });
+
+    albumData.forEach((album) {
+      if(album.title != "raw" || album.title.toLowerCase() != _androidDeviceInfo.manufacturer.toLowerCase()){
+        _albumInfo.add(album);
+      }
+    });
   }
 
   Future<void> createPlaylist(String name, SongInfo songInfo, String playlistName) async {
@@ -395,5 +446,19 @@ class SongQueryProvider extends ChangeNotifier{
     });
 
     return resultSongInfo;
+  }
+
+  void setIgnoreSongDuration30(bool value) async{
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isIgnoreSongDuration30s', value);
+    _isIgnoreSongDuration30s = value;
+    notifyListeners();
+  }
+
+  void setIgnoreSongDuration45(bool value) async{
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isIgnoreSongDuration45s', value);
+    _isIgnoreSongDuration45s = value;
+    notifyListeners();
   }
 }

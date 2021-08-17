@@ -27,7 +27,7 @@ class SongBottomSheetOptions extends StatelessWidget {
     final songTitle = songInfo.title;
 
     return Container(
-      height: 230,
+      height: 235,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/ui/scan/scan.dart';
 import 'package:my_music/ui/themes/themes.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -103,10 +104,8 @@ class MyDrawer extends StatelessWidget {
                 ),),
               ),  
               ListTile(
-                onTap: () async {
-                  await songQuery.resetCache();
-                  Navigator.pop(context);
-                  songQuery.getSongs();
+                onTap: () {
+                  Navigator.push(context, CupertinoPageRoute(builder: (context) => ScanUI()));
                 },
                 leading: Icon(
                   Icons.search,
