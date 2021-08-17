@@ -1,10 +1,13 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/ui/drive_mode.dart/drive_mode.dart';
 import 'package:my_music/ui/scan/scan.dart';
 import 'package:my_music/ui/themes/themes.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -121,6 +124,22 @@ class MyDrawer extends StatelessWidget {
                   fontWeight: FontWeight.w500
                 ),),
                 onTap: () => _showDialogTimer(context),
+              ),
+              ListTile(
+                leading: Icon(Icons.drive_eta, color: Colors.white,),
+                title: Text("Drive Mode", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w500
+                ),),
+                onTap: (){
+                  Navigator.pop(context);
+                  
+                  if(AudioService.running){
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => DriveModeUI()));
+                  }
+                  else{
+                    showShortToast("Playing queue not found");
+                  }
+                },
               )
             ],
           );
