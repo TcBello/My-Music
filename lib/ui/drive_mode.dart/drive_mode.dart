@@ -175,9 +175,9 @@ class DriveModeUI extends StatelessWidget {
                                   },
                                 ),
                                 Container(
-                                  width: MediaQuery.of(context).size.width,
+                                  width: MediaQuery.of(context).size.width * 0.9,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       IconButton(
@@ -190,9 +190,7 @@ class DriveModeUI extends StatelessWidget {
                                           songPlayer.skipPrevious();
                                         },
                                       ),
-                                      SizedBox(width: 50),
                                       AnimatedPausePlay(),
-                                      SizedBox(width: 50),
                                       IconButton(
                                         icon: Icon(
                                           Icons.skip_next,
