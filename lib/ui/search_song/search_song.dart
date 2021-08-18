@@ -8,6 +8,8 @@ import 'package:theme_provider/theme_provider.dart';
 class SearchSongUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // final songQuery = Provider.of<SongQueryProvider>(context);
+
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -15,16 +17,21 @@ class SearchSongUI extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AnimatedTextKit(
-            pause: Duration(milliseconds: 300),
-            animatedTexts: [
-              WavyAnimatedText(
-                "Searching Songs...",
-                textStyle: ThemeProvider.themeOf(context).data.textTheme.headline6,
-                speed: Duration(milliseconds: 150)
-              )
-            ],
-            repeatForever: true,
+          Selector<SongQueryProvider, String>(
+            selector: (context, songQuery) => songQuery.searchHeader,
+            builder: (context, searchHeader, child) {
+              return AnimatedTextKit(
+                pause: Duration(milliseconds: 300),
+                animatedTexts: [
+                  WavyAnimatedText(
+                    searchHeader,
+                    textStyle: ThemeProvider.themeOf(context).data.textTheme.headline6,
+                    speed: Duration(milliseconds: 150)
+                  )
+                ],
+                repeatForever: true,
+              );
+            }
           ),
           Container(
             height: 130,
