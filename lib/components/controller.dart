@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miniplayer/miniplayer.dart';
 
-final MiniplayerController miniPlayerController = MiniplayerController();
+MiniplayerController miniPlayerController;
 
-final ScrollController scrollController = ScrollController();
+ScrollController scrollController;
 
-final TextEditingController playlistController = TextEditingController();
+TextEditingController playlistController;
 
 TabController tabController;

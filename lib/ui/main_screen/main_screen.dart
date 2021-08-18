@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:miniplayer/miniplayer.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -24,6 +26,9 @@ class _MainScreenState extends State<MainScreen> {
   
   @override
   void initState() {
+    scrollController = ScrollController();
+    miniPlayerController = MiniplayerController();
+    playlistController = TextEditingController();
     init();
     super.initState();
   }
@@ -36,6 +41,19 @@ class _MainScreenState extends State<MainScreen> {
     songQueryProvider.getSongs();
     themeProvider.initFont();
     themeProvider.getCurrentTextColor();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    scrollController = null;
+    miniPlayerController.dispose();
+    miniPlayerController = null;
+    playlistController.dispose();
+    playlistController = null;
+    tabController.dispose();
+    tabController = null;
+    super.dispose();
   }
 
   @override

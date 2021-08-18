@@ -4,7 +4,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:equalizer/equalizer.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_music/components/controller.dart';
 
 void audioPlayerTaskEntrypoint() async{
   AudioServiceBackground.run(() => AudioPlayerTask());
@@ -134,7 +133,6 @@ class AudioPlayerTask extends BackgroundAudioTask{
   Future<void> onStop() async {
     await _audioPlayer.dispose();
     _eventSubscription.cancel();
-    miniPlayerController.dispose();
     await _broadcastState();
     await super.onStop();
   }
