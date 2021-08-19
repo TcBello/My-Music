@@ -42,9 +42,12 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
           headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
             return <Widget>[
               SliverAppBar(
-                elevation: 0.5,
-                backgroundColor: Colors.transparent,
+                elevation: 0,
+                backgroundColor: Colors.grey[900].withOpacity(0.5),
                 forceElevated: true,
+                snap: true,
+                pinned: true,
+                floating: true,
                 title: Text("Music", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
                 leading: IconButton(
                   onPressed: () {
