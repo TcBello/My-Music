@@ -56,7 +56,7 @@ class SongQueryProvider extends ChangeNotifier{
   List<AlbumInfo> _albumFromArtist;
   List<AlbumInfo> get albumFromArtist => _albumFromArtist;
 
-  List<PlaylistInfo> _playlistInfo;
+  List<PlaylistInfo> _playlistInfo = [];
   List<PlaylistInfo> get playlistInfo => _playlistInfo;
 
   List<SongInfo> _currentQueue = [];
@@ -126,7 +126,7 @@ class SongQueryProvider extends ChangeNotifier{
     });
 
     albumData.forEach((album) {
-      if(album.title != "raw" || album.title.toLowerCase() != _androidDeviceInfo.manufacturer.toLowerCase()){
+      if(album.title != "raw" && album.title.toLowerCase() != _androidDeviceInfo.manufacturer.toLowerCase()){
         _albumInfo.add(album);
       }
     });
@@ -235,9 +235,7 @@ class SongQueryProvider extends ChangeNotifier{
       return MediaItem(
         id: e.filePath,
         title: e.title,
-        artist: e.artist != "<unknown>"
-          ? e.artist
-          : "Unknown Artist",
+        artist: e.artist ,
         album: e.album,
         artUri: _androidDeviceInfo.version.sdkInt < 29
           ? e.albumArtwork != null
