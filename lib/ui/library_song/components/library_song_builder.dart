@@ -22,7 +22,6 @@ class LibrarySongBuilder extends StatelessWidget {
           children: List.generate(songInfoList.length,(index) => SongTile2(
             songInfo: songInfoList[index],
             onTap: (){
-              songQuery.setQueue(songInfoList);
               songPlayer.playSong(songInfoList, index, sdkInt);
             },
           )),

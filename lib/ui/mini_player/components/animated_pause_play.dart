@@ -6,6 +6,11 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 class AnimatedPausePlay extends StatefulWidget {
+  const AnimatedPausePlay({
+    @required this.color
+  });
+
+  final Color color;
   @override
   _AnimatedPausePlayState createState() => _AnimatedPausePlayState();
 }
@@ -32,7 +37,7 @@ class _AnimatedPausePlayState extends State<AnimatedPausePlay> with AnimationMix
               height: 80,
               width: 80,
               decoration: BoxDecoration(
-                  border: Border.all(color: Colors.pinkAccent, width: 6)),
+                  border: Border.all(color: widget.color, width: 6)),
             ),
           ),
           Positioned.fill(

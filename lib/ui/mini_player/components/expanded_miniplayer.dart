@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/ui/mini_player/components/animated_pause_play.dart';
 import 'package:my_music/ui/mini_player/components/slider_bar.dart';
@@ -22,7 +21,8 @@ class ExpandedMiniplayer extends StatelessWidget {
     @required this.artistName,
     @required this.duration,
     @required this.durationValue,
-    @required this.expandedAlbumImage
+    @required this.expandedAlbumImage,
+    @required this.bodyColor
   });
 
   final Color backgroundColor;
@@ -36,13 +36,16 @@ class ExpandedMiniplayer extends StatelessWidget {
   final String duration;
   final Duration durationValue;
   final Widget expandedAlbumImage;
+  final Color bodyColor;
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     final songPlayer = Provider.of<SongPlayerProvider>(context);
 
-    return Container(
+    return AnimatedContainer(
+      duration: Duration(seconds: 1),
+      curve: Curves.easeOutQuart,
       color: backgroundColor,
       width: _size.width,
       child: Stack(
@@ -124,7 +127,7 @@ class ExpandedMiniplayer extends StatelessWidget {
                               child: Text(
                                 artistName,
                                 style: ThemeProvider.themeOf(context).data.textTheme.subtitle1.copyWith(
-                                  color: color5,
+                                  color: Colors.grey[300],
                                   fontWeight: FontWeight.w600,
                                   fontSize: 18
                                 ),
@@ -156,6 +159,7 @@ class ExpandedMiniplayer extends StatelessWidget {
                                         child: SliderBar(
                                           position: positionValue,
                                           duration: durationValue,
+                                          color: bodyColor,
                                         ),
                                       ),
                                       Row(
@@ -217,7 +221,9 @@ class ExpandedMiniplayer extends StatelessWidget {
                               },
                             ),
                             SizedBox(width: 10),
-                            AnimatedPausePlay(),
+                            AnimatedPausePlay(
+                              color: bodyColor,
+                            ),
                             SizedBox(width: 10),
                             IconButton(
                               icon: Icon(

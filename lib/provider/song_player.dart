@@ -37,7 +37,7 @@ class SongPlayerProvider extends ChangeNotifier{
     // OFF
     Icon(
       Icons.repeat,
-      color: Colors.grey,
+      color: Colors.grey[300],
       size: 40,
     ),
     // ON
@@ -57,7 +57,7 @@ class SongPlayerProvider extends ChangeNotifier{
     // OFF
     Icon(
       Icons.shuffle,
-      color: Colors.grey,
+      color: Colors.grey[300],
       size: 40,
     ),
     // ON
@@ -76,7 +76,7 @@ class SongPlayerProvider extends ChangeNotifier{
       case AudioServiceShuffleMode.none:
         return Icon(
           Icons.shuffle,
-          color: Colors.grey,
+          color: Colors.grey[300],
           size: 40,
         );
         break;
@@ -97,7 +97,7 @@ class SongPlayerProvider extends ChangeNotifier{
       default:
         return Icon(
           Icons.shuffle,
-          color: Colors.grey,
+          color: Colors.grey[300],
           size: 40,
         );
         break;

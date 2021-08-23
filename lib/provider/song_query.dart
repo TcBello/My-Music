@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -8,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/utils/utils.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +19,11 @@ class SongQueryProvider extends ChangeNotifier{
   String songArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id";
   String albumArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/al$id";
   String artistArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/ar$id";
+
+  String _initialSongId = "";
+
+  PaletteGenerator _currentPalette;
+  PaletteGenerator get currentPalette => _currentPalette;
 
   String _searchHeader = "Searching Songs...";
   String get searchHeader => _searchHeader;
@@ -59,8 +66,8 @@ class SongQueryProvider extends ChangeNotifier{
   List<PlaylistInfo> _playlistInfo = [];
   List<PlaylistInfo> get playlistInfo => _playlistInfo;
 
-  List<SongInfo> _currentQueue = [];
-  List<SongInfo> get currentQueue => _currentQueue;
+  // List<SongInfo> _currentQueue = [];
+  // List<SongInfo> get currentQueue => _currentQueue;
 
   final List stringSongs = [];
 
@@ -69,6 +76,26 @@ class SongQueryProvider extends ChangeNotifier{
 
   String _locationSongSearch = "";
   String get locationSongSearch => _locationSongSearch;
+
+  void addPaletteData() async{
+    var mediaItem = AudioService.currentMediaItem;
+
+    if(_initialSongId != mediaItem.id){
+      var generator = await PaletteGenerator.fromImageProvider(
+        ResizeImage(
+          FileImage(File(mediaItem.artUri.toFilePath())),
+          height: 30,
+          width: 30
+        )
+      );
+      print("DOMINANT LUMINANCE: ${generator.dominantColor.color.computeLuminance()}\nBODY COLOR LUMINANCE: ${generator.colors.last.computeLuminance()}");
+      _currentPalette = generator;
+      _initialSongId = mediaItem.id;
+      Future.delayed(Duration(milliseconds: 200), () async {
+        notifyListeners();
+      });
+    }
+  }
 
   Future<File> validatorFile() async {
     Directory dir = await getTemporaryDirectory();
@@ -631,10 +658,10 @@ class SongQueryProvider extends ChangeNotifier{
     }
   }
 
-  void setQueue(List<SongInfo> songList){
-    _currentQueue = List.from(songList);
-    notifyListeners();
-  }
+  // void setQueue(List<SongInfo> songList){
+  //   _currentQueue = List.from(songList);
+  //   notifyListeners();
+  // }
 
   void reorderSong(int oldIndex, int newIndex){
     if(oldIndex < newIndex){

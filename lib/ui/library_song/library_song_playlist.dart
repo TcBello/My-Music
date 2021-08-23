@@ -87,7 +87,6 @@ class LibrarySongPlaylist extends StatelessWidget {
                     songQuery.songInfoFromPlaylist.length, (index) => PlaylistSongTile(
                       songInfo: songQuery.songInfoFromPlaylist[index],
                       onTap: (){
-                        songQuery.setQueue(songQuery.songInfoFromPlaylist);
                         songPlayer.playSong(songQuery.songInfoFromPlaylist, index, sdkInt);
                       },
                       index: indexFromOutside,

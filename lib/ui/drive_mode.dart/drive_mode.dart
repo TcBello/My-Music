@@ -36,8 +36,12 @@ class DriveModeUI extends StatelessWidget {
                 );
                 final maxImageSize = _size.width * 0.8;
     
-                return Container(
-                  color: color2,
+                return AnimatedContainer(
+                  duration: Duration(seconds: 1),
+                  curve: Curves.easeOutQuart,
+                  color: songQuery.currentPalette != null
+                    ? miniplayerBackgroundColor(songQuery.currentPalette.dominantColor.color)
+                    : color2,
                   width: _size.width,
                   height: _size.height,
                   child: Stack(
@@ -105,7 +109,7 @@ class DriveModeUI extends StatelessWidget {
                                         child: Text(
                                           artistName,
                                           style: ThemeProvider.themeOf(context).data.textTheme.subtitle1.copyWith(
-                                            color: color5,
+                                            color: Colors.grey[300],
                                             fontWeight: FontWeight.w600,
                                             fontSize: 18
                                           ),
@@ -137,6 +141,9 @@ class DriveModeUI extends StatelessWidget {
                                                   child: SliderBar(
                                                     position: positionValue,
                                                     duration: durationValue,
+                                                    color: songQuery.currentPalette != null
+                                                      ? miniplayerBodyColor(songQuery.currentPalette.colors.last, songQuery.currentPalette.dominantColor.color)
+                                                      : Colors.pinkAccent
                                                   ),
                                                 ),
                                                 Row(
@@ -190,7 +197,11 @@ class DriveModeUI extends StatelessWidget {
                                           songPlayer.skipPrevious();
                                         },
                                       ),
-                                      AnimatedPausePlay(),
+                                      AnimatedPausePlay(
+                                        color: songQuery.currentPalette != null
+                                          ? miniplayerBodyColor(songQuery.currentPalette.colors.last, songQuery.currentPalette.dominantColor.color)
+                                          : Colors.pinkAccent
+                                      ),
                                       IconButton(
                                         icon: Icon(
                                           Icons.skip_next,

@@ -9,10 +9,12 @@ class SliderBar extends StatefulWidget {
   SliderBar({
     @required this.position,
     @required this.duration,
+    @required this.color
   });
 
   final Duration position;
   final Duration duration;
+  final Color color;
 
   @override
   _SliderBarState createState() => _SliderBarState();
@@ -32,8 +34,8 @@ class _SliderBarState extends State<SliderBar> {
 
     try{
       return Slider(
-        activeColor: color3,
-        inactiveColor: color4,
+        activeColor: widget.color,
+        inactiveColor: Colors.grey[200],
         value: min(
           _dragValue ?? widget.position.inMilliseconds.toDouble(),
           widget.duration.inMilliseconds.toDouble()

@@ -60,7 +60,6 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             )),
             onTap: () async {
               await songQueryProvider.getSongFromPlaylist(index);
-              songQueryProvider.setQueue(songQueryProvider.songInfoFromPlaylist);
               songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist, 0, sdkInt);
               Navigator.pop(context);
             },

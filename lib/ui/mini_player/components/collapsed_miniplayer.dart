@@ -31,7 +31,9 @@ class CollapsedMiniplayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final songPlayer = Provider.of<SongPlayerProvider>(context);
 
-    return Container(
+    return AnimatedContainer(
+      duration: Duration(seconds: 1),
+      curve: Curves.easeOutQuart,
       color: backgroundColor,
       child: Column(
         children: [

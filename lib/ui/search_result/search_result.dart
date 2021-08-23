@@ -77,7 +77,6 @@ class SearchResult extends StatelessWidget {
                       children: List.generate(songSearchList.length, (index) => SongTile(
                         songInfo: songSearchList[index],
                         onTap: (){
-                          songQuery.setQueue(songSearchList);
                           songPlayer.playSong(songSearchList, index, sdkInt);
                         },
                       )),

@@ -24,7 +24,6 @@ class SongBuilder extends StatelessWidget {
             return SongTile(
               songInfo: songQueryProvider.songInfo[index],
               onTap: (){
-                songQueryProvider.setQueue(songQueryProvider.songInfo);
                 songPlayerProvider.playSong(songQueryProvider.songInfo, index, sdkInt);
               },
             );
