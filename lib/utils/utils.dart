@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_music/components/constant.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 double valueFromPercentageInRange(
     {@required final double min, max, percentage}) {
@@ -71,102 +73,6 @@ Color miniplayerBodyColor(Color bodyColor, Color backgroundColor){
   double backgroundLuminance = backgroundColor.computeLuminance();
   double bodyLuminance = bodyColor.computeLuminance();
 
-  // ORIG TEST
-
-  // if(luminance <= 0.07){
-  //   return _lighten(color, 0.4);
-  // }
-  // else{
-  //   return _lighten(color, 0.2);
-  // }
-
-  // TEST 2 -----------
-  
-  // if(luminance <= 0.07){
-  //   print("light: 0.4");
-  //   return _lighten(color, 0.4);
-  // }
-  // else if(luminance >= 0.08 && luminance <= 0.3){
-  //   print("light: 0");
-  //   return color;
-  // }
-  // else{
-  //   print("light: 0.1");
-  //   return _lighten(color);
-  // }
-
-  // TEST 3 ---------
-
-  // if(luminance <= 0.07){
-  //   print("light: 0.4");
-  //   return _lighten(bodyColor, 0.4);
-  // }
-  // else if(luminance >= 0.08 && luminance <= 0.205){
-  //   print("light: 0.2");
-  //   return _lighten(bodyColor, 0.2);
-  //   // return color;
-  // }
-  // else if(luminance >= 0.206 && luminance <= 0.26){
-  //   print("light: 0.1 (1)");
-  //   return _lighten(bodyColor);
-  // }
-  // else if(luminance >= 0.27 && luminance <= 0.5){
-  //   print("light: 0");
-  //   return bodyColor;
-  // }
-  // else{
-  //   print("light: 0.1 (2)");
-  //   // return _lighten(bodyColor);
-  //   return bodyColor;
-  // }
-
-
-  // TEST 4 -------------
-
-  // if(luminance >= 0.1619 && luminance <= 0.1621){
-  //   print("light: default");
-  //   return _lighten(bodyColor, 0.4);
-  // }
-  // // else if(luminance <= 0.07){
-  // //   print("light: 0.4");
-  // //   return _lighten(bodyColor, 0.2);
-  // // }
-  // else if(luminance <= 0.01){
-  //   print("light: 0.1");
-  //   return _lighten(bodyColor);
-  //   // return bodyColor;
-  // }
-  // else if(luminance > 0.01 && luminance <= 0.5){
-  //   print("light: 0.2");
-  //   // return _lighten(bodyColor, 0.2);
-  //   return bodyColor;
-  // }
-  // else{
-  //   print("light: 0.0");
-  //   return bodyColor;
-  //   // return _lighten(bodyColor);
-  // }
-
-  // TEST 5 -----------
-
-  // if(luminance >= 0.1619 && luminance <= 0.1621){
-  //   print("light: default");
-  //   return _lighten(bodyColor, 0.4);
-  // }
-  // else if(((luminance < 0.5 && bodyLuminance < 0.5) && bodyLuminance > luminance) || (luminance > 0.5 && bodyLuminance < 0.5)){
-  //   print("light: 0.0");
-  //   // return bodyColor;
-  //   return _lighten(bodyColor);
-  // }
-  // else if((luminance > 0.5 && bodyLuminance > 0.5) || bodyLuminance < luminance){
-  //   print("light: 0.2");
-  //   return _lighten(bodyColor, 0.2);
-  //   // return bodyColor;
-  // }
-  // else{
-  //   return Colors.green;
-  // }
-
   if(backgroundLuminance >= 0.1619 && backgroundLuminance <= 0.1621){
     print("light: default");
     return _lighten(bodyColor, 0.4);
@@ -197,5 +103,20 @@ Color miniplayerBodyColor(Color bodyColor, Color backgroundColor){
   }
   else{
     return Colors.white;
+  }
+}
+
+void sendEmail() async{
+  String scheme = "mailto:$kEmail?subject=$kSubject&body=";
+
+  if(await canLaunch(scheme)){
+    var result = await launch(scheme);
+    
+    if(!result){
+      showShortToast("Can't redirect to email");
+    }
+  }
+  else{
+    showShortToast("An error has occured");
   }
 }

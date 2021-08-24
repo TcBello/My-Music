@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/ui/about/about_ui.dart';
 import 'package:my_music/ui/drive_mode.dart/drive_mode.dart';
 import 'package:my_music/ui/scan/scan.dart';
 import 'package:my_music/ui/themes/themes.dart';
@@ -74,74 +75,94 @@ class MyDrawer extends StatelessWidget {
       color: color1,
       child: Consumer2<SongPlayerProvider, SongQueryProvider>(
         builder: (context, songPlayer, songQuery, snapshot) {
-          return Column(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                height: 100,
-                child: Center(child: Text("My Music", style: ThemeProvider.themeOf(context).data.textTheme.headline4)),
-              ),
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context, CupertinoPageRoute(builder: (context) => Themes()));
-                },
-                leading: Icon(
-                  Icons.wallpaper,
-                  color: Colors.white,
+          return SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  height: 100,
+                  child: Center(child: Text("My Music", style: ThemeProvider.themeOf(context).data.textTheme.headline4)),
                 ),
-                title: Text("Themes", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w500
-                ),),
-              ),
-              ListTile(
-                onTap: (){
-                  songPlayer.openEqualizer();
-                },
-                leading: Icon(
-                  Icons.equalizer,
-                  color: Colors.white,
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => Themes()));
+                  },
+                  leading: Icon(
+                    Icons.wallpaper,
+                    color: Colors.white,
+                  ),
+                  title: Text("Themes", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500
+                  ),),
                 ),
-                title: Text("Equalizer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w500
-                ),),
-              ),  
-              ListTile(
-                onTap: () {
-                  Navigator.push(context, CupertinoPageRoute(builder: (context) => ScanUI()));
-                },
-                leading: Icon(
-                  Icons.search,
-                  color: Colors.white,
+                ListTile(
+                  onTap: (){
+                    songPlayer.openEqualizer();
+                  },
+                  leading: Icon(
+                    Icons.equalizer,
+                    color: Colors.white,
+                  ),
+                  title: Text("Equalizer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500
+                  ),),
+                ),  
+                ListTile(
+                  onTap: () {
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => ScanUI()));
+                  },
+                  leading: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ),
+                  title: Text("Scan", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500
+                  ),),
                 ),
-                title: Text("Scan", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w500
-                ),),
-              ),
-              ListTile(
-                leading: Icon(Icons.timer_rounded, color: Colors.white,),
-                title: Text("Sleep Timer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w500
-                ),),
-                onTap: () => _showDialogTimer(context),
-              ),
-              ListTile(
-                leading: Icon(Icons.drive_eta, color: Colors.white,),
-                title: Text("Drive Mode", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w500
-                ),),
-                onTap: (){
-                  Navigator.pop(context);
-                  
-                  if(AudioService.running){
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => DriveModeUI()));
+                ListTile(
+                  leading: Icon(Icons.timer_rounded, color: Colors.white,),
+                  title: Text("Sleep Timer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500
+                  ),),
+                  onTap: () => _showDialogTimer(context),
+                ),
+                ListTile(
+                  leading: Icon(Icons.drive_eta, color: Colors.white,),
+                  title: Text("Drive Mode", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500
+                  ),),
+                  onTap: (){
+                    Navigator.pop(context);
+                    
+                    if(AudioService.running){
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => DriveModeUI()));
+                    }
+                    else{
+                      showShortToast("Playing queue not found");
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.mail, color: Colors.white,),
+                  title: Text("Feedback", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500
+                  ),),
+                  onTap: (){
+                    sendEmail();
                   }
-                  else{
-                    showShortToast("Playing queue not found");
+                ),
+                ListTile(
+                  leading: Icon(Icons.info, color: Colors.white,),
+                  title: Text("About", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500
+                  ),),
+                  onTap: (){
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => AboutUI()));
                   }
-                },
-              )
-            ],
+                ),
+              ],
+            ),
           );
         }
       ),
