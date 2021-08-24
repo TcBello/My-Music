@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:my_music/components/song_tile.dart';
+import 'package:my_music/components/style.dart';
 import 'package:my_music/model/audio_queue_data.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -110,7 +111,9 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
               }
 
               return Center(
-                child: CircularProgressIndicator(color: Colors.white,)
+                child: CircularProgressIndicator(
+                  color: color3,
+                )
               );
             }
           );
