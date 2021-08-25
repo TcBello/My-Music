@@ -48,7 +48,7 @@ class ScanUI extends StatelessWidget {
               builder: (context, songQuery, child) {
                 return TextButton(
                   onPressed: () async{
-                    await songQuery.resetCache();
+                    await songQuery.reset();
                     Navigator.pop(context);
                     songQuery.getSongs();
                   },

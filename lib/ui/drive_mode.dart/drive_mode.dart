@@ -85,7 +85,7 @@ class DriveModeUI extends StatelessWidget {
                               )
                             ],
                           ),
-                          SizedBox(height: 25,),
+                          SizedBox(height: _size.height * 0.015,),
                           SizedBox(
                             height: maxImageSize,
                             width: maxImageSize,

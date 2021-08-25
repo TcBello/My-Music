@@ -643,18 +643,34 @@ class SongQueryProvider extends ChangeNotifier{
 
     if(_androidDeviceInfo.version.sdkInt < 29 && !valFile.existsSync()){
       int currentSearch = 0;
+      _locationSongSearch = "";
+      notifyListeners();
 
-      _songInfo.forEach((element) {
-        _locationSongSearch = element.filePath;
-        currentSearch += 1;
-        _searchProgress = currentSearch / songInfo.length;
+      // _songInfo.forEach((element) {
+      //   _locationSongSearch = element.filePath;
+      //   currentSearch += 1;
+      //   _searchProgress = currentSearch / songInfo.length;
 
-        if(_searchProgress == 1.0){
-          valFile.writeAsString("validate");
-        }
+      //   if(_searchProgress == 1.0){
+      //     valFile.writeAsString("validate");
+      //   }
+
+      //   notifyListeners();
+      // });
+
+      for(int i = 0; i < _songInfo.length; i++){
+        await Future.delayed(Duration(milliseconds: 50), (){
+          _locationSongSearch = _songInfo[i].filePath;
+          currentSearch += 1;
+          _searchProgress = currentSearch / _songInfo.length;
+
+          if(_searchProgress == 1.0){
+            valFile.writeAsString("validate");
+          }
+        });
 
         notifyListeners();
-      });
+      }
     }
   }
 
@@ -676,7 +692,12 @@ class SongQueryProvider extends ChangeNotifier{
     AudioService.removeQueueItem(mediaItem);
   }
 
-  Future<void> resetCache() async {
+  Future<void> reset() async {
+    _songInfo = [];
+    _artistInfo = [];
+    _albumInfo = [];
+    notifyListeners();
+    
     var tempDir = await getTemporaryDirectory();
 
     if(tempDir.existsSync()){
