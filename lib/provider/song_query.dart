@@ -16,9 +16,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SongQueryProvider extends ChangeNotifier{
   final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  String songArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id";
-  String albumArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/al$id";
-  String artistArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/ar$id";
+
+  String _tempDirPath = "";
+  String _appDirPath = "";
+
+  String songArtwork(String id) => "$_tempDirPath/$id";
+  String albumArtwork(String id) => "$_tempDirPath/al$id";
+  String artistArtwork(String id) => "$_tempDirPath/ar$id";
 
   String _initialSongId = "";
 
@@ -39,8 +43,8 @@ class SongQueryProvider extends ChangeNotifier{
   AndroidDeviceInfo? _androidDeviceInfo;
   AndroidDeviceInfo? get androidDeviceInfo => _androidDeviceInfo;
 
-  final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
-  String get defaultAlbum => _defaultAlbum;
+  String get defaultAlbum => "$_appDirPath/defalbum.png";
+  // String get defaultAlbum => _defaultAlbum;
 
   List<SongInfo> _songInfo = [];
   List<SongInfo> get songInfo => _songInfo;
@@ -111,6 +115,9 @@ class SongQueryProvider extends ChangeNotifier{
     _playlistInfo = await flutterAudioQuery.getPlaylists();
 
     _filterData(songData, artistData, albumData);
+
+    var tempDir = await getTemporaryDirectory();
+    _tempDirPath = tempDir.path;
 
     print("GET DATA SONGS FROM FILES COMPLETED!");
     
@@ -267,10 +274,10 @@ class SongQueryProvider extends ChangeNotifier{
         artUri: _androidDeviceInfo!.version.sdkInt < 29
           ? e.albumArtwork != null
             ? File(e.albumArtwork!).uri
-            : File(_defaultAlbum).uri
+            : File(defaultAlbum).uri
           : hasArtWork
             ? File(artwork).uri
-            : File(_defaultAlbum).uri,
+            : File(defaultAlbum).uri,
         duration: Duration(milliseconds: int.parse(e.duration!)),
       );
     }).toList();
@@ -288,10 +295,10 @@ class SongQueryProvider extends ChangeNotifier{
       artUri: _androidDeviceInfo!.version.sdkInt < 29
         ? newSongInfo.albumArtwork != null
           ? File(newSongInfo.albumArtwork!).uri
-          : File(_defaultAlbum).uri
+          : File(defaultAlbum).uri
         : hasArtWork
           ? File(artwork).uri
-          : File(_defaultAlbum).uri,
+          : File(defaultAlbum).uri,
       duration: Duration(milliseconds: int.parse(newSongInfo.duration!)),
     );
   }
@@ -312,6 +319,7 @@ class SongQueryProvider extends ChangeNotifier{
     String dirPath = dir.path;
     String filePath = "$dirPath/defalbum.png";
     File file = File(filePath);
+    _appDirPath = dirPath;
 
     if(!file.existsSync()){
       ByteData byteData = await rootBundle.load('assets/imgs/defalbum.png');
