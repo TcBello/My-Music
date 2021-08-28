@@ -25,13 +25,15 @@ class Artists extends StatelessWidget {
                 physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(0, 15, 0, 70),
                 children: List.generate(notifier.artistInfo.length, (index){
-                  final artistName = notifier.artistInfo[index].name;     
+                  final artistName = notifier.artistInfo[index].name!;     
                   final artistArtwork = notifier.artistInfo[index].artistArtPath;
                   final artistArtwork2 = notifier.artistArtwork(notifier.artistInfo[index].id);
-                  final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
+                  final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
                   final hasArtWork = File(notifier.artistArtwork(notifier.artistInfo[index].id)).existsSync();
                   final backgroundSliver = isSdk28Below
-                    ? artistArtwork
+                    ? artistArtwork != null
+                      ? artistArtwork
+                      : notifier.defaultAlbum
                     : hasArtWork
                       ? artistArtwork2
                       : notifier.defaultAlbum;

@@ -8,7 +8,7 @@ import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistDialog extends StatelessWidget {
   const PlaylistDialog({
-    @required this.songInfo
+    required this.songInfo
   });
 
   final SongInfo songInfo;
@@ -51,8 +51,8 @@ class PlaylistDialog extends StatelessWidget {
                     builder: (context, notifier, child) {
                       return TextButton(
                         onPressed: () async {
-                          await notifier.createPlaylist(playlistController.text, songInfo, playlistController.text);
-                          playlistController.text = "";
+                          await notifier.createPlaylist(playlistController!.text, songInfo, playlistController!.text);
+                          playlistController!.text = "";
                           Navigator.pop(context);
                         },
                         child: Text("CREATE", style:ThemeProvider.themeOf(context).data.textTheme.button,),

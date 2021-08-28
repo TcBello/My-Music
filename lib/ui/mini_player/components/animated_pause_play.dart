@@ -7,7 +7,7 @@ import 'package:supercharged/supercharged.dart';
 
 class AnimatedPausePlay extends StatefulWidget {
   const AnimatedPausePlay({
-    @required this.color
+    required this.color
   });
 
   final Color color;
@@ -16,7 +16,7 @@ class AnimatedPausePlay extends StatefulWidget {
 }
 
 class _AnimatedPausePlayState extends State<AnimatedPausePlay> with AnimationMixin {
-  Animation<double> _circleAnimation;
+  Animation<double>? _circleAnimation;
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _AnimatedPausePlayState extends State<AnimatedPausePlay> with AnimationMix
       child: Stack(
         children: [
           RotationTransition(
-            turns: _circleAnimation,
+            turns: _circleAnimation!,
             child: Container(
               height: 80,
               width: 80,
@@ -46,7 +46,7 @@ class _AnimatedPausePlayState extends State<AnimatedPausePlay> with AnimationMix
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
 
-                  if(snapshot.data.playing){
+                  if(snapshot.data!.playing){
                     controller.loop(duration: Duration(seconds: 3));
                   }
                   else{
@@ -54,7 +54,7 @@ class _AnimatedPausePlayState extends State<AnimatedPausePlay> with AnimationMix
                   }
 
                   return IconButton(
-                    icon: songPlayer.playPausePlayerIcon(snapshot.data.playing),
+                    icon: songPlayer.playPausePlayerIcon(snapshot.data!.playing),
                     onPressed: songPlayer.pauseResume,
                   );
                 }

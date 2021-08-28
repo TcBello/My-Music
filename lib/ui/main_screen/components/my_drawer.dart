@@ -29,7 +29,7 @@ class MyDrawer extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 10,),
-                  Text("Minutes", style: ThemeProvider.themeOf(context).data.textTheme.headline5.copyWith(
+                  Text("Minutes", style: ThemeProvider.themeOf(context).data.textTheme.headline5?.copyWith(
                     fontSize: 25
                   )),
                   Expanded(
@@ -39,7 +39,7 @@ class MyDrawer extends StatelessWidget {
                       children: List.generate(100, (index) => Center(
                         child: Text(
                           (index).toString(),
-                          style: ThemeProvider.themeOf(context).data.textTheme.headline5.copyWith(
+                          style: ThemeProvider.themeOf(context).data.textTheme.headline5?.copyWith(
                             fontWeight: FontWeight.w500,
                             fontSize: 22
                           )
@@ -92,7 +92,7 @@ class MyDrawer extends StatelessWidget {
                     Icons.wallpaper,
                     color: Colors.white,
                   ),
-                  title: Text("Themes", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  title: Text("Themes", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.w500
                   ),),
                 ),
@@ -104,7 +104,7 @@ class MyDrawer extends StatelessWidget {
                     Icons.equalizer,
                     color: Colors.white,
                   ),
-                  title: Text("Equalizer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  title: Text("Equalizer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.w500
                   ),),
                 ),  
@@ -116,20 +116,20 @@ class MyDrawer extends StatelessWidget {
                     Icons.search,
                     color: Colors.white,
                   ),
-                  title: Text("Scan", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  title: Text("Scan", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.w500
                   ),),
                 ),
                 ListTile(
                   leading: Icon(Icons.timer_rounded, color: Colors.white,),
-                  title: Text("Sleep Timer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  title: Text("Sleep Timer", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.w500
                   ),),
                   onTap: () => _showDialogTimer(context),
                 ),
                 ListTile(
                   leading: Icon(Icons.drive_eta, color: Colors.white,),
-                  title: Text("Drive Mode", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  title: Text("Drive Mode", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.w500
                   ),),
                   onTap: (){
@@ -145,7 +145,7 @@ class MyDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.mail, color: Colors.white,),
-                  title: Text("Feedback", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  title: Text("Feedback", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.w500
                   ),),
                   onTap: (){
@@ -154,7 +154,7 @@ class MyDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.info, color: Colors.white,),
-                  title: Text("About", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                  title: Text("About", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.w500
                   ),),
                   onTap: (){

@@ -11,18 +11,18 @@ import 'package:theme_provider/theme_provider.dart';
 
 class ExpandedMiniplayer extends StatelessWidget {
   const ExpandedMiniplayer({
-    @required this.backgroundColor,
-    @required this.opacityPercentageExpandedPlayer,
-    @required this.paddingLeft,
-    @required this.paddingVertical,
-    @required this.imageSize,
-    @required this.onPressed,
-    @required this.songTitle,
-    @required this.artistName,
-    @required this.duration,
-    @required this.durationValue,
-    @required this.expandedAlbumImage,
-    @required this.bodyColor
+    required this.backgroundColor,
+    required this.opacityPercentageExpandedPlayer,
+    required this.paddingLeft,
+    required this.paddingVertical,
+    required this.imageSize,
+    required this.onPressed,
+    required this.songTitle,
+    required this.artistName,
+    required this.duration,
+    required this.durationValue,
+    required this.expandedAlbumImage,
+    required this.bodyColor
   });
 
   final Color backgroundColor;
@@ -30,7 +30,7 @@ class ExpandedMiniplayer extends StatelessWidget {
   final double paddingLeft;
   final double paddingVertical;
   final double imageSize;
-  final Function onPressed;
+  final Function() onPressed;
   final String songTitle;
   final String artistName;
   final String duration;
@@ -126,7 +126,7 @@ class ExpandedMiniplayer extends StatelessWidget {
                               padding: EdgeInsets.only(left: 20.0, right: 20.0),
                               child: Text(
                                 artistName,
-                                style: ThemeProvider.themeOf(context).data.textTheme.subtitle1.copyWith(
+                                style: ThemeProvider.themeOf(context).data.textTheme.subtitle1?.copyWith(
                                   color: Colors.grey[300],
                                   fontWeight: FontWeight.w600,
                                   fontSize: 18
@@ -143,8 +143,8 @@ class ExpandedMiniplayer extends StatelessWidget {
                         stream: songPlayer.positionStream,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            final position = toMinSecFormat(snapshot.data);
-                            final positionValue = snapshot.data;
+                            final position = toMinSecFormat(snapshot.data!);
+                            final positionValue = snapshot.data!;
 
                             return Column(
                               children: [
@@ -170,7 +170,7 @@ class ExpandedMiniplayer extends StatelessWidget {
                                             margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                             child: Text(
                                               position,
-                                              style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                                              style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                                                 fontWeight: FontWeight.w500
                                               )
                                             )
@@ -179,7 +179,7 @@ class ExpandedMiniplayer extends StatelessWidget {
                                             margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
                                             child: Text(
                                               duration,
-                                              style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                                              style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                                                 fontWeight:
                                                 FontWeight.w500
                                               ),

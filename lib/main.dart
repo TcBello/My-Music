@@ -128,10 +128,13 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
+      loadingTextPadding: const EdgeInsets.all(0),
+      useLoader: true,
       seconds: 2,
       backgroundColor: Colors.white,
       loaderColor: Colors.white,
       loadingText: Text("TCBELLO", style: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.black),),
+      styleTextUnderTheLoader: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.black),
       navigateAfterSeconds: AudioServiceWidget(
         child: Material(
           child: MainScreen(),

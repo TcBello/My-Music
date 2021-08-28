@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/custom_theme.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,7 +20,7 @@ class Background extends StatefulWidget {
 
 class _BackgroundState extends State<Background>
     with TickerProviderStateMixin {
-  TabController _tabController;
+  TabController? _tabController;
   double _blurValue = 0.0;
   List<String> _imageList = [];
   Image _defaultImage = Image.asset("assets/imgs/starry.jpg", fit: BoxFit.cover,);
@@ -36,7 +37,7 @@ class _BackgroundState extends State<Background>
   @override
   void dispose() {
     super.dispose();
-    _tabController.dispose();
+    _tabController?.dispose();
   }
 
   Future<void> prefInit() async {
@@ -59,25 +60,41 @@ class _BackgroundState extends State<Background>
 
   Future<void> _openGallery() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    List<String> newList = _prefs.getStringList('images');
+    List<String> newList = _prefs.getStringList('images') ?? [];
     final _imgFile = await ImagePicker().getImage(source: ImageSource.gallery);
 
-    if(newList == null){
-      setState(() {
-        newList = [_imgFile.path];
-      });
-      await _prefs.setStringList('images', newList);
-    }
-    else{
-      if(_imgFile != null) newList.insert(0, _imgFile.path);
+    if(_imgFile != null){
+      newList.insert(0, _imgFile.path);
 
-      //DELETE IMAGE WHEN LIST LENGTH HIT 11
       if(newList.length >= 11){
         newList.removeLast();
       }
 
-      await _prefs.setStringList('images', newList);
+      var result = await _prefs.setStringList('images', newList);
+      if(result){
+        setState(() {});
+      }
+      else{
+        showShortToast("An error has occured");
+      }
     }
+
+    // if(newList == null){
+    //   setState(() {
+    //     newList = [_imgFile.path];
+    //   });
+    //   await _prefs.setStringList('images', newList);
+    // }
+    // else{
+    //   if(_imgFile != null) newList.insert(0, _imgFile.path);
+
+    //   //DELETE IMAGE WHEN LIST LENGTH HIT 11
+    //   if(newList.length >= 11){
+    //     newList.removeLast();
+    //   }
+
+    //   await _prefs.setStringList('images', newList);
+    // }
   }
 
   Stream<List<String>> imageStream() async*{
@@ -254,9 +271,8 @@ class _BackgroundState extends State<Background>
               initialData: [],
               stream: imageStream(),
               builder: (context, snapshot){
-                final imageList = snapshot.data;
-
                 if(snapshot.hasData){
+                  final imageList = snapshot.data!;
 
                   if(imageList.isNotEmpty){
                     if(File(imageList[0]).existsSync()){

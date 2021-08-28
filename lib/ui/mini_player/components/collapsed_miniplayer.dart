@@ -6,15 +6,15 @@ import 'package:provider/provider.dart';
 
 class CollapsedMiniplayer extends StatelessWidget {
   const CollapsedMiniplayer({
-    @required this.backgroundColor,
-    @required this.playerMinHeight,
-    @required this.height,
-    @required this.maxImgSize,
-    @required this.elementOpacity,
-    @required this.onPressed,
-    @required this.songTitle,
-    @required this.artistName,
-    @required this.collapsedAlbumImage
+    required this.backgroundColor,
+    required this.playerMinHeight,
+    required this.height,
+    required this.maxImgSize,
+    required this.elementOpacity,
+    required this.onPressed,
+    required this.songTitle,
+    required this.artistName,
+    required this.collapsedAlbumImage
   });
 
   final Color backgroundColor;
@@ -22,7 +22,7 @@ class CollapsedMiniplayer extends StatelessWidget {
   final double height;
   final double maxImgSize;
   final double elementOpacity;
-  final Function onPressed;
+  final Function() onPressed;
   final String songTitle;
   final String artistName;
   final Widget collapsedAlbumImage;
@@ -85,7 +85,7 @@ class CollapsedMiniplayer extends StatelessWidget {
                                   songPlayer.pauseResume();
                                 },
                                 icon: songPlayer.playPauseMiniPlayerIcon(
-                                    snapshot.data.playing),
+                                    snapshot.data!.playing),
                               );
                             }
 

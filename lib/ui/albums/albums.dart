@@ -22,11 +22,11 @@ class Albums extends StatelessWidget {
                 physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(0, 15, 0, 70),
                 children: List.generate(notifier.albumInfo.length, (index){
-                  final albumName = notifier.albumInfo[index].title;
-                  final artistName = notifier.albumInfo[index].artist;
+                  final albumName = notifier.albumInfo[index].title!;
+                  final artistName = notifier.albumInfo[index].artist!;
                   final albumArtwork = notifier.albumInfo[index].albumArt;
                   final hasArtWork = File(notifier.albumArtwork(notifier.albumInfo[index].id)).existsSync();
-                  final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
+                  final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
                   final albumImage = isSdk28Below
                     ? albumArtwork != null
                       ? ImageGridFile(
@@ -52,7 +52,7 @@ class Albums extends StatelessWidget {
                       await notifier.getSongFromAlbum(notifier.albumInfo[index].id);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySong(
                         albumInfo: notifier.albumInfo[index],
-                        songInfoList: notifier.songInfoFromAlbum
+                        songInfoList: notifier.songInfoFromAlbum!
                       )));
                     },
                     child: AlbumCard(

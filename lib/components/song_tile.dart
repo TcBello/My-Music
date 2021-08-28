@@ -13,12 +13,12 @@ import 'package:theme_provider/theme_provider.dart';
 
 class SongTile extends StatefulWidget {
   const SongTile({
-    @required this.songInfo,
-    @required this.onTap
+    required this.songInfo,
+    required this.onTap
   });
 
   final SongInfo songInfo;
-  final Function onTap;
+  final Function() onTap;
 
   @override
   _SongTileState createState() => _SongTileState();
@@ -29,12 +29,12 @@ class _SongTileState extends State<SongTile> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<CustomThemeProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = widget.songInfo.title;
-    final songArtist = widget.songInfo.artist;
+    final songTitle = widget.songInfo.title!;
+    final songArtist = widget.songInfo.artist!;
     final songArtwork = widget.songInfo.albumArtwork;
     final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
     final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
-    final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
+    final isSdk28Below = songQueryProvider.androidDeviceInfo!.version.sdkInt < 29;
 
     return ListTile(
         tileColor: Colors.transparent,
@@ -55,7 +55,7 @@ class _SongTileState extends State<SongTile> {
         ),
         title: Text(
           songTitle,
-          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.bold,
             color: Color(themeProvider.textHexColor)
           ),
@@ -63,7 +63,7 @@ class _SongTileState extends State<SongTile> {
         ),
         subtitle: Text(
           songArtist,
-          style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+          style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
             color: Color(themeProvider.textHexColor)
           ),
           overflow: TextOverflow.ellipsis,
@@ -80,12 +80,12 @@ class _SongTileState extends State<SongTile> {
 
 class SongTile2 extends StatefulWidget {
   const SongTile2({
-    @required this.songInfo,
-    @required this.onTap
+    required this.songInfo,
+    required this.onTap
   });
 
   final SongInfo songInfo;
-  final Function onTap;
+  final Function() onTap;
 
   @override
   _SongTile2State createState() => _SongTile2State();
@@ -94,14 +94,14 @@ class SongTile2 extends StatefulWidget {
 class _SongTile2State extends State<SongTile2> {
   @override
   Widget build(BuildContext context) {
-    final songTitle = widget.songInfo.title;
+    final songTitle = widget.songInfo.title!;
 
     return ListTile(
       contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
       title: Text(
         songTitle,
         overflow: TextOverflow.ellipsis,
-        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -118,18 +118,18 @@ class _SongTile2State extends State<SongTile2> {
 
 class NowPlayingSongTile extends StatefulWidget {
   const NowPlayingSongTile({
-    @required Key key,
-    @required this.onTap,
-    @required this.isPlaying,
-    @required this.image,
-    @required this.index,
-    @required this.songTitle,
-    @required this.artistName,
-    @required this.path,
-    @required this.mediaItem
+    required Key key,
+    required this.onTap,
+    required this.isPlaying,
+    required this.image,
+    required this.index,
+    required this.songTitle,
+    required this.artistName,
+    required this.path,
+    required this.mediaItem
   }) : super(key: key);
 
-  final Function onTap;
+  final Function() onTap;
   final bool isPlaying;
   final Image image;
   final int index;
@@ -184,14 +184,14 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
       ),
       title: Text(
         widget.songTitle,
-        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
           fontWeight: FontWeight.bold,
         ),
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
         widget.artistName,
-        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
           fontWeight: FontWeight.w500,
         ),
         overflow: TextOverflow.ellipsis,
@@ -207,7 +207,7 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
       ),
       onTap: widget.onTap,
       onLongPress: (){
-        var songInfo = songQuery.getSongInfoByPath(widget.path);
+        var songInfo = songQuery.getSongInfoByPath(widget.path)!;
         showQueueBottomSheet(context, songInfo, widget.mediaItem, widget.index);
       },
     );
@@ -216,13 +216,13 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
 
 class PlaylistSongTile extends StatefulWidget {
   const PlaylistSongTile({
-    @required this.songInfo,
-    @required this.onTap, 
-    @required this.index
+    required this.songInfo,
+    required this.onTap, 
+    required this.index
   });
 
   final SongInfo songInfo;
-  final Function onTap;
+  final Function() onTap;
   final int index;
 
   @override
@@ -233,12 +233,12 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = widget.songInfo.title;
+    final songTitle = widget.songInfo.title!;
     final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
-    final artistName = widget.songInfo.artist;
+    final artistName = widget.songInfo.artist!;
     final songArtwork = widget.songInfo.albumArtwork;
     final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
-    final isSdk28Below = songQueryProvider.androidDeviceInfo.version.sdkInt < 29;
+    final isSdk28Below = songQueryProvider.androidDeviceInfo!.version.sdkInt < 29;
 
     return ListTile(
       contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
@@ -261,7 +261,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
         child: Text(
           songTitle,
           overflow: TextOverflow.ellipsis,
-          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.bold
           )
         ),
@@ -271,7 +271,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
         child: Text(
           artistName,
           overflow: TextOverflow.ellipsis,
-          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.w500
           ),
         ),
@@ -302,7 +302,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                         children: [
                           MarqueeText(
                             text: songTitle,
-                            style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                            style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                               color: Colors.black,
                               fontWeight: FontWeight.w500
                             ),
@@ -317,7 +317,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                     ListTile(
                       title: Text(
                         "Play Next",
-                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.w500
                         )
@@ -330,7 +330,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                     ListTile(
                       title: Text(
                         "Add to Queue",
-                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.w500
                         ),
@@ -343,7 +343,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                     ListTile(
                       title: Text(
                         "Remove from Playlist",
-                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.w500
                         ),

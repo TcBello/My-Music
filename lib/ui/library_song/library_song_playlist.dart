@@ -12,7 +12,7 @@ class LibrarySongPlaylist extends StatelessWidget {
   final int indexFromOutside;
   
   const LibrarySongPlaylist({
-    @required this.indexFromOutside
+    required this.indexFromOutside
   });
 
   @override
@@ -49,8 +49,8 @@ class LibrarySongPlaylist extends StatelessWidget {
                   centerTitle: true,
                   title: ConstrainedBox(
                     child: AutoSizeText(
-                      songQuery.playlistInfo[indexFromOutside].name,
-                      style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                      songQuery.playlistInfo![indexFromOutside].name!,
+                      style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                         fontWeight: FontWeight.bold
                       ),
                     ),
@@ -79,15 +79,15 @@ class LibrarySongPlaylist extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: Consumer2<SongQueryProvider, SongPlayerProvider>(
             builder: (context, songQuery, songPlayer, child) {
-              final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+              final sdkInt = songQuery.androidDeviceInfo!.version.sdkInt;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(
-                    songQuery.songInfoFromPlaylist.length, (index) => PlaylistSongTile(
-                      songInfo: songQuery.songInfoFromPlaylist[index],
+                    songQuery.songInfoFromPlaylist!.length, (index) => PlaylistSongTile(
+                      songInfo: songQuery.songInfoFromPlaylist![index],
                       onTap: (){
-                        songPlayer.playSong(songQuery.songInfoFromPlaylist, index, sdkInt);
+                        songPlayer.playSong(songQuery.songInfoFromPlaylist!, index, sdkInt);
                       },
                       index: indexFromOutside,
                     )

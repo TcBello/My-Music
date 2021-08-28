@@ -55,7 +55,7 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
       context: context,
       builder: (context){
         return AlertDialog(
-          title: Text("Pick a color!", style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+          title: Text("Pick a color!", style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
             color: Colors.black
           ),),
           content: SingleChildScrollView(
@@ -89,14 +89,14 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ListTile(
-          title: Text("Primary", style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+          title: Text("Primary", style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 18
           )),
         ),
         SizedBox(height: 10,),
         Container(
-          child: Text("Sample Text", style: ThemeProvider.themeOf(context).data.textTheme.headline5.copyWith(
+          child: Text("Sample Text", style: ThemeProvider.themeOf(context).data.textTheme.headline5?.copyWith(
             fontWeight: FontWeight.w500,
             color: Color(_hex),
             fontSize: 30
@@ -104,20 +104,20 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
         ),
         SizedBox(height: 20,),
         ListTile(
-          title: Text("Color", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          title: Text("Color", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.bold
           ),),
-          subtitle: Text("Customize text color", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+          subtitle: Text("Customize text color", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
             color: Colors.white
           ),),
           onTap: (){_openColorDialog(context);},
           focusColor: Colors.blue,
         ),
         ListTile(
-          title: Text("Font", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          title: Text("Font", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.bold
           ),),
-          subtitle: Text("Customize font style", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+          subtitle: Text("Customize font style", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
             color: Colors.white
           ),),
           onTap: (){
@@ -137,6 +137,13 @@ class _TextStyleThemeState extends State<TextStyleTheme> {
       appBar: AppBar(
         backgroundColor: color2,
         title: Text("Text Style", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white,),
+          onPressed: (){
+            Navigator.pop(context);
+          }
+        ),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

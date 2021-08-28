@@ -8,10 +8,10 @@ import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistCard extends StatelessWidget {
   const PlaylistCard({
-    @required this.playlistName,
-    @required this.songNumber,
-    @required this.playlistInfo,
-    @required this.index
+    required this.playlistName,
+    required this.songNumber,
+    required this.playlistInfo,
+    required this.index
   });
 
   final String playlistName;
@@ -44,7 +44,7 @@ class PlaylistCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Container(
-                          child: Text(playlistName, style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                          child: Text(playlistName, style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                             fontWeight: FontWeight.bold,
                               color: Colors.black
                           ),),

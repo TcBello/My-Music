@@ -13,7 +13,7 @@ import 'package:theme_provider/theme_provider.dart';
 
 class SearchResult extends StatelessWidget {
   const SearchResult({
-    @required this.songSearchList
+    required this.songSearchList
   });
 
   final List<SongInfo> songSearchList;
@@ -65,13 +65,13 @@ class SearchResult extends StatelessWidget {
                     left: 20,
                     bottom: 10
                   ),
-                  child: Text("Search Result", style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                  child: Text("Search Result", style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                     fontWeight: FontWeight.w600
                   ),),
                 ),
                 Consumer2<SongPlayerProvider, SongQueryProvider>(
                   builder: (context, songPlayer, songQuery, child){
-                    final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+                    final sdkInt = songQuery.androidDeviceInfo!.version.sdkInt;
 
                     return Column(
                       children: List.generate(songSearchList.length, (index) => SongTile(

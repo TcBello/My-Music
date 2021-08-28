@@ -13,9 +13,9 @@ class ArtistProfile extends StatelessWidget {
   final String backgroundSliver;
   
   const ArtistProfile({
-    @required this.title,
-    @required this.index,
-    @required this.backgroundSliver
+    required this.title,
+    required this.index,
+    required this.backgroundSliver
   });
 
   @override
@@ -36,15 +36,19 @@ class ArtistProfile extends StatelessWidget {
               ],
               expandedHeight: 165,
               flexibleSpace: FlexibleSpaceBar(
-                background: backgroundSliver != null
-                  ? Hero(
-                    tag: "artist$index",
-                    child: Image.file(File(backgroundSliver), fit: BoxFit.cover,),
-                  )
-                  : Hero(
-                    tag: "artist$index",
-                    child: Image.asset('assets/imgs/defalbum.png', fit: BoxFit.cover,),
-                  )
+                // background: backgroundSliver != null
+                //   ? Hero(
+                //     tag: "artist$index",
+                //     child: Image.file(File(backgroundSliver), fit: BoxFit.cover,),
+                //   )
+                //   : Hero(
+                //     tag: "artist$index",
+                //     child: Image.asset('assets/imgs/defalbum.png', fit: BoxFit.cover,),
+                //   )
+                background: Hero(
+                  tag: "artist$index",
+                  child: Image.file(File(backgroundSliver), fit: BoxFit.cover,),
+                ),
               ),
             ),
           ];

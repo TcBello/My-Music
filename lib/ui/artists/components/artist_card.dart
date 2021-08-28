@@ -3,8 +3,8 @@ import 'package:theme_provider/theme_provider.dart';
 
 class ArtistCard extends StatelessWidget {
   const ArtistCard({
-    @required this.imageGrid,
-    @required this.artistName
+    required this.imageGrid,
+    required this.artistName
   });
 
   final imageGrid;
@@ -26,7 +26,7 @@ class ArtistCard extends StatelessWidget {
               child: Text(
                 artistName,
                 overflow: TextOverflow.ellipsis,
-                style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.black
                 ),

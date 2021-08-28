@@ -79,32 +79,28 @@ class SongPlayerProvider extends ChangeNotifier{
           color: Colors.grey[300],
           size: 40,
         );
-        break;
       case AudioServiceShuffleMode.all:
         return Icon(
           Icons.shuffle,
           color: Colors.white,
           size: 40,
         );
-        break;
       case AudioServiceShuffleMode.group:
         return Icon(
           Icons.shuffle,
           color: Colors.white,
           size: 40,
         );
-        break;
       default:
         return Icon(
           Icons.shuffle,
           color: Colors.grey[300],
           size: 40,
         );
-        break;
     }
   }
 
-  Stream<MediaItem> get audioItemStream => AudioService.currentMediaItemStream;
+  Stream<MediaItem?> get audioItemStream => AudioService.currentMediaItemStream;
   Stream<bool> get backgroundRunningStream => AudioService.runningStream;
   Stream get indexStream => AudioService.customEventStream;
 
@@ -178,10 +174,10 @@ class SongPlayerProvider extends ChangeNotifier{
       final songArtwork2 = songArtwork(e.id);
 
       return MediaItem(
-        id: e.filePath,
-        title: e.title,
+        id: e.filePath!,
+        title: e.title!,
         artist: e.artist,
-        album: e.album,
+        album: e.album!,
         artUri: isSdk28Below
           ? songArtwork1 != null
             ? File(songArtwork1).uri
@@ -189,7 +185,7 @@ class SongPlayerProvider extends ChangeNotifier{
           : hasArtWork
             ? File(songArtwork2).uri
             : File(_defaultAlbum).uri,
-        duration: Duration(milliseconds: int.parse(e.duration)),
+        duration: Duration(milliseconds: int.parse(e.duration!)),
       );
     }).toList();
 
@@ -260,7 +256,7 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   int getQueueLength(){
-    return AudioService.queue.length;
+    return AudioService.queue!.length;
   }
 
   void setTimer(){
@@ -287,7 +283,7 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   Stream<AudioQueueData> nowPlayingStream(){
-    return Rx.combineLatest2<List<MediaItem>, dynamic, AudioQueueData>(
+    return Rx.combineLatest2<List<MediaItem>?, dynamic, AudioQueueData>(
       AudioService.queueStream,
       AudioService.customEventStream,
       (queue, index) => AudioQueueData(

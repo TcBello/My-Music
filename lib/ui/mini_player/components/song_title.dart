@@ -4,8 +4,8 @@ import 'package:theme_provider/theme_provider.dart';
 
 class SongTitleMiniPlayer extends StatelessWidget {
   const SongTitleMiniPlayer({
-    @required this.title,
-    @required this.artist
+    required this.title,
+    required this.artist
   });
 
   final String title;
@@ -24,7 +24,7 @@ class SongTitleMiniPlayer extends StatelessWidget {
           MarqueeText(
             alwaysScroll: false,
             text: title,
-            style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+            style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 18
@@ -33,7 +33,7 @@ class SongTitleMiniPlayer extends StatelessWidget {
           ),
           Text(
             artist,
-            style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+            style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
               color: Colors.white
             ),
             overflow: TextOverflow.ellipsis,
@@ -46,7 +46,7 @@ class SongTitleMiniPlayer extends StatelessWidget {
 
 class SongTitle extends StatelessWidget {
   const SongTitle({
-    @required this.title
+    required this.title
   });
 
   final String title;
@@ -58,7 +58,7 @@ class SongTitle extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.8,
       child: MarqueeText(
         text: title,
-        style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+        style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
           fontSize: 22
         ),
         speed: 20,

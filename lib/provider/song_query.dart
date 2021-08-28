@@ -22,8 +22,8 @@ class SongQueryProvider extends ChangeNotifier{
 
   String _initialSongId = "";
 
-  PaletteGenerator _currentPalette;
-  PaletteGenerator get currentPalette => _currentPalette;
+  PaletteGenerator? _currentPalette;
+  PaletteGenerator? get currentPalette => _currentPalette;
 
   String _searchHeader = "Searching Songs...";
   String get searchHeader => _searchHeader;
@@ -36,8 +36,8 @@ class SongQueryProvider extends ChangeNotifier{
 
   bool isConvertToStringOnce = false;
 
-  AndroidDeviceInfo _androidDeviceInfo;
-  AndroidDeviceInfo get androidDeviceInfo => _androidDeviceInfo;
+  AndroidDeviceInfo? _androidDeviceInfo;
+  AndroidDeviceInfo? get androidDeviceInfo => _androidDeviceInfo;
 
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
   String get defaultAlbum => _defaultAlbum;
@@ -45,14 +45,14 @@ class SongQueryProvider extends ChangeNotifier{
   List<SongInfo> _songInfo = [];
   List<SongInfo> get songInfo => _songInfo;
 
-  List<SongInfo> _songInfoFromAlbum;
-  List<SongInfo> get songInfoFromAlbum => _songInfoFromAlbum;
+  List<SongInfo>? _songInfoFromAlbum = [];
+  List<SongInfo>? get songInfoFromAlbum => _songInfoFromAlbum;
 
-  List<SongInfo> _songInfoFromArtist;
-  List<SongInfo> get songInfoFromArtist => _songInfoFromArtist;
+  List<SongInfo>? _songInfoFromArtist = [];
+  List<SongInfo>? get songInfoFromArtist => _songInfoFromArtist;
 
-  List<SongInfo> _songInfoFromPlaylist;
-  List<SongInfo> get songInfoFromPlaylist => _songInfoFromPlaylist;
+  List<SongInfo>? _songInfoFromPlaylist = [];
+  List<SongInfo>? get songInfoFromPlaylist => _songInfoFromPlaylist;
 
   List<ArtistInfo> _artistInfo = [];
   List<ArtistInfo> get artistInfo => _artistInfo;
@@ -60,11 +60,11 @@ class SongQueryProvider extends ChangeNotifier{
   List<AlbumInfo> _albumInfo = [];
   List<AlbumInfo> get albumInfo => _albumInfo;
 
-  List<AlbumInfo> _albumFromArtist;
-  List<AlbumInfo> get albumFromArtist => _albumFromArtist;
+  List<AlbumInfo>? _albumFromArtist = [];
+  List<AlbumInfo>? get albumFromArtist => _albumFromArtist;
 
-  List<PlaylistInfo> _playlistInfo = [];
-  List<PlaylistInfo> get playlistInfo => _playlistInfo;
+  List<PlaylistInfo>? _playlistInfo = [];
+  List<PlaylistInfo>? get playlistInfo => _playlistInfo;
 
   // List<SongInfo> _currentQueue = [];
   // List<SongInfo> get currentQueue => _currentQueue;
@@ -78,17 +78,17 @@ class SongQueryProvider extends ChangeNotifier{
   String get locationSongSearch => _locationSongSearch;
 
   void addPaletteData() async{
-    var mediaItem = AudioService.currentMediaItem;
+    var mediaItem = AudioService.currentMediaItem!;
 
     if(_initialSongId != mediaItem.id){
       var generator = await PaletteGenerator.fromImageProvider(
         ResizeImage(
-          FileImage(File(mediaItem.artUri.toFilePath())),
+          FileImage(File(mediaItem.artUri!.toFilePath())),
           height: 30,
           width: 30
         )
       );
-      print("DOMINANT LUMINANCE: ${generator.dominantColor.color.computeLuminance()}\nBODY COLOR LUMINANCE: ${generator.colors.last.computeLuminance()}");
+      print("DOMINANT LUMINANCE: ${generator.dominantColor?.color.computeLuminance()}\nBODY COLOR LUMINANCE: ${generator.colors.last.computeLuminance()}");
       _currentPalette = generator;
       _initialSongId = mediaItem.id;
       Future.delayed(Duration(milliseconds: 200), () async {
@@ -128,14 +128,14 @@ class SongQueryProvider extends ChangeNotifier{
 
     if(isIgnore45){
       songData.forEach((song) {
-        if(int.parse(song.duration) > 45000){
+        if(int.parse(song.duration!) > 45000){
           _songInfo.add(song);
         }
       });
     }
     else if(isIgnore30){
       songData.forEach((song) {
-        if(int.parse(song.duration) > 30000){
+        if(int.parse(song.duration!) > 30000){
           _songInfo.add(song);
         }
       });
@@ -153,7 +153,7 @@ class SongQueryProvider extends ChangeNotifier{
     });
 
     albumData.forEach((album) {
-      if(album.title != "raw" && album.title.toLowerCase() != _androidDeviceInfo.manufacturer.toLowerCase()){
+      if(album.title != "raw" && album.title?.toLowerCase() != _androidDeviceInfo?.manufacturer.toLowerCase()){
         _albumInfo.add(album);
       }
     });
@@ -166,13 +166,13 @@ class SongQueryProvider extends ChangeNotifier{
     showShortToast("1 song added to $playlistName");
   }
 
-  void addSongToPlaylist(SongInfo song, int index, String playlistName) async {
-    await _playlistInfo[index].addSong(song: song);
+  Future<void> addSongToPlaylist(SongInfo song, int index, String playlistName) async {
+    await _playlistInfo?[index].addSong(song: song);
     showShortToast("1 song added to $playlistName");
   }
 
   Future<void> removeSongPlaylist(SongInfo song, int index) async {
-    await _playlistInfo[index].removeSong(song: song);
+    await _playlistInfo?[index].removeSong(song: song);
   }
 
   Future<void> updatePlaylist() async {
@@ -180,11 +180,11 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   Future<void> deletePlaylist(int index) async {
-    await FlutterAudioQuery.removePlaylist(playlist: _playlistInfo[index]);
+    await FlutterAudioQuery.removePlaylist(playlist: _playlistInfo![index]);
   }
 
   Future<void> removeSongFromPlaylist(SongInfo song, int index) async {
-    await _playlistInfo[index].removeSong(song: song);
+    await _playlistInfo?[index].removeSong(song: song);
   }
 
   Future<void> getSongFromAlbum(String id) async {
@@ -207,7 +207,7 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   Future<void> getSongFromPlaylist(int index) async {
-    _songInfoFromPlaylist = await flutterAudioQuery.getSongsFromPlaylist(playlist: _playlistInfo[index]);
+    _songInfoFromPlaylist = await flutterAudioQuery.getSongsFromPlaylist(playlist: _playlistInfo![index]);
     notifyListeners();
   }
 
@@ -260,18 +260,18 @@ class SongQueryProvider extends ChangeNotifier{
       String artwork = songArtwork(e.id);
 
       return MediaItem(
-        id: e.filePath,
-        title: e.title,
+        id: e.filePath!,
+        title: e.title!,
         artist: e.artist ,
-        album: e.album,
-        artUri: _androidDeviceInfo.version.sdkInt < 29
+        album: e.album!,
+        artUri: _androidDeviceInfo!.version.sdkInt < 29
           ? e.albumArtwork != null
-            ? File(e.albumArtwork).uri
+            ? File(e.albumArtwork!).uri
             : File(_defaultAlbum).uri
           : hasArtWork
             ? File(artwork).uri
             : File(_defaultAlbum).uri,
-        duration: Duration(milliseconds: int.parse(e.duration)),
+        duration: Duration(milliseconds: int.parse(e.duration!)),
       );
     }).toList();
   }
@@ -281,18 +281,18 @@ class SongQueryProvider extends ChangeNotifier{
     String artwork = songArtwork(newSongInfo.id);
 
     return MediaItem(
-      id: newSongInfo.filePath,
-      title: newSongInfo.title,
+      id: newSongInfo.filePath!,
+      title: newSongInfo.title!,
       artist: newSongInfo.artist,
-      album: newSongInfo.album,
-      artUri: _androidDeviceInfo.version.sdkInt < 29
+      album: newSongInfo.album!,
+      artUri: _androidDeviceInfo!.version.sdkInt < 29
         ? newSongInfo.albumArtwork != null
-          ? File(newSongInfo.albumArtwork).uri
+          ? File(newSongInfo.albumArtwork!).uri
           : File(_defaultAlbum).uri
         : hasArtWork
           ? File(artwork).uri
           : File(_defaultAlbum).uri,
-      duration: Duration(milliseconds: int.parse(newSongInfo.duration)),
+      duration: Duration(milliseconds: int.parse(newSongInfo.duration!)),
     );
   }
 
@@ -329,7 +329,7 @@ class SongQueryProvider extends ChangeNotifier{
     int totalItems = songInfo.length + artistInfo.length + albumInfo.length;
     notifyListeners();
 
-    if(_androidDeviceInfo.version.sdkInt >= 29){
+    if(_androidDeviceInfo!.version.sdkInt >= 29){
       if(!valFile.existsSync()){
         int currentSearch = 0;
         _locationSongSearch = "";
@@ -371,7 +371,7 @@ class SongQueryProvider extends ChangeNotifier{
         //   }
         // });
 
-        var resultSong = await Future.forEach(_songInfo, (element) async {
+        var resultSong = await Future.forEach(_songInfo, (SongInfo element) async {
           String filePath = "$dirPath/${element.id}";
           File file = File(filePath);
 
@@ -382,7 +382,7 @@ class SongQueryProvider extends ChangeNotifier{
               size: Size(500, 500)
             );
 
-            _locationSongSearch = element.filePath;
+            _locationSongSearch = element.filePath!;
             currentSearch += 1;
             _searchProgress = currentSearch / totalItems;
             notifyListeners();
@@ -413,7 +413,7 @@ class SongQueryProvider extends ChangeNotifier{
           _searchHeader = "Preparing...";
           notifyListeners();
 
-          var resultArtist = await Future.forEach(_artistInfo, (element) async {
+          var resultArtist = await Future.forEach(_artistInfo, (ArtistInfo element) async {
             String filePath = "$dirPath/ar${element.id}";
             File file = File(filePath);
 
@@ -448,7 +448,7 @@ class SongQueryProvider extends ChangeNotifier{
 
           if(resultArtist == null){
             
-            Future.forEach(_albumInfo, (element) async {
+            Future.forEach(_albumInfo, (AlbumInfo element) async {
               String filePath = "$dirPath/al${element.id}";
               File file = File(filePath);
 
@@ -641,7 +641,7 @@ class SongQueryProvider extends ChangeNotifier{
       }
     }
 
-    if(_androidDeviceInfo.version.sdkInt < 29 && !valFile.existsSync()){
+    if(_androidDeviceInfo!.version.sdkInt < 29 && !valFile.existsSync()){
       int currentSearch = 0;
       _locationSongSearch = "";
       notifyListeners();
@@ -660,7 +660,7 @@ class SongQueryProvider extends ChangeNotifier{
 
       for(int i = 0; i < _songInfo.length; i++){
         await Future.delayed(Duration(milliseconds: 50), (){
-          _locationSongSearch = _songInfo[i].filePath;
+          _locationSongSearch = _songInfo[i].filePath!;
           currentSearch += 1;
           _searchProgress = currentSearch / _songInfo.length;
 
@@ -711,8 +711,8 @@ class SongQueryProvider extends ChangeNotifier{
     }
   }
 
-  SongInfo getSongInfoByPath(String path){
-    SongInfo resultSongInfo;
+  SongInfo? getSongInfoByPath(String path){
+    SongInfo? resultSongInfo;
 
     _songInfo.forEach((element) {
       if(element.filePath == path){

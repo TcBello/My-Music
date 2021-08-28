@@ -17,7 +17,7 @@ class ChangelogDialog extends StatelessWidget {
             children: List.generate(changelogs.length, (index) => ChangelogContent(
               version: changelogs[index].version,
               details: changelogs[index].details,
-              textStyle: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle,
+              textStyle: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle!,
             ))
           ),
         ),

@@ -19,7 +19,7 @@ class CustomThemeProvider with ChangeNotifier{
 
   Future<void> getCurrentTextColor() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    int color = _prefs.getInt('textcolor');
+    int? color = _prefs.getInt('textcolor');
     if(color == null){
       textHexColor = 4294967295;
     }
@@ -34,7 +34,7 @@ class CustomThemeProvider with ChangeNotifier{
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final appDir = await getApplicationDocumentsDirectory();
     final backgroundId = _prefs.getString('backgroundId');
-    final _currentBlur = _prefs.getDouble('currentblur');
+    final _currentBlur = _prefs.getDouble('currentblur') ?? 0.0;
     final _currentBG = "${appDir.path}/background-$backgroundId";
 
     if(!File(_currentBG).existsSync()){
@@ -46,12 +46,12 @@ class CustomThemeProvider with ChangeNotifier{
       blurValue = _currentBlur;
     }
 
-    if(_currentBlur == null){
-      blurValue = 0.0;
-    }
-    else{
-      blurValue = _currentBlur;
-    }
+    // if(_currentBlur == null){
+    //   blurValue = 0.0;
+    // }
+    // else{
+    //   blurValue = _currentBlur;
+    // }
 
     notifyListeners();
   }
@@ -114,7 +114,7 @@ class CustomThemeProvider with ChangeNotifier{
 
   Future<void> getCurrentTextColor2() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    int color = _prefs.getInt('textcolor2');
+    int? color = _prefs.getInt('textcolor2');
     if(color == null){
       textHexColor2 = 4294967295;
     }
@@ -140,7 +140,7 @@ class CustomThemeProvider with ChangeNotifier{
 
   void initFont() async{
     var prefs = await SharedPreferences.getInstance();
-    String currentFont = prefs.getString('font');
+    String? currentFont = prefs.getString('font');
 
     if(currentFont != null) _font = currentFont;
   }

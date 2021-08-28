@@ -22,17 +22,17 @@ class DriveModeUI extends StatelessWidget {
     return Material(
       child: Consumer2<SongQueryProvider, SongPlayerProvider>(
         builder: (context, songQuery, songPlayer, child) {
-          return StreamBuilder<MediaItem>(
+          return StreamBuilder<MediaItem?>(
             stream: songPlayer.audioItemStream,
             builder: (context, snapshot) {
               if(snapshot.hasData){
-                final songTitle = snapshot.data.title;
-                final artistName = snapshot.data.artist;
-                final duration = toMinSecFormat(snapshot.data.duration);
-                final durationValue = snapshot.data.duration;
+                final songTitle = snapshot.data!.title;
+                final artistName = snapshot.data!.artist!;
+                final duration = toMinSecFormat(snapshot.data!.duration!);
+                final durationValue = snapshot.data!.duration!;
                 final albumImage = ClipRRect(
                   borderRadius: BorderRadius.circular(18),
-                  child: Image.file(File(snapshot.data.artUri.path), fit: BoxFit.cover,),
+                  child: Image.file(File(snapshot.data!.artUri!.path), fit: BoxFit.cover,),
                 );
                 final maxImageSize = _size.width * 0.8;
     
@@ -40,7 +40,7 @@ class DriveModeUI extends StatelessWidget {
                   duration: Duration(seconds: 1),
                   curve: Curves.easeOutQuart,
                   color: songQuery.currentPalette != null
-                    ? miniplayerBackgroundColor(songQuery.currentPalette.dominantColor.color)
+                    ? miniplayerBackgroundColor(songQuery.currentPalette!.dominantColor!.color)
                     : color2,
                   width: _size.width,
                   height: _size.height,
@@ -108,7 +108,7 @@ class DriveModeUI extends StatelessWidget {
                                         padding: EdgeInsets.only(left: 20.0, right: 20.0),
                                         child: Text(
                                           artistName,
-                                          style: ThemeProvider.themeOf(context).data.textTheme.subtitle1.copyWith(
+                                          style: ThemeProvider.themeOf(context).data.textTheme.subtitle1?.copyWith(
                                             color: Colors.grey[300],
                                             fontWeight: FontWeight.w600,
                                             fontSize: 18
@@ -125,8 +125,8 @@ class DriveModeUI extends StatelessWidget {
                                   stream: songPlayer.positionStream,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      final position = toMinSecFormat(snapshot.data);
-                                      final positionValue = snapshot.data;
+                                      final position = toMinSecFormat(snapshot.data!);
+                                      final positionValue = snapshot.data!;
                 
                                       return Column(
                                         children: [
@@ -142,7 +142,7 @@ class DriveModeUI extends StatelessWidget {
                                                     position: positionValue,
                                                     duration: durationValue,
                                                     color: songQuery.currentPalette != null
-                                                      ? miniplayerBodyColor(songQuery.currentPalette.colors.last, songQuery.currentPalette.dominantColor.color)
+                                                      ? miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color)
                                                       : Colors.pinkAccent
                                                   ),
                                                 ),
@@ -154,7 +154,7 @@ class DriveModeUI extends StatelessWidget {
                                                       margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                                       child: Text(
                                                         position,
-                                                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                                                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                                                           fontWeight: FontWeight.w500
                                                         )
                                                       )
@@ -163,7 +163,7 @@ class DriveModeUI extends StatelessWidget {
                                                       margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
                                                       child: Text(
                                                         duration,
-                                                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                                                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                                                           fontWeight:
                                                           FontWeight.w500
                                                         ),
@@ -199,7 +199,7 @@ class DriveModeUI extends StatelessWidget {
                                       ),
                                       AnimatedPausePlay(
                                         color: songQuery.currentPalette != null
-                                          ? miniplayerBodyColor(songQuery.currentPalette.colors.last, songQuery.currentPalette.dominantColor.color)
+                                          ? miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color)
                                           : Colors.pinkAccent
                                       ),
                                       IconButton(

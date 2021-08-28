@@ -15,7 +15,7 @@ class NowPlayingBuilder extends StatefulWidget {
 
 class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
 
-  ScrollController scrollController;
+  ScrollController? scrollController;
 
   Future<bool> delayDisplay() async {
     await Future.delayed(Duration(seconds: 1));
@@ -30,7 +30,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
 
   @override
   void dispose() {
-    scrollController.dispose();
+    scrollController?.dispose();
     super.dispose();
   }
 
@@ -70,8 +70,8 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
       stream: songPlayerProvider.nowPlayingStream(),
       builder: (context, snapshot) {
         if(snapshot.hasData){
-          final queue = snapshot.data.queue;
-          final currentIndex = snapshot.data.index;
+          final queue = snapshot.data!.queue ?? [];
+          final currentIndex = snapshot.data!.index;
 
           return FutureBuilder<bool>(
             future: delayDisplay(),
@@ -89,7 +89,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
                     ),
                     itemCount: queue.length,
                     itemBuilder: (context, index){
-                      final songArtwork = queue[index].artUri.path;
+                      final songArtwork = queue[index].artUri!.path;
           
                       return NowPlayingSongTile(
                         key: ValueKey("$index - ${queue[index].title}"),
@@ -100,7 +100,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
                         isPlaying: index == currentIndex,
                         image: Image.file(File(songArtwork), fit: BoxFit.cover,),
                         songTitle: queue[index].title,
-                        artistName: queue[index].artist,
+                        artistName: queue[index].artist!,
                         path: queue[index].id,
                         mediaItem: queue[index],
                       );

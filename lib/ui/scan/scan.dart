@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
@@ -20,13 +21,17 @@ class ScanUI extends StatelessWidget {
         color: color1,
         child: Column(
           children: [
-            Icon(Icons.search, color: Colors.white, size: 300,),
+            SizedBox(
+              width: size.width * 0.8,
+              height: size.height * 0.4,
+              child: Image.asset(kScanLogo),
+            ),
             Consumer<SongQueryProvider>(
               builder: (context, songQuery, child) {
                 return CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
                   value: songQuery.isIgnoreSongDuration45s,
-                  onChanged: songQuery.setIgnoreSongDuration45,
+                  onChanged: (value) => songQuery.setIgnoreSongDuration45(value!),
                   title: Text("Ignore song less than 45 sec songs", style: ThemeProvider.themeOf(context).data.textTheme.bodyText1)
                 );
               }
@@ -36,7 +41,7 @@ class ScanUI extends StatelessWidget {
                 return CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
                   value: songQuery.isIgnoreSongDuration30s,
-                  onChanged: songQuery.setIgnoreSongDuration30,
+                  onChanged: (value) => songQuery.setIgnoreSongDuration30(value!),
                   title: Text("Ignore song less than 30 sec songs", style: ThemeProvider.themeOf(context).data.textTheme.bodyText1)
                 );
               }
@@ -63,7 +68,7 @@ class ScanUI extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30)
                     )),
                     foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                    textStyle: MaterialStateProperty.all(ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                       fontSize: 18
                     ))
                   ),

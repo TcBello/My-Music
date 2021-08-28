@@ -101,19 +101,19 @@ class AboutUI extends StatefulWidget {
 }
 
 class _AboutUIState extends State<AboutUI> {
-  RateMyApp _rateMyApp;
+  RateMyApp? _rateMyApp;
 
   @override
   void initState() {
     _rateMyApp = RateMyApp(
       googlePlayIdentifier: kAppId
     );
-    _rateMyApp.init();
+    _rateMyApp?.init();
     super.initState();
   }
 
   void rateApp() async{
-    await _rateMyApp.showRateDialog(
+    await _rateMyApp?.showRateDialog(
       context,
       title: "Rate this app",
       message: "Enjoyed using this app? Please write a review",
@@ -121,22 +121,10 @@ class _AboutUIState extends State<AboutUI> {
       noButton: "NO THANKS",
       laterButton: "MAYBE LATER",
       listener: (button){
-        switch(button){
-          case RateMyAppDialogButton.rate:
-            // TODO: SET RATE BUTTON
-            break;
-          case RateMyAppDialogButton.later:
-            // TODO: SET LATE BUTTON
-            break;
-          case RateMyAppDialogButton.no:
-            // TODO: SET NO BUTTON
-            break;
-        }
-
-          return true;
-        },
+        return true;
+      },
         ignoreNativeDialog: true,
-        onDismissed: () => _rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+        onDismissed: () => _rateMyApp?.callEvent(RateMyAppEventType.laterButtonPressed),
       );
   }
 
@@ -154,10 +142,10 @@ class _AboutUIState extends State<AboutUI> {
         child: Column(
           children: [
             ListTile(
-              title: Text("Changelog", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              title: Text("Changelog", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                 fontWeight: FontWeight.bold
               ),),
-              subtitle: Text("See what's new", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+              subtitle: Text("See what's new", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
               onTap: (){
@@ -168,10 +156,10 @@ class _AboutUIState extends State<AboutUI> {
             ),
             ListTile(
               isThreeLine: true,
-              title: Text("Report Bugs", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              title: Text("Report Bugs", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                 fontWeight: FontWeight.bold
               ),),
-              subtitle: Text("Discovered a bug? have suggestion? report it to the developer directly", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+              subtitle: Text("Discovered a bug? have suggestion? report it to the developer directly", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
               onTap: (){
@@ -181,19 +169,19 @@ class _AboutUIState extends State<AboutUI> {
               },
             ),
             ListTile(
-              title: Text("Rate this app", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              title: Text("Rate this app", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                 fontWeight: FontWeight.bold
               ),),
-              subtitle: Text("Enjoyed using this app? Write a review", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+              subtitle: Text("Enjoyed using this app? Write a review", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
               onTap: () => rateApp(),
             ),
             ListTile(
-              title: Text("Share", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              title: Text("Share", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                 fontWeight: FontWeight.bold
               ),),
-              subtitle: Text("Share this app with your friends and families", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+              subtitle: Text("Share this app with your friends and families", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
               onTap: (){
@@ -203,10 +191,10 @@ class _AboutUIState extends State<AboutUI> {
               },
             ),
             ListTile(
-              title: Text("Version", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              title: Text("Version", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                 fontWeight: FontWeight.bold
               ),),
-              subtitle: Text(kVersion, style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+              subtitle: Text(kVersion, style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
             ),

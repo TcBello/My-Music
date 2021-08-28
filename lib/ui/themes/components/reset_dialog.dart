@@ -3,12 +3,12 @@ import 'package:theme_provider/theme_provider.dart';
 
 class ResetDialog extends StatelessWidget {
   const ResetDialog({
-    @required this.onPressedDelete,
-    @required this.title,
-    @required this.content
+    required this.onPressedDelete,
+    required this.title,
+    required this.content
   });
 
-  final Function onPressedDelete;
+  final Function() onPressedDelete;
   final String title;
   final String content;
 

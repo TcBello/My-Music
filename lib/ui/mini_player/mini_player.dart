@@ -25,12 +25,12 @@ class MiniPlayer extends StatelessWidget {
   final Color backgroundColor = color2;
 
   void expandMiniPlayer(){
-    miniPlayerController.animateToHeight(state: PanelState.MAX);
+    miniPlayerController?.animateToHeight(state: PanelState.MAX);
     
   }
 
   void collapseMiniPlayer(){
-    miniPlayerController.animateToHeight(state: PanelState.MIN);
+    miniPlayerController?.animateToHeight(state: PanelState.MIN);
   }
 
   @override
@@ -39,27 +39,27 @@ class MiniPlayer extends StatelessWidget {
     final playerMaxHeight = size.height;
 
     return Consumer2<SongQueryProvider, SongPlayerProvider>(builder: (context, songQuery, songPlayer, child) {
-      return StreamBuilder<MediaItem>(
+      return StreamBuilder<MediaItem?>(
         stream: songPlayer.audioItemStream,
         builder: (context, snapshot) {
           if(snapshot.hasData){
-            print(snapshot.data.title);
+            print(snapshot.data?.title);
             songQuery.addPaletteData();
 
             final collapsedAlbumImage = ClipRRect(
               borderRadius: BorderRadius.circular(5),
-              child: Image.file(File(snapshot.data.artUri.path), fit: BoxFit.cover)
+              child: Image.file(File(snapshot.data!.artUri!.path), fit: BoxFit.cover)
             );
 
             final expandedAlbumImage = ClipRRect(
               borderRadius: BorderRadius.circular(18),
-              child: Image.file(File(snapshot.data.artUri.path), fit: BoxFit.cover,),
+              child: Image.file(File(snapshot.data!.artUri!.path), fit: BoxFit.cover,),
             );
 
-            final songTitle = snapshot.data.title;
-            final artistName = snapshot.data.artist;
-            final duration = toMinSecFormat(snapshot.data.duration);
-            final durationValue = snapshot.data.duration;
+            final songTitle = snapshot.data!.title;
+            final artistName = snapshot.data!.artist!;
+            final duration = toMinSecFormat(snapshot.data!.duration!);
+            final durationValue = snapshot.data!.duration!;
 
             return Miniplayer(
               valueNotifier: playerExpandProgress,
@@ -107,11 +107,11 @@ class MiniPlayer extends StatelessWidget {
             
                   return ExpandedMiniplayer(
                     backgroundColor: songQuery.currentPalette != null
-                      ? miniplayerBackgroundColor(songQuery.currentPalette.dominantColor.color)
+                      ? miniplayerBackgroundColor(songQuery.currentPalette!.dominantColor!.color)
                       : backgroundColor,
                     bodyColor: songQuery.currentPalette != null
                       // ? miniplayerBodyColor(songQuery.currentPalette.dominantColor.color)
-                      ? miniplayerBodyColor(songQuery.currentPalette.colors.last, songQuery.currentPalette.dominantColor.color)
+                      ? miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color)
                       // ? songQuery.currentPalette.colors.last
                       : Colors.pinkAccent,
                     opacityPercentageExpandedPlayer: opacityPercentageExpandedPlayer,
@@ -143,7 +143,7 @@ class MiniPlayer extends StatelessWidget {
                     
                   return CollapsedMiniplayer(
                     backgroundColor: songQuery.currentPalette != null && height > playerMinHeight
-                      ? miniplayerBackgroundColor(songQuery.currentPalette.dominantColor.color)
+                      ? miniplayerBackgroundColor(songQuery.currentPalette!.dominantColor!.color)
                       : backgroundColor,
                     playerMinHeight: playerMinHeight,
                     height: height,

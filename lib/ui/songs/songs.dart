@@ -8,9 +8,10 @@ class Songs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SongQueryProvider>(
       builder: (context, song, child) {
-        return song.songInfo != null
-          ? SongBuilder()
-          : Container();
+        // return song.songInfo != null
+        //   ? SongBuilder()
+        //   : Container();
+        return SongBuilder();
       },
     );
   }

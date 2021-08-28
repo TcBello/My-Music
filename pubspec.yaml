@@ -18,44 +18,54 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.9.1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   
   # STATE MANAGEMENT
-  provider: ^4.3.2
+  provider: ^6.0.0
   rxdart: ^0.27.1
   
   # AUDIO
   just_audio: ^0.7.4+1
   audio_service: ^0.17.0
   audio_session: ^0.1.0
-  equalizer: ^0.0.2+2
+  equalizer:
+    git:
+      url: https://github.com/TcBello/equalizer.git
   flutter_audio_query:
     git:
-      url: https://github.com/TcBello/flutter_audio_query
+      url: https://github.com/TcBello/flutter_audio_query.git
   
   # UTIL
   device_info: ^2.0.2
   uuid: ^3.0.4
-  auto_size_text: ^2.1.0
-  fluttertoast: ^7.1.8
+  auto_size_text: 3.0.0-nullsafety.0
+  fluttertoast: ^8.0.8
   simple_animations: ^3.1.1
   supercharged: ^2.0.0
   marquee_text: ^2.0.0
   image_picker: ^0.7.4
-  flutter_colorpicker: ^0.3.5
+  flutter_colorpicker: ^0.4.0
   palette_generator: ^0.3.0
 
   # UI
-  splashscreen: ^1.3.5
   animated_text_kit: ^4.2.1
   theme_provider: ^0.5.0
   path_provider: ^2.0.1
-  flutter_inner_drawer: ^1.0.0+1
-  miniplayer: ^1.0.0+2
+  miniplayer:
+    git:
+      url: https://github.com/TcBello/miniplayer.git
+  splashscreen:
+    git:
+      url: https://github.com/DPLYR-dev/SplashScreenFlutterPackage.git
+      ref: master
+  flutter_inner_drawer:
+    git:
+      url: https://github.com/TcBello/flutter_inner_drawer.git
+
 
   # DATABASE
   shared_preferences: ^2.0.5

@@ -9,7 +9,7 @@ import 'package:theme_provider/theme_provider.dart';
 
 class SongBottomSheetOptions extends StatelessWidget {
   const SongBottomSheetOptions({
-    @required this.songInfo
+    required this.songInfo
   });
 
   final SongInfo songInfo;
@@ -24,7 +24,7 @@ class SongBottomSheetOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = songInfo.title;
+    final songTitle = songInfo.title!;
 
     return Container(
       height: 235,
@@ -39,7 +39,7 @@ class SongBottomSheetOptions extends StatelessWidget {
                 children: [
                   MarqueeText(
                     text: songTitle,
-                    style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                    style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Colors.black
                     ),
@@ -52,7 +52,7 @@ class SongBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               fontWeight: FontWeight.w500,
               color: Colors.black
             )),
@@ -62,7 +62,7 @@ class SongBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             )),
@@ -72,7 +72,7 @@ class SongBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Add to Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             ),),
@@ -89,9 +89,9 @@ class SongBottomSheetOptions extends StatelessWidget {
 
 class QueueBottomSheetOptions extends StatelessWidget {
   const QueueBottomSheetOptions({
-    @required this.songInfo,
-    @required this.mediaItem,
-    @required this.index
+    required this.songInfo,
+    required this.mediaItem,
+    required this.index
   });
 
   final SongInfo songInfo;
@@ -108,7 +108,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = songInfo.title;
+    final songTitle = songInfo.title!;
 
     return Container(
       height: 290,
@@ -123,7 +123,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
                 children: [
                   MarqueeText(
                     text: songTitle,
-                    style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                    style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                       color: Colors.black,
                       fontWeight: FontWeight.w600
                     ),
@@ -136,7 +136,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             ),),
@@ -146,7 +146,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             )),
@@ -156,7 +156,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Add to Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Add to Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             ),),
@@ -166,7 +166,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text("Remove from Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Remove from Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             )),

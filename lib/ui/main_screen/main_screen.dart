@@ -45,13 +45,13 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
-    scrollController.dispose();
+    scrollController?.dispose();
     scrollController = null;
-    miniPlayerController.dispose();
+    miniPlayerController?.dispose();
     miniPlayerController = null;
-    playlistController.dispose();
+    playlistController?.dispose();
     playlistController = null;
-    tabController.dispose();
+    tabController?.dispose();
     tabController = null;
     super.dispose();
   }
@@ -64,7 +64,7 @@ class _MainScreenState extends State<MainScreen> {
           future: songQuery.validatorFile(),
           builder: (context, snapshot) {
             if(snapshot.hasData){
-              return snapshot.data.existsSync()
+              return snapshot.data!.existsSync()
                 ? InnerDrawer(
                   key: _innerDrawerKey,
                   swipe: true,
@@ -81,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                             builder: (context, snapshot) {
                               if(snapshot.hasData){
                                 print(snapshot.data);
-                                if(snapshot.data){
+                                if(snapshot.data!){
                                   return Container(
                                     width: MediaQuery.of(context).size.width,
                                     child: MiniPlayer(),

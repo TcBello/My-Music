@@ -16,8 +16,8 @@ class LibrarySong extends StatelessWidget {
   final List<SongInfo> songInfoList;
 
   const LibrarySong({
-    @required this.albumInfo,
-    @required this.songInfoList
+    required this.albumInfo,
+    required this.songInfoList
   });
 
   @override
@@ -53,13 +53,13 @@ class LibrarySong extends StatelessWidget {
                   final albumArtwork = albumInfo.albumArt;
                   final albumArtwork2 = notifier.albumArtwork(albumInfo.id);
                   final hasArtWork = File(notifier.albumArtwork(albumInfo.id)).existsSync();
-                  final isSdk28Below = notifier.androidDeviceInfo.version.sdkInt < 29;
+                  final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
 
                   return FlexibleSpaceBar(
                     title: ConstrainedBox(
                       child: AutoSizeText(
-                        albumInfo.title,
-                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                        albumInfo.title!,
+                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),

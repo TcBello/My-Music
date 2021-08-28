@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class LibrarySongBuilder extends StatelessWidget {
   const LibrarySongBuilder({
-    @required this.songInfoList
+    required this.songInfoList
   });
 
   final List<SongInfo> songInfoList;
@@ -16,7 +16,7 @@ class LibrarySongBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<SongQueryProvider, SongPlayerProvider>(
       builder: (context, songQuery, songPlayer, child) {
-        final sdkInt = songQuery.androidDeviceInfo.version.sdkInt;
+        final sdkInt = songQuery.androidDeviceInfo!.version.sdkInt;
 
         return ListBody(
           children: List.generate(songInfoList.length,(index) => SongTile2(

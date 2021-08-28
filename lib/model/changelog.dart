@@ -2,7 +2,10 @@ class Changelog{
   final String version;
   final List<String> details;
 
-  Changelog({this.version, this.details});
+  Changelog({
+    required this.version,
+    required this.details
+  });
 }
 
 List<Changelog> changelogs = [
@@ -13,7 +16,7 @@ List<Changelog> changelogs = [
   //   ],
   // ),
   Changelog(
-    version: "Version: 0.9.1",
+    version: "Version: 0.9.0",
     details: [
       "Beta"
     ]

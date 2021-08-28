@@ -13,7 +13,7 @@ import 'package:theme_provider/theme_provider.dart';
 
 class MainUI extends StatefulWidget {
   const MainUI({
-    @required this.globalKey
+    required this.globalKey
   });
 
   final GlobalKey<InnerDrawerState> globalKey;
@@ -43,15 +43,15 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
             return <Widget>[
               SliverAppBar(
                 elevation: 0,
-                backgroundColor: Colors.grey[900].withOpacity(0.5),
+                backgroundColor: Colors.grey[900]?.withOpacity(0.5),
                 forceElevated: true,
                 snap: true,
                 pinned: true,
                 floating: true,
-                title: Text("Music", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
+                title: Text("My Music", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
                 leading: IconButton(
                   onPressed: () {
-                    widget.globalKey.currentState.toggle(direction: InnerDrawerDirection.start);
+                    widget.globalKey.currentState?.toggle(direction: InnerDrawerDirection.start);
                   },
                   icon: Icon(Icons.menu),
                 ),

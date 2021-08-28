@@ -23,7 +23,7 @@ class Search extends SearchDelegate<SongInfo>{
     return IconButton(
       icon: Icon(Icons.arrow_back, color: Colors.white,),
       onPressed: (){
-        close(context, null);
+        Navigator.pop(context);
       },
     );
   }
@@ -31,7 +31,7 @@ class Search extends SearchDelegate<SongInfo>{
   @override
   Widget buildResults(BuildContext context) {
     final _song = context.select((SongQueryProvider s) => s.songInfo);
-    final _songSearchList = _song.where((element) => element.title.toLowerCase().contains(query.toLowerCase())).toList();
+    final _songSearchList = _song.where((element) => element.title!.toLowerCase().contains(query.toLowerCase())).toList();
 
     return SearchResult(songSearchList: _songSearchList);
   }
@@ -54,7 +54,7 @@ class Search extends SearchDelegate<SongInfo>{
             query = _suggestionList[index];
             showResults(context);
           },
-          title: Text(_suggestionList[index], style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          title: Text(_suggestionList[index], style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.w500,
           ))
         );

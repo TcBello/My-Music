@@ -10,7 +10,7 @@ class SongBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final sdkInt = songQueryProvider.androidDeviceInfo.version.sdkInt;
+    final sdkInt = songQueryProvider.androidDeviceInfo!.version.sdkInt;
 
     return songQueryProvider.songInfo.length > 0
       ? Container(

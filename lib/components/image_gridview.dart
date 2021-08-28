@@ -7,8 +7,8 @@ class ImageGridFile extends StatelessWidget {
   final String heroID;
 
   const ImageGridFile({
-    @required this.img,
-    @required this.heroID
+    required this.img,
+    required this.heroID
   });
 
   @override

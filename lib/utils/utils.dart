@@ -4,11 +4,11 @@ import 'package:my_music/components/constant.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 double valueFromPercentageInRange(
-    {@required final double min, max, percentage}) {
+    {required final double min, max, percentage}) {
   return percentage * (max - min) + min;
 }
 
-double percentageFromValueInRange({@required final double min, max, value}) {
+double percentageFromValueInRange({required final double min, max, value}) {
   return (value - min) / (max - min);
 }
 

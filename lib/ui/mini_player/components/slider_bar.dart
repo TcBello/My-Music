@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 
 class SliderBar extends StatefulWidget {
   SliderBar({
-    @required this.position,
-    @required this.duration,
-    @required this.color
+    required this.position,
+    required this.duration,
+    required this.color
   });
 
   final Duration position;
@@ -21,7 +21,7 @@ class SliderBar extends StatefulWidget {
 }
 
 class _SliderBarState extends State<SliderBar> {
-  double _dragValue;
+  double? _dragValue;
   bool _dragging = false;
 
   @override

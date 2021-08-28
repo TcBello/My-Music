@@ -17,10 +17,10 @@ class Themes extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ListTile(
-          title: Text("Background", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          title: Text("Background", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.bold
           ),),
-          subtitle: Text("Customize background wallpaper", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+          subtitle: Text("Customize background wallpaper", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
             color: Colors.white
           ),),
           onTap: (){
@@ -30,10 +30,10 @@ class Themes extends StatelessWidget {
           },
         ),
         ListTile(
-          title: Text("Text", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+          title: Text("Text", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
             fontWeight: FontWeight.bold
           ),),
-          subtitle: Text("Customize text style", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+          subtitle: Text("Customize text style", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
             color: Colors.white
           ),),
           onTap: (){
@@ -45,10 +45,10 @@ class Themes extends StatelessWidget {
         Consumer<CustomThemeProvider>(
           builder: (context, theme, snapshot) {
             return ListTile(
-              title: Text("Reset Theme", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+              title: Text("Reset Theme", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                 fontWeight: FontWeight.bold
               ),),
-              subtitle: Text("Set to default theme", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2.copyWith(
+              subtitle: Text("Set to default theme", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
               onTap: () async {

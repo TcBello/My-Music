@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ChangelogContent extends StatelessWidget {
   const ChangelogContent({
-    @required this.version,
-    @required this.details,
-    @required this.textStyle
+    required this.version,
+    required this.details,
+    required this.textStyle
   });
 
   final String version;

@@ -4,13 +4,14 @@ import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/delete_dialog.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class PlaylistBottomSheetOptions extends StatelessWidget {
   const PlaylistBottomSheetOptions({
-    @required this.playlistInfo,
-    @required this.index
+    required this.playlistInfo,
+    required this.index
   });
 
   final PlaylistInfo playlistInfo;
@@ -20,8 +21,8 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songPlayerProvider  = Provider.of<SongPlayerProvider>(context);
-    final playlistName = playlistInfo.name;
-    final sdkInt = songQueryProvider.androidDeviceInfo.version.sdkInt;
+    final playlistName = playlistInfo.name!;
+    final sdkInt = songQueryProvider.androidDeviceInfo!.version.sdkInt;
 
     return Container(
       height: 290,
@@ -36,7 +37,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
                 children: [
                   MarqueeText(
                     text: playlistName,
-                    style: ThemeProvider.themeOf(context).data.textTheme.headline6.copyWith(
+                    style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                       color: Colors.black,
                       fontWeight: FontWeight.w600
                     ),
@@ -54,46 +55,59 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Play Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Play Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             )),
             onTap: () async {
               await songQueryProvider.getSongFromPlaylist(index);
-              songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist, 0, sdkInt);
+              if(songQueryProvider.songInfoFromPlaylist!.length != 0 && songQueryProvider.songInfoFromPlaylist != null){
+                songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist!, 0, sdkInt);
+              }
+              else{
+                showShortToast("Playlist is empty");
+              }
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Play Next", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             ),),
             onTap: () async {
-              songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
-                songQueryProvider.playNextPlaylist(songQueryProvider.songInfoFromPlaylist);
-                Navigator.pop(context);
-              });
+              await songQueryProvider.getSongFromPlaylist(index);
+              if(songQueryProvider.songInfoFromPlaylist!.length != 0 && songQueryProvider.songInfoFromPlaylist != null){
+                songQueryProvider.playNextPlaylist(songQueryProvider.songInfoFromPlaylist!);
+              }
+              else{
+                showShortToast("Playlist is empty");
+              }
+              Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+            title: Text("Add to Queue", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
               color: Colors.black,
               fontWeight: FontWeight.w500
             ),),
-            onTap: () {
-              songQueryProvider.getSongFromPlaylist(index).whenComplete(() {
-                songQueryProvider.addToQueuePlaylist(songQueryProvider.songInfoFromPlaylist);
-                Navigator.pop(context);
-              });
+            onTap: () async{
+              await songQueryProvider.getSongFromPlaylist(index);
+              if(songQueryProvider.songInfoFromPlaylist!.length != 0 && songQueryProvider.songInfoFromPlaylist != null){
+                songQueryProvider.addToQueuePlaylist(songQueryProvider.songInfoFromPlaylist!);
+              }
+              else{
+                showShortToast("Playlist is empty");
+              }
+              Navigator.pop(context);
             },
           ),
           Consumer<SongQueryProvider>(
             builder: (context, notifier, child) {
-              final playlistName = notifier.playlistInfo[index].name;
+              final playlistName = notifier.playlistInfo?[index].name;
 
               return ListTile(
-                title: Text("Delete Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2.copyWith(
+                title: Text("Delete Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                   color: Colors.black,
                   fontWeight: FontWeight.w500
                 ),),

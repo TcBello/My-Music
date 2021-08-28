@@ -42,7 +42,7 @@ class SearchSongUI extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
                   child: Consumer<SongQueryProvider>(
                     builder: (context, songQuery, child) {
-                      return Text(songQuery.locationSongSearch, style: ThemeProvider.themeOf(context).data.textTheme.bodyText1.copyWith(
+                      return Text(songQuery.locationSongSearch, style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 14
                       ),);
