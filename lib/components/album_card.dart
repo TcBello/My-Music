@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class AlbumCard extends StatelessWidget {
@@ -14,6 +15,10 @@ class AlbumCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final modifiedArtistName = artistName != kDefaultArtistName
+      ? artistName
+      : "Unknown Artist";
+      
     return Card(
       shape: ThemeProvider.themeOf(context).data.cardTheme.shape,
       child: Column(
@@ -37,7 +42,7 @@ class AlbumCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    artistName,
+                    modifiedArtistName,
                     overflow: TextOverflow.ellipsis,
                     style: ThemeProvider.themeOf(context).data.textTheme.caption
                   )

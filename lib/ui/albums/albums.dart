@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/components/image_gridview.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -74,14 +75,8 @@ class Albums extends StatelessWidget {
               )
             ),
           )
-          : Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Center(
-              child: CircularProgressIndicator(
-                color: color3,
-              ),
-            ),
+          : DataPlaceholder(
+            text: "Album is empty",
           );
       },
     );

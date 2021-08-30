@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/bottom_sheet.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
@@ -31,7 +32,9 @@ class _SongTileState extends State<SongTile> {
     final themeProvider = Provider.of<CustomThemeProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songTitle = widget.songInfo.title;
-    final songArtist = widget.songInfo.artist!;
+    final songArtist = widget.songInfo.artist! != kDefaultArtistName
+      ? widget.songInfo.artist!
+      : "Unknown Artist";
     // final songArtwork = widget.songInfo.albumArtwork;
     final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
     final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
@@ -151,6 +154,9 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
   Widget build(BuildContext context) {
     final songQuery = Provider.of<SongQueryProvider>(context);
     final imageSize = 50.0;
+    final artistName = widget.artistName != kDefaultArtistName
+      ? widget.artistName
+      : "Unknown Artist";
 
     return ListTile(
       contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
@@ -194,7 +200,7 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        widget.artistName,
+        artistName,
         style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
           fontWeight: FontWeight.w500,
         ),
@@ -242,7 +248,9 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
     final songTitle = widget.playlistEntity.playlistSongs[widget.index].title;
     final hasArtWork = File(songQueryProvider.songArtwork(widget.playlistEntity.playlistSongs[widget.index].id)).existsSync();
     // final artistName = widget.songInfo.artist!;
-    final artistName = widget.playlistEntity.playlistSongs[widget.index].artist!;
+    final artistName = widget.playlistEntity.playlistSongs[widget.index].artist! != kDefaultArtistName
+      ? widget.playlistEntity.playlistSongs[widget.index].artist!
+      : "Unknown Artist";
     // final songArtwork = widget.songInfo.albumArtwork;
     final songArtwork2 = songQueryProvider.songArtwork(widget.playlistEntity.playlistSongs[widget.index].id);
     final isSdk28Below = songQueryProvider.androidDeviceInfo!.version.sdkInt < 29;

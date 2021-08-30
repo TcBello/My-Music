@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/artists/artist_profile.dart';
@@ -88,14 +89,8 @@ class Artists extends StatelessWidget {
               )
             ),
           )
-          : Container(
-            width: size.width,
-            height: size.height,
-            child: Center(
-              child: CircularProgressIndicator(
-                color: color3,
-              ),
-            ),
+          : DataPlaceholder(
+            text: "Artist is empty",
           );
       },
     );

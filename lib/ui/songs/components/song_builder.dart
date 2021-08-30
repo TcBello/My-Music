@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
@@ -29,14 +30,8 @@ class SongBuilder extends StatelessWidget {
           },
         ),
       )
-      : Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Center(
-          child: CircularProgressIndicator(
-            color: color3,
-          ),
-        ),
+      : DataPlaceholder(
+        text: "Song is empty",
       );
   }
 }

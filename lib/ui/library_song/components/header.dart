@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -11,7 +12,9 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final artistName = albumInfo.artist!;
+    final artistName = albumInfo.artist! != kDefaultArtistName
+      ? albumInfo.artist!
+      : "Unknown Artist";
     final songNumber = "${albumInfo.numOfSongs} song";
 
     return Container(

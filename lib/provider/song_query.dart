@@ -14,9 +14,6 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// TODO: FIX PLAYLIST
-// TODO: QUERY ARTWORKS ON ANDROID 9 BELOW
-
 class SongQueryProvider extends ChangeNotifier{
   final OnAudioQuery _onAudioQuery = OnAudioQuery();
   final OnAudioRoom _onAudioRoom = OnAudioRoom();
@@ -123,22 +120,6 @@ class SongQueryProvider extends ChangeNotifier{
     _androidDeviceInfo = await deviceInfo.androidInfo;
 
     var result = await _onAudioQuery.permissionsRequest();
-    print(result);
-    
-    // var songData = await _onAudioQuery.querySongs();
-    // var artistData = await _onAudioQuery.queryArtists();
-    // var albumData = await _onAudioQuery.queryAlbums();
-    // _playlistInfo = await _onAudioQuery.queryPlaylists();
-
-    // _filterData(songData, artistData, albumData);
-
-    // var tempDir = await getTemporaryDirectory();
-    // _tempDirPath = tempDir.path;
-
-    // print("GET DATA SONGS FROM FILES COMPLETED!");
-    
-    // getAlbumArts();
-    // notifyListeners();
 
     if(result){
       var songData = await _onAudioQuery.querySongs();
@@ -167,27 +148,33 @@ class SongQueryProvider extends ChangeNotifier{
 
     if(isIgnore45){
       songData.forEach((song) {
-        if(song.duration! > 45000){
+        bool songExists = File(song.data).existsSync();
+
+        if(song.duration! > 45000 && songExists){
           _songInfo.add(song);
         }
       });
     }
     else if(isIgnore30){
       songData.forEach((song) {
-        if(song.duration! > 30000){
+        bool songExists = File(song.data).existsSync();
+
+        if(song.duration! > 30000 && songExists){
           _songInfo.add(song);
         }
       });
     }
     else{
       songData.forEach((song) {
-        _songInfo.add(song);
+        bool songExists = File(song.data).existsSync();
+
+        if(songExists) _songInfo.add(song);
       });
     }
 
     artistData.forEach((artist) {
       if(artist.artist != "<unknown>"){
-        _artistInfo.add(artist);
+        if(artist.artist != "Unknown Artist") _artistInfo.add(artist);
       }
     });
 
@@ -549,10 +536,11 @@ class SongQueryProvider extends ChangeNotifier{
             String filePath = "$dirPath/ar${element.id}";
             File file = File(filePath);
             var albums = await _onAudioQuery.queryWithFilters(element.artist, WithFiltersType.ALBUMS, AlbumsArgs.ARTIST);
+            List<AlbumModel> album = albums.map((e) => AlbumModel(e)).toList();
 
             if(!file.existsSync() && albums.length != 0){
               Uint8List? artwork = await _onAudioQuery.queryArtwork(
-                albums[0]['album_id'],
+                album[0].id,
                 ArtworkType.ALBUM,
                 format: ArtworkFormat.PNG,
                 size: 500

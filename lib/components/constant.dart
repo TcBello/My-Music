@@ -1,6 +1,6 @@
 const int kDelayMilliseconds = 200;
 
-const String kVersion = "1.0.0 (BETA)";
+const String kVersion = "1.0.1 (BETA)";
 
 const String kEmail = "tcbello.mymusic@gmail.com";
 
@@ -11,6 +11,8 @@ const String kShareMessage = "Hey, I recommend this app for you. This Music Play
 const String kAppId = "com.tcbello.my_music";
 
 const String kScanLogo = "assets/imgs/scan.png";
+
+const String kDefaultArtistName = "<unknown>";
 
 // const String kAppId = "com.miui.player";
 

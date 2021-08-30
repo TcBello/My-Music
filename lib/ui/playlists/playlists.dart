@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/library_song_playlist.dart';
 import 'package:my_music/ui/playlists/components/playlist_card.dart';
 import 'package:provider/provider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class Playlists extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SongQueryProvider>(
       builder: (context, notifier, child){
-        return Container(
+        return notifier.playlistInfo!.length > 0
+          ? Container(
           width: MediaQuery.of(context).size.width,
           child: GridView.count(
             crossAxisCount: 2,
@@ -38,6 +41,9 @@ class Playlists extends StatelessWidget {
             }
           )
         ),
+        )
+        : DataPlaceholder(
+          text: "Playlist is empty",
         );
       },
     );
