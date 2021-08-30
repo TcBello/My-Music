@@ -10,7 +10,6 @@ class SongBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final sdkInt = songQueryProvider.androidDeviceInfo!.version.sdkInt;
 
     return songQueryProvider.songInfo.length > 0
       ? Container(
@@ -24,7 +23,7 @@ class SongBuilder extends StatelessWidget {
             return SongTile(
               songInfo: songQueryProvider.songInfo[index],
               onTap: (){
-                songPlayerProvider.playSong(songQueryProvider.songInfo, index, sdkInt);
+                songPlayerProvider.playSong(songQueryProvider.songInfo, index);
               },
             );
           },

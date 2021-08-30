@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/delete_dialog.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/utils/utils.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -14,14 +15,14 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
     required this.index
   });
 
-  final PlaylistInfo playlistInfo;
+  final PlaylistEntity playlistInfo;
   final int index;
 
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songPlayerProvider  = Provider.of<SongPlayerProvider>(context);
-    final playlistName = playlistInfo.name!;
+    final playlistName = playlistInfo.playlistName;
     final sdkInt = songQueryProvider.androidDeviceInfo!.version.sdkInt;
 
     return Container(
@@ -60,9 +61,8 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               fontWeight: FontWeight.w500
             )),
             onTap: () async {
-              await songQueryProvider.getSongFromPlaylist(index);
-              if(songQueryProvider.songInfoFromPlaylist!.length != 0 && songQueryProvider.songInfoFromPlaylist != null){
-                songPlayerProvider.playSong(songQueryProvider.songInfoFromPlaylist!, 0, sdkInt);
+              if(playlistInfo.playlistSongs.length != 0){
+                songPlayerProvider.playPlaylistSong(playlistInfo.playlistSongs, 0);
               }
               else{
                 showShortToast("Playlist is empty");
@@ -76,9 +76,8 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               fontWeight: FontWeight.w500
             ),),
             onTap: () async {
-              await songQueryProvider.getSongFromPlaylist(index);
-              if(songQueryProvider.songInfoFromPlaylist!.length != 0 && songQueryProvider.songInfoFromPlaylist != null){
-                songQueryProvider.playNextPlaylist(songQueryProvider.songInfoFromPlaylist!);
+              if(playlistInfo.playlistSongs.length != 0){
+                songQueryProvider.playNextPlaylist(playlistInfo.playlistSongs);
               }
               else{
                 showShortToast("Playlist is empty");
@@ -92,9 +91,8 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               fontWeight: FontWeight.w500
             ),),
             onTap: () async{
-              await songQueryProvider.getSongFromPlaylist(index);
-              if(songQueryProvider.songInfoFromPlaylist!.length != 0 && songQueryProvider.songInfoFromPlaylist != null){
-                songQueryProvider.addToQueuePlaylist(songQueryProvider.songInfoFromPlaylist!);
+              if(playlistInfo.playlistSongs.length != 0){
+                songQueryProvider.addToQueuePlaylist(playlistInfo.playlistSongs);
               }
               else{
                 showShortToast("Playlist is empty");
@@ -104,7 +102,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
           ),
           Consumer<SongQueryProvider>(
             builder: (context, notifier, child) {
-              final playlistName = notifier.playlistInfo?[index].name;
+              final playlistName = notifier.playlistInfo?[index].playlistName;
 
               return ListTile(
                 title: Text("Delete Playlist", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
@@ -120,10 +118,9 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
                         title: "Delete $playlistName",
                         content: "Are you sure you want to delete this playlist?",
                         onPressedDelete: () async {
-                          await notifier.deletePlaylist(index);
-                          await notifier.getSongs().then((value) {
-                            Navigator.pop(context);
-                          });
+                          await notifier.deletePlaylist(playlistInfo.key);
+                          await notifier.getSongs();
+                          Navigator.pop(context);
                         },
                       );
                     },

@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/search_result/search_result.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-class Search extends SearchDelegate<SongInfo>{
+class Search extends SearchDelegate<SongModel>{
   final _recent = [];
 
   @override
@@ -31,7 +31,7 @@ class Search extends SearchDelegate<SongInfo>{
   @override
   Widget buildResults(BuildContext context) {
     final _song = context.select((SongQueryProvider s) => s.songInfo);
-    final _songSearchList = _song.where((element) => element.title!.toLowerCase().contains(query.toLowerCase())).toList();
+    final _songSearchList = _song.where((element) => element.title.toLowerCase().contains(query.toLowerCase())).toList();
 
     return SearchResult(songSearchList: _songSearchList);
   }

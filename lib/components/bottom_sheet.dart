@@ -1,10 +1,11 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/song_bottom_sheet_options.dart';
 import 'package:my_music/ui/playlists/components/playlist_bottom_sheet_options.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 
-void showSongBottomSheet(BuildContext context, SongInfo songInfo) {
+void showSongBottomSheet(BuildContext context, SongModel songInfo) {
   showModalBottomSheet(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -20,7 +21,7 @@ void showSongBottomSheet(BuildContext context, SongInfo songInfo) {
   );
 }
 
-void showQueueBottomSheet(BuildContext context, SongInfo songInfo, MediaItem mediaItem, int index){
+void showQueueBottomSheet(BuildContext context, SongModel songInfo, MediaItem mediaItem, int index){
   showModalBottomSheet(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -36,7 +37,7 @@ void showQueueBottomSheet(BuildContext context, SongInfo songInfo, MediaItem med
   );
 }
 
-void showPlaylistBottomSheet(BuildContext context, PlaylistInfo playlistInfo, index){
+void showPlaylistBottomSheet(BuildContext context, PlaylistEntity playlistInfo, index){
   showModalBottomSheet(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(

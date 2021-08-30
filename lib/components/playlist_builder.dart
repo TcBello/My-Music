@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -9,7 +9,7 @@ class PlaylistBuilder extends StatelessWidget {
     required this.songInfo
   });
 
-  final SongInfo songInfo;
+  final SongModel songInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,12 @@ class PlaylistBuilder extends StatelessWidget {
             color: Colors.grey,
           ),
           itemBuilder: (context, playlistIndex){
-            final playlistName = notifier.playlistInfo![playlistIndex].name!;
+            final playlistName = notifier.playlistInfo![playlistIndex].playlistName;
 
             return ListTile(
               title: Text(playlistName, style: ThemeProvider.themeOf(context).data.dialogTheme.contentTextStyle,),
               onTap: () async{
-                await notifier.addSongToPlaylist(songInfo, playlistIndex, playlistName);
+                await notifier.addSongToPlaylist(songInfo, playlistName, notifier.playlistInfo![playlistIndex].key);
                 Navigator.pop(context);
                 notifier.getSongs();
               },

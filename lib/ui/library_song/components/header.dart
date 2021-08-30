@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class Header extends StatelessWidget {
@@ -7,12 +7,12 @@ class Header extends StatelessWidget {
     required this.albumInfo
   });
 
-  final AlbumInfo albumInfo;
+  final AlbumModel albumInfo;
 
   @override
   Widget build(BuildContext context) {
     final artistName = albumInfo.artist!;
-    final songNumber = "${albumInfo.numberOfSongs!} song";
+    final songNumber = "${albumInfo.numOfSongs} song";
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),

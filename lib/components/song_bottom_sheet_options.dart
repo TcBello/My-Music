@@ -1,9 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/playlist_dialog.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -12,7 +12,7 @@ class SongBottomSheetOptions extends StatelessWidget {
     required this.songInfo
   });
 
-  final SongInfo songInfo;
+  final SongModel songInfo;
 
   void showPlaylistDialog(BuildContext context){
     showDialog(
@@ -24,7 +24,7 @@ class SongBottomSheetOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = songInfo.title!;
+    final songTitle = songInfo.title;
 
     return Container(
       height: 235,
@@ -94,7 +94,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
     required this.index
   });
 
-  final SongInfo songInfo;
+  final SongModel songInfo;
   final MediaItem mediaItem;
   final int index;
 
@@ -108,7 +108,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = songInfo.title!;
+    final songTitle = songInfo.title;
 
     return Container(
       height: 290,

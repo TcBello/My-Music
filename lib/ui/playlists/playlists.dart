@@ -17,13 +17,16 @@ class Playlists extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.fromLTRB(0, 15, 0, 60),
             children: List.generate(notifier.playlistInfo!.length, (index){
-              final playlistName = notifier.playlistInfo![index].name!;
-              final songNumber = notifier.playlistInfo![index].memberIds!.length;
+              final playlistName = notifier.playlistInfo![index].playlistName;
+              final songNumber = notifier.playlistInfo![index].playlistSongs.length;
 
               return InkWell(
                 onTap: () async{
-                  await notifier.getSongFromPlaylist(index);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySongPlaylist(indexFromOutside: index,)));
+                  var playlistEntity = await notifier.getSongFromPlaylist(notifier.playlistInfo![index].key);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySongPlaylist(
+                    indexFromOutside: index,
+                    playlistEntity: playlistEntity!,
+                  )));
                 },
                 child: PlaylistCard(
                   playlistName: playlistName,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_music/ui/artists/components/artist_library_builder.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/ui/artists/components/artist_song_builder.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class ArtistProfile extends StatelessWidget {
@@ -53,28 +54,36 @@ class ArtistProfile extends StatelessWidget {
             ),
           ];
         },
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 80,
-                child: Center(
-                  child: Text(
-                    title,
-                    style: ThemeProvider.themeOf(context).data.textTheme.headline6
+        body: Container(
+          width: MediaQuery.of(context).size.width,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 80,
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: ThemeProvider.themeOf(context).data.textTheme.headline6
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Text("Albums", style: ThemeProvider.themeOf(context).data.textTheme.headline6,),
-              ),
-              ArtistLibraryBuilder()
-            ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Text("Albums", style: ThemeProvider.themeOf(context).data.textTheme.headline6,),
+                ),
+                ArtistLibraryBuilder(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 15),
+                  child: Text("All songs", style: ThemeProvider.themeOf(context).data.textTheme.headline6,),
+                ),
+                ArtistSongBuilder()
+              ],
+            ),
           ),
         ),
       ),

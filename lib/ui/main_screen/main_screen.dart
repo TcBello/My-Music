@@ -14,6 +14,7 @@ import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
 import 'package:my_music/ui/main_screen/components/main_ui.dart';
 import 'package:my_music/ui/search_song/search_song.dart';
+import 'package:on_audio_room/on_audio_room.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
@@ -36,9 +37,10 @@ class _MainScreenState extends State<MainScreen> {
   void init(){
     final themeProvider = context.read<CustomThemeProvider>();
     final songQueryProvider = context.read<SongQueryProvider>();
-    songQueryProvider.setDefaultAlbumArt();
+    songQueryProvider.init();
+    // songQueryProvider.setDefaultAlbumArt();
     themeProvider.getCurrentBackground();
-    songQueryProvider.getSongs();
+    // songQueryProvider.getSongs();
     themeProvider.initFont();
     themeProvider.getCurrentTextColor();
   }
@@ -53,6 +55,7 @@ class _MainScreenState extends State<MainScreen> {
     playlistController = null;
     tabController?.dispose();
     tabController = null;
+    OnAudioRoom().closeRoom();
     super.dispose();
   }
 

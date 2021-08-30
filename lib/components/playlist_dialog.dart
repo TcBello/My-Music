@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/playlist_builder.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -11,7 +11,7 @@ class PlaylistDialog extends StatelessWidget {
     required this.songInfo
   });
 
-  final SongInfo songInfo;
+  final SongModel songInfo;
 
   @override
   Widget build(BuildContext context) {

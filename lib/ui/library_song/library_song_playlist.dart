@@ -5,14 +5,17 @@ import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class LibrarySongPlaylist extends StatelessWidget {
   final int indexFromOutside;
+  final PlaylistEntity playlistEntity;
   
   const LibrarySongPlaylist({
-    required this.indexFromOutside
+    required this.indexFromOutside,
+    required this.playlistEntity
   });
 
   @override
@@ -49,7 +52,7 @@ class LibrarySongPlaylist extends StatelessWidget {
                   centerTitle: true,
                   title: ConstrainedBox(
                     child: AutoSizeText(
-                      songQuery.playlistInfo![indexFromOutside].name!,
+                      songQuery.playlistInfo![indexFromOutside].playlistName,
                       style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                         fontWeight: FontWeight.bold
                       ),
@@ -84,12 +87,12 @@ class LibrarySongPlaylist extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(
-                    songQuery.songInfoFromPlaylist!.length, (index) => PlaylistSongTile(
-                      songInfo: songQuery.songInfoFromPlaylist![index],
+                    playlistEntity.playlistSongs.length, (index) => PlaylistSongTile(
                       onTap: (){
-                        songPlayer.playSong(songQuery.songInfoFromPlaylist!, index, sdkInt);
+                        songPlayer.playPlaylistSong(playlistEntity.playlistSongs, index);
                       },
-                      index: indexFromOutside,
+                      index: index,
+                      playlistEntity: playlistEntity,
                     )
                 ),
               );

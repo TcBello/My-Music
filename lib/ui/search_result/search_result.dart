@@ -2,12 +2,12 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/custom_theme.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -16,7 +16,7 @@ class SearchResult extends StatelessWidget {
     required this.songSearchList
   });
 
-  final List<SongInfo> songSearchList;
+  final List<SongModel> songSearchList;
 
   Widget _backgroundWidget(){
     return Consumer<CustomThemeProvider>(
@@ -71,13 +71,12 @@ class SearchResult extends StatelessWidget {
                 ),
                 Consumer2<SongPlayerProvider, SongQueryProvider>(
                   builder: (context, songPlayer, songQuery, child){
-                    final sdkInt = songQuery.androidDeviceInfo!.version.sdkInt;
 
                     return Column(
                       children: List.generate(songSearchList.length, (index) => SongTile(
                         songInfo: songSearchList[index],
                         onTap: (){
-                          songPlayer.playSong(songSearchList, index, sdkInt);
+                          songPlayer.playSong(songSearchList, index);
                         },
                       )),
                     );

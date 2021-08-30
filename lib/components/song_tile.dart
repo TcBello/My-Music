@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:marquee_text/marquee_text.dart';
 import 'package:my_music/components/bottom_sheet.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -17,7 +18,7 @@ class SongTile extends StatefulWidget {
     required this.onTap
   });
 
-  final SongInfo songInfo;
+  final SongModel songInfo;
   final Function() onTap;
 
   @override
@@ -29,9 +30,9 @@ class _SongTileState extends State<SongTile> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<CustomThemeProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = widget.songInfo.title!;
+    final songTitle = widget.songInfo.title;
     final songArtist = widget.songInfo.artist!;
-    final songArtwork = widget.songInfo.albumArtwork;
+    // final songArtwork = widget.songInfo.albumArtwork;
     final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
     final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
     final isSdk28Below = songQueryProvider.androidDeviceInfo!.version.sdkInt < 29;
@@ -44,13 +45,16 @@ class _SongTileState extends State<SongTile> {
           width: 50,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: isSdk28Below
-              ? songArtwork != null
-                ? Image.file(File(songArtwork), fit: BoxFit.cover,)
-                : Image.file(File(songQueryProvider.defaultAlbum))
-              : hasArtWork
-                ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
-                : Image.file(File(songQueryProvider.defaultAlbum)),
+            // child: isSdk28Below
+            //   ? songArtwork != null
+            //     ? Image.file(File(songArtwork), fit: BoxFit.cover,)
+            //     : Image.file(File(songQueryProvider.defaultAlbum))
+            //   : hasArtWork
+            //     ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
+            //     : Image.file(File(songQueryProvider.defaultAlbum)),
+            child: hasArtWork
+              ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
+              : Image.file(File(songQueryProvider.defaultAlbum)),
           )
         ),
         title: Text(
@@ -84,7 +88,7 @@ class SongTile2 extends StatefulWidget {
     required this.onTap
   });
 
-  final SongInfo songInfo;
+  final SongModel songInfo;
   final Function() onTap;
 
   @override
@@ -94,7 +98,7 @@ class SongTile2 extends StatefulWidget {
 class _SongTile2State extends State<SongTile2> {
   @override
   Widget build(BuildContext context) {
-    final songTitle = widget.songInfo.title!;
+    final songTitle = widget.songInfo.title;
 
     return ListTile(
       contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
@@ -216,12 +220,13 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
 
 class PlaylistSongTile extends StatefulWidget {
   const PlaylistSongTile({
-    required this.songInfo,
     required this.onTap, 
-    required this.index
+    required this.index,
+    required this.playlistEntity
   });
 
-  final SongInfo songInfo;
+  // final SongModel songInfo;
+  final PlaylistEntity playlistEntity;
   final Function() onTap;
   final int index;
 
@@ -233,12 +238,15 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
   @override
   Widget build(BuildContext context) {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songTitle = widget.songInfo.title!;
-    final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
-    final artistName = widget.songInfo.artist!;
-    final songArtwork = widget.songInfo.albumArtwork;
-    final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
+    // final songTitle = widget.songInfo.title;
+    final songTitle = widget.playlistEntity.playlistSongs[widget.index].title;
+    final hasArtWork = File(songQueryProvider.songArtwork(widget.playlistEntity.playlistSongs[widget.index].id)).existsSync();
+    // final artistName = widget.songInfo.artist!;
+    final artistName = widget.playlistEntity.playlistSongs[widget.index].artist!;
+    // final songArtwork = widget.songInfo.albumArtwork;
+    final songArtwork2 = songQueryProvider.songArtwork(widget.playlistEntity.playlistSongs[widget.index].id);
     final isSdk28Below = songQueryProvider.androidDeviceInfo!.version.sdkInt < 29;
+    final song = widget.playlistEntity.playlistSongs[widget.index];
 
     return ListTile(
       contentPadding: const EdgeInsets.only(right: 0.5, left: 10.0),
@@ -247,13 +255,16 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
         width: 50,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5),
-          child: isSdk28Below
-            ? songArtwork != null
-              ? Image.file(File(songArtwork), fit: BoxFit.cover,)
-              : Image.file(File(songQueryProvider.defaultAlbum))
-            : hasArtWork
-              ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
-              : Image.file(File(songQueryProvider.defaultAlbum)),
+          // child: isSdk28Below
+          //   ? songArtwork != null
+          //     ? Image.file(File(songArtwork), fit: BoxFit.cover,)
+          //     : Image.file(File(songQueryProvider.defaultAlbum))
+          //   : hasArtWork
+          //     ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
+          //     : Image.file(File(songQueryProvider.defaultAlbum)),
+          child: hasArtWork
+            ? Image.file(File(songArtwork2), fit: BoxFit.cover,)
+            : Image.file(File(songQueryProvider.defaultAlbum)),
         )
       ),
       title: Container(
@@ -323,7 +334,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                         )
                       ),
                       onTap: () {
-                        songQueryProvider.playNextSong(widget.songInfo);
+                        songQueryProvider.playNextPlaylistSong(song);
                         Navigator.pop(context);
                       },
                     ),
@@ -336,7 +347,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                         ),
                       ),
                       onTap: () {
-                        songQueryProvider.addToQueueSong(widget.songInfo);
+                        songQueryProvider.addToQueuePlaylistSong(song);
                         Navigator.pop(context);
                       },
                     ),
@@ -369,7 +380,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                                 TextButton(
                                   child: Text("REMOVE", style: ThemeProvider.themeOf(context).data.textTheme.button,),
                                   onPressed: () async {
-                                    await songQueryProvider.removeSongFromPlaylist(widget.songInfo, widget.index);
+                                    await songQueryProvider.removeSongFromPlaylist(song, widget.playlistEntity.key);
                                     await songQueryProvider.getSongFromPlaylist(widget.index);
                                     songQueryProvider.getSongs().whenComplete(() => Navigator.pop(context));
                                   },

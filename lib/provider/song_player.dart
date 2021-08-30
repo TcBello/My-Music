@@ -5,17 +5,19 @@ import 'package:audio_service/audio_service.dart';
 import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
+// import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/audio_player_task/audio_player_task.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/model/audio_queue_data.dart';
 import 'package:my_music/utils/utils.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_room/details/rooms/song_entity.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
   final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
-  String songArtwork(String id) => "/data/user/0/com.tcbello.my_music/cache/$id";
+  String songArtwork(int id) => "/data/user/0/com.tcbello.my_music/cache/$id";
   int _minuteTimer = 0;
 
   Icon playPauseMiniPlayerIcon(bool isPlaying){
@@ -113,8 +115,34 @@ class SongPlayerProvider extends ChangeNotifier{
   AudioProcessingState get processingState => AudioService.playbackState.processingState;
   Stream<PlaybackState> get playbackStateStream => AudioService.playbackStateStream;
 
-  void playSong(List<SongInfo> songInfoList, int index, int sdkInt) async{
-    _convertToMediaItemList(songInfoList, sdkInt);
+  void playSong(List<SongModel> songInfoList, int index) async{
+    _convertToMediaItemList(songInfoList);
+
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
+      if(!AudioService.running){
+        _repeatIndex = 0;
+        _shuffleIndex = 0;
+        await AudioService.start(
+          backgroundTaskEntrypoint: audioPlayerTaskEntrypoint,
+          androidStopForegroundOnPause: true
+        );
+      }
+
+      AudioService.customAction("setIndex", index);
+      AudioService.customAction("setAudioSourceMode", 0);
+      AudioService.updateQueue(songList);
+
+      AudioService.play();
+
+      if(!_isPlayOnce){
+        _isPlayOnce = true;
+        notifyListeners();
+      }
+    });
+  }
+
+  void playPlaylistSong(List<SongEntity> songEntityList, int index) async{
+    _convertEntityToMediaItemList(songEntityList);
 
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(!AudioService.running){
@@ -165,27 +193,56 @@ class SongPlayerProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void _convertToMediaItemList(List<SongInfo> songInfoList, int sdkInt){
-    final isSdk28Below = sdkInt < 29;
-
+  void _convertToMediaItemList(List<SongModel> songInfoList){
     songList = songInfoList.map((e){
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
-      final songArtwork1 = e.albumArtwork;
+      // final songArtwork1 = e.albumArtwork;
       final songArtwork2 = songArtwork(e.id);
 
       return MediaItem(
-        id: e.filePath!,
-        title: e.title!,
+        id: e.data,
+        title: e.title,
         artist: e.artist,
         album: e.album!,
-        artUri: isSdk28Below
-          ? songArtwork1 != null
-            ? File(songArtwork1).uri
-            : File(_defaultAlbum).uri
-          : hasArtWork
-            ? File(songArtwork2).uri
-            : File(_defaultAlbum).uri,
-        duration: Duration(milliseconds: int.parse(e.duration!)),
+        // artUri: isSdk28Below
+        //   ? songArtwork1 != null
+        //     ? File(songArtwork1).uri
+        //     : File(_defaultAlbum).uri
+        //   : hasArtWork
+        //     ? File(songArtwork2).uri
+        //     : File(_defaultAlbum).uri,
+        artUri: hasArtWork
+          ? File(songArtwork2).uri
+          : File(_defaultAlbum).uri,
+        duration: Duration(milliseconds: e.duration!),
+      );
+    }).toList();
+
+    notifyListeners();
+  }
+
+  void _convertEntityToMediaItemList(List<SongEntity> songEntityList){
+    songList = songEntityList.map((e){
+      bool hasArtWork = File(songArtwork(e.id)).existsSync();
+      // final songArtwork1 = e.albumArtwork;
+      final songArtwork2 = songArtwork(e.id);
+
+      return MediaItem(
+        id: e.lastData,
+        title: e.title,
+        artist: e.artist,
+        album: e.album!,
+        // artUri: isSdk28Below
+        //   ? songArtwork1 != null
+        //     ? File(songArtwork1).uri
+        //     : File(_defaultAlbum).uri
+        //   : hasArtWork
+        //     ? File(songArtwork2).uri
+        //     : File(_defaultAlbum).uri,
+        artUri: hasArtWork
+          ? File(songArtwork2).uri
+          : File(_defaultAlbum).uri,
+        duration: Duration(milliseconds: e.duration!),
       );
     }).toList();
 

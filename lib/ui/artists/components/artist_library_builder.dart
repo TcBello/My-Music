@@ -16,42 +16,51 @@ class ArtistLibraryBuilder extends StatelessWidget {
         final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
 
         return Container(
-          height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: GridView.count(
+            shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             children: List.generate(notifier.albumFromArtist!.length, (index){
-              final albumName = notifier.albumFromArtist?[index].title;
-              final albumArtwork = notifier.albumFromArtist?[index].albumArt;
+              final albumName = notifier.albumFromArtist?[index].album;
+              // final albumArtwork = notifier.albumFromArtist?[index].albumArt;
               final albumArtwork2 = notifier.albumArtwork(notifier.albumFromArtist![index].id);
               final hasArtWork = File(notifier.albumArtwork(notifier.albumFromArtist![index].id)).existsSync();
-              final albumImage = isSdk28Below
-                ? albumArtwork != null
-                  ? ImageGridFile(
-                    img: albumArtwork,
-                    heroID: notifier.albumFromArtist![index].id
-                  )
-                  : ImageGridFile(
-                    img: notifier.defaultAlbum,
-                    heroID: notifier.albumFromArtist![index].id
-                  )
-                : hasArtWork
-                  ? ImageGridFile(
-                    img: albumArtwork2,
-                    heroID: notifier.albumFromArtist![index].id
-                  )
-                  : ImageGridFile(
-                    img: notifier.defaultAlbum,
-                    heroID: notifier.albumFromArtist![index].id
-                  );
+              // final albumImage = isSdk28Below
+              //   ? albumArtwork != null
+              //     ? ImageGridFile(
+              //       img: albumArtwork,
+              //       heroID: notifier.albumFromArtist![index].id
+              //     )
+              //     : ImageGridFile(
+              //       img: notifier.defaultAlbum,
+              //       heroID: notifier.albumFromArtist![index].id
+              //     )
+              //   : hasArtWork
+              //     ? ImageGridFile(
+              //       img: albumArtwork2,
+              //       heroID: notifier.albumFromArtist![index].id
+              //     )
+              //     : ImageGridFile(
+              //       img: notifier.defaultAlbum,
+              //       heroID: notifier.albumFromArtist![index].id
+              //     );
+              final albumImage = hasArtWork
+                ? ImageGridFile(
+                  img: albumArtwork2,
+                  heroID: notifier.albumFromArtist![index].id.toString()
+                )
+                : ImageGridFile(
+                  img: notifier.defaultAlbum,
+                  heroID: notifier.albumFromArtist![index].id.toString()
+                );
                 
               return InkWell(
                 onTap: () async{
-                  await notifier.getSongFromArtist(notifier.albumFromArtist![index].artist!, notifier.albumFromArtist![index].id);
+                  await notifier.getSongFromAlbum(notifier.albumFromArtist![index].id);
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LibrarySong(
                     albumInfo: notifier.albumFromArtist![index],
-                    songInfoList: notifier.songInfoFromArtist!
+                    songInfoList: notifier.songInfoFromAlbum!
                   )));
                 },
                 child: ArtistCard(

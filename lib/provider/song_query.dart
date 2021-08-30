@@ -6,23 +6,28 @@ import 'package:audio_service/audio_service.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/utils/utils.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_room/on_audio_room.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// TODO: FIX PLAYLIST
+// TODO: QUERY ARTWORKS ON ANDROID 9 BELOW
+
 class SongQueryProvider extends ChangeNotifier{
-  final FlutterAudioQuery flutterAudioQuery = FlutterAudioQuery();
+  final OnAudioQuery _onAudioQuery = OnAudioQuery();
+  final OnAudioRoom _onAudioRoom = OnAudioRoom();
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
   String _tempDirPath = "";
   String _appDirPath = "";
 
-  String songArtwork(String id) => "$_tempDirPath/$id";
-  String albumArtwork(String id) => "$_tempDirPath/al$id";
-  String artistArtwork(String id) => "$_tempDirPath/ar$id";
+  String songArtwork(int id) => "$_tempDirPath/$id";
+  String albumArtwork(int id) => "$_tempDirPath/al$id";
+  String artistArtwork(int id) => "$_tempDirPath/ar$id";
 
   String _initialSongId = "";
 
@@ -46,29 +51,29 @@ class SongQueryProvider extends ChangeNotifier{
   String get defaultAlbum => "$_appDirPath/defalbum.png";
   // String get defaultAlbum => _defaultAlbum;
 
-  List<SongInfo> _songInfo = [];
-  List<SongInfo> get songInfo => _songInfo;
+  List<SongModel> _songInfo = [];
+  List<SongModel> get songInfo => _songInfo;
 
-  List<SongInfo>? _songInfoFromAlbum = [];
-  List<SongInfo>? get songInfoFromAlbum => _songInfoFromAlbum;
+  List<SongModel>? _songInfoFromAlbum = [];
+  List<SongModel>? get songInfoFromAlbum => _songInfoFromAlbum;
 
-  List<SongInfo>? _songInfoFromArtist = [];
-  List<SongInfo>? get songInfoFromArtist => _songInfoFromArtist;
+  List<SongModel>? _songInfoFromArtist = [];
+  List<SongModel>? get songInfoFromArtist => _songInfoFromArtist;
 
-  List<SongInfo>? _songInfoFromPlaylist = [];
-  List<SongInfo>? get songInfoFromPlaylist => _songInfoFromPlaylist;
+  List<SongModel>? _songInfoFromPlaylist = [];
+  List<SongModel>? get songInfoFromPlaylist => _songInfoFromPlaylist;
 
-  List<ArtistInfo> _artistInfo = [];
-  List<ArtistInfo> get artistInfo => _artistInfo;
+  List<ArtistModel> _artistInfo = [];
+  List<ArtistModel> get artistInfo => _artistInfo;
 
-  List<AlbumInfo> _albumInfo = [];
-  List<AlbumInfo> get albumInfo => _albumInfo;
+  List<AlbumModel> _albumInfo = [];
+  List<AlbumModel> get albumInfo => _albumInfo;
 
-  List<AlbumInfo>? _albumFromArtist = [];
-  List<AlbumInfo>? get albumFromArtist => _albumFromArtist;
+  List<AlbumModel>? _albumFromArtist = [];
+  List<AlbumModel>? get albumFromArtist => _albumFromArtist;
 
-  List<PlaylistInfo>? _playlistInfo = [];
-  List<PlaylistInfo>? get playlistInfo => _playlistInfo;
+  List<PlaylistEntity>? _playlistInfo = [];
+  List<PlaylistEntity>? get playlistInfo => _playlistInfo;
 
   // List<SongInfo> _currentQueue = [];
   // List<SongInfo> get currentQueue => _currentQueue;
@@ -80,6 +85,13 @@ class SongQueryProvider extends ChangeNotifier{
 
   String _locationSongSearch = "";
   String get locationSongSearch => _locationSongSearch;
+
+  void init() async{
+    setDefaultAlbumArt();
+    var appDir = await getApplicationDocumentsDirectory();
+    await _onAudioRoom.initRoom(RoomType.PLAYLIST, "$appDir/playlist");
+    await getSongs();
+  }
 
   void addPaletteData() async{
     var mediaItem = AudioService.currentMediaItem!;
@@ -107,25 +119,45 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   Future<void> getSongs() async {
-    _androidDeviceInfo = await deviceInfo.androidInfo;
-    
-    var songData = await flutterAudioQuery.getSongs();
-    var artistData = await flutterAudioQuery.getArtists();
-    var albumData = await flutterAudioQuery.getAlbums();
-    _playlistInfo = await flutterAudioQuery.getPlaylists();
-
-    _filterData(songData, artistData, albumData);
-
     var tempDir = await getTemporaryDirectory();
-    _tempDirPath = tempDir.path;
+    _androidDeviceInfo = await deviceInfo.androidInfo;
 
-    print("GET DATA SONGS FROM FILES COMPLETED!");
+    var result = await _onAudioQuery.permissionsRequest();
+    print(result);
     
-    getAlbumArts();
-    notifyListeners();
+    // var songData = await _onAudioQuery.querySongs();
+    // var artistData = await _onAudioQuery.queryArtists();
+    // var albumData = await _onAudioQuery.queryAlbums();
+    // _playlistInfo = await _onAudioQuery.queryPlaylists();
+
+    // _filterData(songData, artistData, albumData);
+
+    // var tempDir = await getTemporaryDirectory();
+    // _tempDirPath = tempDir.path;
+
+    // print("GET DATA SONGS FROM FILES COMPLETED!");
+    
+    // getAlbumArts();
+    // notifyListeners();
+
+    if(result){
+      var songData = await _onAudioQuery.querySongs();
+      var artistData = await _onAudioQuery.queryArtists();
+      var albumData = await _onAudioQuery.queryAlbums();
+      _playlistInfo = await _onAudioRoom.queryPlaylists();
+
+      _filterData(songData, artistData, albumData);
+
+      _tempDirPath = tempDir.path;
+
+      print("GET DATA SONGS FROM FILES COMPLETED!");
+      
+      getAlbumArts();
+      notifyListeners();
+    }
   }
 
-  void _filterData(List<SongInfo> songData, List<ArtistInfo> artistData, List<AlbumInfo> albumData) async{
+  void _filterData(List<SongModel> songData, List<ArtistModel> artistData, List<AlbumModel> albumData) async{
     var prefs = await SharedPreferences.getInstance();
     bool isIgnore30 = prefs.getBool('isIgnoreSongDuration30s') ?? true;
     bool isIgnore45 = prefs.getBool('isIgnoreSongDuration45s') ?? true;
@@ -135,14 +167,14 @@ class SongQueryProvider extends ChangeNotifier{
 
     if(isIgnore45){
       songData.forEach((song) {
-        if(int.parse(song.duration!) > 45000){
+        if(song.duration! > 45000){
           _songInfo.add(song);
         }
       });
     }
     else if(isIgnore30){
       songData.forEach((song) {
-        if(int.parse(song.duration!) > 30000){
+        if(song.duration! > 30000){
           _songInfo.add(song);
         }
       });
@@ -154,71 +186,86 @@ class SongQueryProvider extends ChangeNotifier{
     }
 
     artistData.forEach((artist) {
-      if(artist.name != "Unknown Artist"){
+      if(artist.artist != "<unknown>"){
         _artistInfo.add(artist);
       }
     });
 
     albumData.forEach((album) {
-      if(album.title != "raw" && album.title?.toLowerCase() != _androidDeviceInfo?.manufacturer.toLowerCase()){
+      if(album.album != "raw" && album.album.toLowerCase() != _androidDeviceInfo?.manufacturer.toLowerCase()){
         _albumInfo.add(album);
       }
     });
   }
 
-  Future<void> createPlaylist(String name, SongInfo songInfo, String playlistName) async {
-    var newPlaylist = await FlutterAudioQuery.createPlaylist(playlistName: name);
-    newPlaylist.addSong(song: songInfo);
-    await getSongs();
-    showShortToast("1 song added to $playlistName");
+  Future<void> createPlaylist(String name, SongModel songInfo, String playlistName) async {
+    // await getSongs();
+    int? playlistKey = await _onAudioRoom.createPlaylist(playlistName);
+    if(playlistKey != null){
+      await _onAudioRoom.addTo(RoomType.PLAYLIST, songInfo.getMap.toSongEntity(), playlistKey: playlistKey);
+      await getSongs();
+      showShortToast("1 song added to $playlistName");
+    }
+    else{
+      showShortToast("Error on creating playlist");
+    }
   }
 
-  Future<void> addSongToPlaylist(SongInfo song, int index, String playlistName) async {
-    await _playlistInfo?[index].addSong(song: song);
-    showShortToast("1 song added to $playlistName");
-  }
+  Future<void> addSongToPlaylist(SongModel song, String playlistName, int key) async {
+    var playlist = await _onAudioRoom.queryPlaylist(key);
+    var filteredSong = playlist?.playlistSongs.where((element) => element.lastData == song.data);
 
-  Future<void> removeSongPlaylist(SongInfo song, int index) async {
-    await _playlistInfo?[index].removeSong(song: song);
+    if(filteredSong!.isEmpty){
+      _onAudioRoom.addTo(RoomType.PLAYLIST, song.getMap.toSongEntity(), playlistKey: key);
+      showShortToast("1 song added to $playlistName");
+    }
+    else{
+      showShortToast("Song is already on playlist");
+    }
   }
 
   Future<void> updatePlaylist() async {
-    _playlistInfo = await flutterAudioQuery.getPlaylists();
+    // _playlistInfo = await flutterAudioQuery.getPlaylists();
   }
 
-  Future<void> deletePlaylist(int index) async {
-    await FlutterAudioQuery.removePlaylist(playlist: _playlistInfo![index]);
+  Future<void> deletePlaylist(int key) async {
+    await _onAudioRoom.deletePlaylist(key);
   }
 
-  Future<void> removeSongFromPlaylist(SongInfo song, int index) async {
-    await _playlistInfo?[index].removeSong(song: song);
+  Future<void> removeSongFromPlaylist(SongEntity song, int key) async {
+    await _onAudioRoom.deleteFrom(RoomType.PLAYLIST, song.id, playlistKey: key);
   }
 
-  Future<void> getSongFromAlbum(String id) async {
-    _songInfoFromAlbum = await flutterAudioQuery.getSongsFromAlbum(albumId: id);
+  Future<void> getSongFromAlbum(int id) async {
+    _songInfoFromAlbum = await _onAudioQuery.queryAudiosFrom(AudiosFromType.ALBUM_ID, id);
     print("GET SONGS FROM ALBUM COMPLETED!");
 
     notifyListeners();
   }
 
-  Future<void> getSongFromArtist(String artist, String id) async{
-    _songInfoFromArtist = await flutterAudioQuery.getSongsFromArtistAlbum(artist: artist, albumId: id);
+  Future<void> getSongFromArtist(int id) async{
+    _songInfoFromArtist = await _onAudioQuery.queryAudiosFrom(AudiosFromType.ARTIST_ID, id);
     print("GET SONGS FROM ARTIST ALBUM COMPLETED!");
+
+    notifyListeners();
   }
 
   Future<void> getAlbumFromArtist(String name) async {
-    _albumFromArtist = await flutterAudioQuery.getAlbumsFromArtist(artist: name);
+    var albums = await _onAudioQuery.queryWithFilters(name, WithFiltersType.ALBUMS, AlbumsArgs.ARTIST);
+    _albumFromArtist = albums.map((e) => AlbumModel(e)).toList();
+
     print("GET ALBUM FROM ARTIST COMPLETED!");
 
     notifyListeners();
   }
 
-  Future<void> getSongFromPlaylist(int index) async {
-    _songInfoFromPlaylist = await flutterAudioQuery.getSongsFromPlaylist(playlist: _playlistInfo![index]);
-    notifyListeners();
+  Future<PlaylistEntity?> getSongFromPlaylist(int key) async {
+    // _songInfoFromPlaylist = await flutterAudioQuery.getSongsFromPlaylist(playlist: _playlistInfo![index]);
+    // await _onAudioRoom.queryPlaylist(key);
+    return await _onAudioRoom.queryPlaylist(key);
   }
 
-  void playNextSong(SongInfo nextSongInfo) async{
+  void playNextSong(SongModel nextSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(AudioService.running){
         MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
@@ -229,7 +276,18 @@ class SongQueryProvider extends ChangeNotifier{
     });
   }
 
-  void addToQueueSong(SongInfo addToQueueSongInfo) async{
+  void playNextPlaylistSong(SongEntity nextSongInfo) async{
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
+      if(AudioService.running){
+        MediaItem mediaItem = _convertEntityToMediaItem(nextSongInfo);
+        int nextIndex = await AudioService.customAction("getCurrentIndex");
+        AudioService.addQueueItemAt(mediaItem, nextIndex);
+        showShortToast("Song will play next");
+      }
+    });
+  }
+
+  void addToQueueSong(SongModel addToQueueSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(AudioService.running){
         MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
@@ -239,10 +297,20 @@ class SongQueryProvider extends ChangeNotifier{
     });
   }
 
-  void playNextPlaylist(List<SongInfo> songInfoList) async{
+  void addToQueuePlaylistSong(SongEntity addToQueueSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(AudioService.running){
-        List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+        MediaItem mediaItem = _convertEntityToMediaItem(addToQueueSongInfo);
+        AudioService.addQueueItem(mediaItem);
+        showShortToast("Song added to queue");
+      }
+    });
+  }
+
+  void playNextPlaylist(List<SongEntity> songInfoList) async{
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+      if(AudioService.running){
+        List<MediaItem> mediaList = _convertEntityToMediaItemList(songInfoList);
         AudioService.customAction("setAudioSourceMode", 1);
         AudioService.updateQueue(mediaList);
         showShortToast("Playlist will play next");
@@ -250,10 +318,10 @@ class SongQueryProvider extends ChangeNotifier{
     });
   }
 
-  void addToQueuePlaylist(List<SongInfo> songInfoList) async{
+  void addToQueuePlaylist(List<SongEntity> songInfoList) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(AudioService.running){
-        List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+        List<MediaItem> mediaList = _convertEntityToMediaItemList(songInfoList);
         AudioService.customAction("setAudioSourceMode", 2);
         AudioService.updateQueue(mediaList);
         showShortToast("Playlist added to queue");
@@ -261,45 +329,99 @@ class SongQueryProvider extends ChangeNotifier{
     });
   }
 
-  List<MediaItem> _convertToMediaItemList(List<SongInfo> songInfoList){
+  List<MediaItem> _convertToMediaItemList(List<SongModel> songInfoList){
     return songInfoList.map((e){
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
       String artwork = songArtwork(e.id);
 
       return MediaItem(
-        id: e.filePath!,
-        title: e.title!,
+        id: e.data,
+        title: e.title,
         artist: e.artist ,
         album: e.album!,
-        artUri: _androidDeviceInfo!.version.sdkInt < 29
-          ? e.albumArtwork != null
-            ? File(e.albumArtwork!).uri
-            : File(defaultAlbum).uri
-          : hasArtWork
-            ? File(artwork).uri
-            : File(defaultAlbum).uri,
-        duration: Duration(milliseconds: int.parse(e.duration!)),
+        // artUri: _androidDeviceInfo!.version.sdkInt < 29
+        //   ? e. != null
+        //     ? File(e.albumArtwork!).uri
+        //     : File(defaultAlbum).uri
+        //   : hasArtWork
+        //     ? File(artwork).uri
+        //     : File(defaultAlbum).uri,
+        artUri: hasArtWork
+          ? File(artwork).uri
+          : File(defaultAlbum).uri,
+        duration: Duration(milliseconds: e.duration!),
       );
     }).toList();
   }
 
-  MediaItem _convertToMediaItem(SongInfo newSongInfo){
+  MediaItem _convertToMediaItem(SongModel newSongInfo){
     bool hasArtWork = File(songArtwork(newSongInfo.id)).existsSync();
     String artwork = songArtwork(newSongInfo.id);
 
     return MediaItem(
-      id: newSongInfo.filePath!,
-      title: newSongInfo.title!,
+      id: newSongInfo.data,
+      title: newSongInfo.title,
       artist: newSongInfo.artist,
       album: newSongInfo.album!,
-      artUri: _androidDeviceInfo!.version.sdkInt < 29
-        ? newSongInfo.albumArtwork != null
-          ? File(newSongInfo.albumArtwork!).uri
-          : File(defaultAlbum).uri
-        : hasArtWork
+      // artUri: _androidDeviceInfo!.version.sdkInt < 29
+      //   ? newSongInfo.albumArtwork != null
+      //     ? File(newSongInfo.albumArtwork!).uri
+      //     : File(defaultAlbum).uri
+      //   : hasArtWork
+      //     ? File(artwork).uri
+      //     : File(defaultAlbum).uri,
+      artUri: hasArtWork
+        ? File(artwork).uri
+        : File(defaultAlbum).uri,
+      duration: Duration(milliseconds: newSongInfo.duration!),
+    );
+  }
+
+  List<MediaItem> _convertEntityToMediaItemList(List<SongEntity> songInfoList){
+    return songInfoList.map((e){
+      bool hasArtWork = File(songArtwork(e.id)).existsSync();
+      String artwork = songArtwork(e.id);
+
+      return MediaItem(
+        id: e.lastData,
+        title: e.title,
+        artist: e.artist ,
+        album: e.album!,
+        // artUri: _androidDeviceInfo!.version.sdkInt < 29
+        //   ? e. != null
+        //     ? File(e.albumArtwork!).uri
+        //     : File(defaultAlbum).uri
+        //   : hasArtWork
+        //     ? File(artwork).uri
+        //     : File(defaultAlbum).uri,
+        artUri: hasArtWork
           ? File(artwork).uri
           : File(defaultAlbum).uri,
-      duration: Duration(milliseconds: int.parse(newSongInfo.duration!)),
+        duration: Duration(milliseconds: e.duration!),
+      );
+    }).toList();
+  }
+
+  MediaItem _convertEntityToMediaItem(SongEntity newSongInfo){
+    bool hasArtWork = File(songArtwork(newSongInfo.id)).existsSync();
+    String artwork = songArtwork(newSongInfo.id);
+
+    return MediaItem(
+      id: newSongInfo.lastData,
+      title: newSongInfo.title,
+      artist: newSongInfo.artist,
+      album: newSongInfo.album!,
+      // artUri: _androidDeviceInfo!.version.sdkInt < 29
+      //   ? newSongInfo.albumArtwork != null
+      //     ? File(newSongInfo.albumArtwork!).uri
+      //     : File(defaultAlbum).uri
+      //   : hasArtWork
+      //     ? File(artwork).uri
+      //     : File(defaultAlbum).uri,
+      artUri: hasArtWork
+        ? File(artwork).uri
+        : File(defaultAlbum).uri,
+      duration: Duration(milliseconds: newSongInfo.duration!),
     );
   }
 
@@ -335,10 +457,10 @@ class SongQueryProvider extends ChangeNotifier{
     _searchProgress = 0.0;
     _searchHeader = "Searching Songs...";
     int totalItems = songInfo.length + artistInfo.length + albumInfo.length;
+    // int totalItems = _songInfo.length + _albumInfo.length;
     notifyListeners();
 
-    if(_androidDeviceInfo!.version.sdkInt >= 29){
-      if(!valFile.existsSync()){
+    if(!valFile.existsSync()){
         int currentSearch = 0;
         _locationSongSearch = "";
         // _songInfo.forEach((element) async {
@@ -379,24 +501,25 @@ class SongQueryProvider extends ChangeNotifier{
         //   }
         // });
 
-        var resultSong = await Future.forEach(_songInfo, (SongInfo element) async {
+        var resultSong = await Future.forEach(_songInfo, (SongModel element) async {
           String filePath = "$dirPath/${element.id}";
           File file = File(filePath);
 
           if(!file.existsSync()){
-            Uint8List artWork = await flutterAudioQuery.getArtwork(
-              type: ResourceType.SONG,
-              id: element.id,
-              size: Size(500, 500)
+            Uint8List? artWork = await _onAudioQuery.queryArtwork(
+              element.id,
+              ArtworkType.AUDIO,
+              format: ArtworkFormat.PNG,
+              size: 500
             );
 
-            _locationSongSearch = element.filePath!;
+            _locationSongSearch = element.data;
             currentSearch += 1;
             _searchProgress = currentSearch / totalItems;
             notifyListeners();
 
             try{
-              if(artWork.isNotEmpty){
+              if(artWork != null){
                 file.writeAsBytesSync(artWork);
                 print("FilePath: ${file.path}\nSong Name: ${element.title}");
               }
@@ -419,18 +542,21 @@ class SongQueryProvider extends ChangeNotifier{
 
         if(resultSong == null){
           _searchHeader = "Preparing...";
+          _locationSongSearch = "Please wait...";
           notifyListeners();
 
-          var resultArtist = await Future.forEach(_artistInfo, (ArtistInfo element) async {
+          var resultArtist = await Future.forEach(_artistInfo, (ArtistModel element) async {
             String filePath = "$dirPath/ar${element.id}";
             File file = File(filePath);
+            var albums = await _onAudioQuery.queryWithFilters(element.artist, WithFiltersType.ALBUMS, AlbumsArgs.ARTIST);
 
-            if(!file.existsSync()){
-              Uint8List artwork = await flutterAudioQuery.getArtwork(
-                id: element.id,
-                type: ResourceType.ARTIST,
-                size: Size(500, 500)
-              );
+            if(!file.existsSync() && albums.length != 0){
+              Uint8List? artwork = await _onAudioQuery.queryArtwork(
+                albums[0]['album_id'],
+                ArtworkType.ALBUM,
+                format: ArtworkFormat.PNG,
+                size: 500
+                );
 
               _locationSongSearch = "Please wait...";
               currentSearch += 1;
@@ -438,9 +564,9 @@ class SongQueryProvider extends ChangeNotifier{
               notifyListeners();
 
               try{
-                if(artwork.isNotEmpty){
+                if(artwork != null){
                   file.writeAsBytesSync(artwork);
-                  print("Artist Name: ${element.name}");
+                  print("Artist Name: ${element.artist}");
                 }
               }
               catch(e){
@@ -456,15 +582,16 @@ class SongQueryProvider extends ChangeNotifier{
 
           if(resultArtist == null){
             
-            Future.forEach(_albumInfo, (AlbumInfo element) async {
+            Future.forEach(_albumInfo, (AlbumModel element) async {
               String filePath = "$dirPath/al${element.id}";
               File file = File(filePath);
 
               if(!file.existsSync()){
-                Uint8List artwork = await flutterAudioQuery.getArtwork(
-                  id: element.id,
-                  type: ResourceType.ALBUM,
-                  size: Size(500, 500)
+                Uint8List? artwork = await _onAudioQuery.queryArtwork(
+                  element.id,
+                  ArtworkType.ALBUM,
+                  format: ArtworkFormat.PNG,
+                  size: 500
                 );
 
                 currentSearch += 1;
@@ -472,9 +599,9 @@ class SongQueryProvider extends ChangeNotifier{
                 notifyListeners();
 
                 try{
-                  if(artwork.isNotEmpty){
+                  if(artwork!= null){
                     file.writeAsBytesSync(artwork);
-                    print("Album Name: ${element.title}");
+                    print("Album Name: ${element.album}");
                   }
                   print(_searchProgress);
 
@@ -647,39 +774,6 @@ class SongQueryProvider extends ChangeNotifier{
         //   }
         // });
       }
-    }
-
-    if(_androidDeviceInfo!.version.sdkInt < 29 && !valFile.existsSync()){
-      int currentSearch = 0;
-      _locationSongSearch = "";
-      notifyListeners();
-
-      // _songInfo.forEach((element) {
-      //   _locationSongSearch = element.filePath;
-      //   currentSearch += 1;
-      //   _searchProgress = currentSearch / songInfo.length;
-
-      //   if(_searchProgress == 1.0){
-      //     valFile.writeAsString("validate");
-      //   }
-
-      //   notifyListeners();
-      // });
-
-      for(int i = 0; i < _songInfo.length; i++){
-        await Future.delayed(Duration(milliseconds: 50), (){
-          _locationSongSearch = _songInfo[i].filePath!;
-          currentSearch += 1;
-          _searchProgress = currentSearch / _songInfo.length;
-
-          if(_searchProgress == 1.0){
-            valFile.writeAsString("validate");
-          }
-        });
-
-        notifyListeners();
-      }
-    }
   }
 
   // void setQueue(List<SongInfo> songList){
@@ -719,11 +813,11 @@ class SongQueryProvider extends ChangeNotifier{
     }
   }
 
-  SongInfo? getSongInfoByPath(String path){
-    SongInfo? resultSongInfo;
+  SongModel? getSongInfoByPath(String path){
+    SongModel? resultSongInfo;
 
     _songInfo.forEach((element) {
-      if(element.filePath == path){
+      if(element.data == path){
         resultSongInfo = element;
       }
     });
