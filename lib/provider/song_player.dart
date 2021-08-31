@@ -257,8 +257,13 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   void openEqualizer() async{
-    int id = await AudioService.customAction("getAudioSessionId");
-    Equalizer.open(id);
+    if(AudioService.running){
+      int id = await AudioService.customAction("getAudioSessionId");
+      Equalizer.open(id);
+    }
+    else{
+      Equalizer.open(0);
+    }
   }
 
   void setRepeatMode(){
