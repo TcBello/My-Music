@@ -441,8 +441,8 @@ class SongQueryProvider extends ChangeNotifier{
     final Directory dir = await getTemporaryDirectory();
     final valFile = await validatorFile();
     String dirPath = dir.path;
-    _searchProgress = 0.0;
-    _searchHeader = "Searching Songs...";
+    // _searchProgress = 0.0;
+    // _searchHeader = "Searching Songs...";
     int totalItems = songInfo.length + artistInfo.length + albumInfo.length;
     // int totalItems = _songInfo.length + _albumInfo.length;
     notifyListeners();
@@ -496,7 +496,6 @@ class SongQueryProvider extends ChangeNotifier{
             Uint8List? artWork = await _onAudioQuery.queryArtwork(
               element.id,
               ArtworkType.AUDIO,
-              format: ArtworkFormat.PNG,
               size: 500
             );
 
@@ -528,9 +527,9 @@ class SongQueryProvider extends ChangeNotifier{
         });
 
         if(resultSong == null){
-          _searchHeader = "Preparing...";
-          _locationSongSearch = "Please wait...";
-          notifyListeners();
+          // _searchHeader = "Preparing...";
+          // _locationSongSearch = "Please wait...";
+          // notifyListeners();
 
           var resultArtist = await Future.forEach(_artistInfo, (ArtistModel element) async {
             String filePath = "$dirPath/ar${element.id}";
@@ -542,10 +541,10 @@ class SongQueryProvider extends ChangeNotifier{
               Uint8List? artwork = await _onAudioQuery.queryArtwork(
                 album[0].id,
                 ArtworkType.ALBUM,
-                format: ArtworkFormat.PNG,
                 size: 500
                 );
 
+              _searchHeader = "Preparing...";
               _locationSongSearch = "Please wait...";
               currentSearch += 1;
               _searchProgress = currentSearch / totalItems;
@@ -578,7 +577,6 @@ class SongQueryProvider extends ChangeNotifier{
                 Uint8List? artwork = await _onAudioQuery.queryArtwork(
                   element.id,
                   ArtworkType.ALBUM,
-                  format: ArtworkFormat.PNG,
                   size: 500
                 );
 
@@ -595,6 +593,8 @@ class SongQueryProvider extends ChangeNotifier{
 
                   if(_searchProgress == 1.0){
                     valFile.writeAsString("validate");
+                    _searchProgress = 0.0;
+                    _searchHeader = "Searching Songs...";
                     notifyListeners();
                     print("YEEEEY");
                   }
@@ -611,6 +611,8 @@ class SongQueryProvider extends ChangeNotifier{
 
                 if(_searchProgress == 1.0){
                   valFile.writeAsString("validate");
+                  _searchProgress = 0.0;
+                  _searchHeader = "Searching Songs...";
                   notifyListeners();
                   print("YEEEEY");
                 }

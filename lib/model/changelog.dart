@@ -14,7 +14,8 @@ List<Changelog> changelogs = [
     details: [
       "Fix searching songs that are deleted bug",
       'Change "<unknown>" to "Unknown Artist"',
-      "Fix placeholder when data is empty"
+      "Fix placeholder when data is empty",
+      "Improve performance of search songs"
     ]
   ),
   Changelog(
