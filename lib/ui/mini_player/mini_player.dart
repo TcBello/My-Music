@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:miniplayer/miniplayer.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/mini_player/components/collapsed_miniplayer.dart';
@@ -57,7 +58,9 @@ class MiniPlayer extends StatelessWidget {
             );
 
             final songTitle = snapshot.data!.title;
-            final artistName = snapshot.data!.artist!;
+            final artistName = snapshot.data!.artist! != kDefaultArtistName
+              ? snapshot.data!.artist!
+              : "Unknown Artist";
             final duration = toMinSecFormat(snapshot.data!.duration!);
             final durationValue = snapshot.data!.duration!;
 

@@ -17,6 +17,7 @@ class AnimatedPausePlay extends StatefulWidget {
 
 class _AnimatedPausePlayState extends State<AnimatedPausePlay> with AnimationMixin {
   Animation<double>? _circleAnimation;
+  bool _animatedOnce = false;
 
   @override
   void initState() {
@@ -45,12 +46,13 @@ class _AnimatedPausePlayState extends State<AnimatedPausePlay> with AnimationMix
               stream: songPlayer.playbackStateStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-
-                  if(snapshot.data!.playing){
+                  if(snapshot.data!.playing && _animatedOnce == false){
                     controller.loop(duration: Duration(seconds: 3));
+                    _animatedOnce = true;
                   }
-                  else{
+                  if(!snapshot.data!.playing && _animatedOnce){
                     controller.stop();
+                    _animatedOnce = false;
                   }
 
                   return IconButton(

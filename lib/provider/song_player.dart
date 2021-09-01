@@ -35,7 +35,7 @@ class SongPlayerProvider extends ChangeNotifier{
   int _repeatIndex = 0;
   int _shuffleIndex = 0;
 
-  List<Icon> _repeatIcons = [
+  List<Icon> _repeatIcons(Color bodyColor) => [
     // OFF
     Icon(
       Icons.repeat,
@@ -44,18 +44,18 @@ class SongPlayerProvider extends ChangeNotifier{
     ),
     // ON
     Icon(
-      Icons.repeat,
-      color: Colors.white,
+      Icons.repeat_on_rounded,
+      color: bodyColor,
       size: 40,
     ),
     Icon(
-      Icons.repeat_one,
-      color: Colors.white,
+      Icons.repeat_one_on_rounded,
+      color: bodyColor,
       size: 40,
     ),
   ];
 
-  List<Icon> _shuffleIcons = [
+  List<Icon> _shuffleIcons(Color bodyColor) => [
     // OFF
     Icon(
       Icons.shuffle,
@@ -64,14 +64,14 @@ class SongPlayerProvider extends ChangeNotifier{
     ),
     // ON
     Icon(
-      Icons.shuffle,
-      color: Colors.white,
+      Icons.shuffle_on_rounded,
+      color: bodyColor,
       size: 40,
     ),
   ];
   
-  Icon get currentRepeatIcon => _repeatIcons[_repeatIndex];
-  Icon get currentShuffleIcon => _shuffleIcons[_shuffleIndex];
+  Icon currentRepeatIcon(Color bodyColor) => _repeatIcons(bodyColor)[_repeatIndex];
+  Icon currentShuffleIcon(Color bodyColor) => _shuffleIcons(bodyColor)[_shuffleIndex];
 
   Icon shuffleIcon(AudioServiceShuffleMode mode){
     switch(mode){  
@@ -97,6 +97,35 @@ class SongPlayerProvider extends ChangeNotifier{
         return Icon(
           Icons.shuffle,
           color: Colors.grey[300],
+          size: 40,
+        );
+    }
+  }
+
+  Icon repeatIcon(AudioServiceRepeatMode repeatMode, Color bodyColor){
+    switch(repeatMode){
+      case AudioServiceRepeatMode.none:
+        return Icon(
+          Icons.repeat,
+          color: Colors.grey[300],
+          size: 40,
+        );
+      case AudioServiceRepeatMode.one:
+        return Icon(
+          Icons.repeat_one_on_rounded,
+          color: bodyColor,
+          size: 40,
+        );
+      case AudioServiceRepeatMode.all:
+        return Icon(
+          Icons.repeat_on_rounded,
+          color: bodyColor,
+          size: 40,
+        );
+      case AudioServiceRepeatMode.group:
+        return Icon(
+          Icons.repeat_on_rounded,
+          color: bodyColor,
           size: 40,
         );
     }
@@ -277,12 +306,15 @@ class SongPlayerProvider extends ChangeNotifier{
     switch(_repeatIndex){
       case 0:
         AudioService.setRepeatMode(AudioServiceRepeatMode.none);
+        showShortToast("Repeat off");
         break;
       case 1:
         AudioService.setRepeatMode(AudioServiceRepeatMode.all);
+        showShortToast("Repeat on");
         break;
       case 2:
         AudioService.setRepeatMode(AudioServiceRepeatMode.one);
+        showShortToast("Repeat single song");
         break;
     }
   }
@@ -299,16 +331,13 @@ class SongPlayerProvider extends ChangeNotifier{
     switch(_shuffleIndex){
       case 0:
         AudioService.setShuffleMode(AudioServiceShuffleMode.none);
+        showShortToast("Shuffle off");
         break;
       case 1:
         AudioService.setShuffleMode(AudioServiceShuffleMode.all);
+        showShortToast("Shuffle on");
         break;
     }
-  }
-
-  Future<void> defaultModes() async{
-    _repeatIndex = 0;
-    _shuffleIndex = 0;
   }
 
   Future<int> getCurrentIndex() async{
@@ -333,6 +362,9 @@ class SongPlayerProvider extends ChangeNotifier{
       else{
         showShortToast("Music will not stop");
       }
+    }
+    else{
+      showShortToast("Playing queue not found");
     }
   }
 

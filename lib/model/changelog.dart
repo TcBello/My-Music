@@ -10,6 +10,14 @@ class Changelog{
 
 List<Changelog> changelogs = [
   Changelog(
+    version: "Version 1.1.0",
+    details: [
+      "Added skip next in collapsed miniplayer",
+      "Changed color of shuffle and repeat when on",
+      "Added indicator when pressing shuffle and repeat"
+    ]
+  ),
+  Changelog(
     version: "Version: 1.0.1",
     details: [
       "Fix searching songs that are deleted bug",

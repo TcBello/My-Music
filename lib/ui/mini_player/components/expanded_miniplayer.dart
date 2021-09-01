@@ -204,7 +204,7 @@ class ExpandedMiniplayer extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                              icon: songPlayer.currentRepeatIcon,
+                              icon: songPlayer.currentRepeatIcon(bodyColor),
                               onPressed: () {
                                 songPlayer.setRepeatMode();
                               },
@@ -237,7 +237,7 @@ class ExpandedMiniplayer extends StatelessWidget {
                             ),
                             SizedBox(width: 10),
                             IconButton(
-                                icon: songPlayer.currentShuffleIcon,
+                                icon: songPlayer.currentShuffleIcon(bodyColor),
                                 onPressed: () => songPlayer.setShuffleMode())
                           ],
                         ),

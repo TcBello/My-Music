@@ -121,12 +121,17 @@ void main() async {
     )
   );
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: color2,
+    systemNavigationBarDividerColor: color2
+  ));
 }
 
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return SplashScreen(
       loadingTextPadding: const EdgeInsets.all(0),
       useLoader: true,

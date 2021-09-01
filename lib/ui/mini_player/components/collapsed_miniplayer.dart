@@ -71,34 +71,38 @@ class CollapsedMiniplayer extends StatelessWidget {
                 ),
                 Opacity(
                   opacity: elementOpacity,
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                    child: ClipOval(
-                      child: StreamBuilder<PlaybackState>(
-                          stream: songPlayer.playbackStateStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return IconButton(
-                                onPressed: () {
-                                  songPlayer.pauseResume();
-                                },
-                                icon: songPlayer.playPauseMiniPlayerIcon(
-                                    snapshot.data!.playing),
-                              );
-                            }
+                  child: StreamBuilder<PlaybackState>(
+                      stream: songPlayer.playbackStateStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              songPlayer.pauseResume();
+                            },
+                            icon: songPlayer.playPauseMiniPlayerIcon(
+                                snapshot.data!.playing),
+                          );
+                        }
 
-                            return IconButton(
-                              onPressed: () {
-                                songPlayer.pauseResume();
-                              },
-                              icon: songPlayer.playPauseMiniPlayerIcon(true),
-                            );
-                          }),
-                    ),
-                  ),
+                        return IconButton(
+                          onPressed: () {
+                            songPlayer.pauseResume();
+                          },
+                          icon: songPlayer.playPauseMiniPlayerIcon(true),
+                        );
+                      }),
                 ),
+                Opacity(
+                  opacity: elementOpacity,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.skip_next, color: Colors.white,),
+                    onPressed: (){
+                      songPlayer.skipNext();
+                    },
+                  ),
+                )
               ],
             ),
           ),

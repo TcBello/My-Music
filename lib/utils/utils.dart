@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/constant.dart';
+import 'package:my_music/components/style.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 double valueFromPercentageInRange(
@@ -19,22 +20,24 @@ String toMinSecFormat(Duration duration) {
 }
 
 void showShortToast(String msg){
+  Fluttertoast.cancel();
   Fluttertoast.showToast(
     msg: msg,
     toastLength: Toast.LENGTH_SHORT,
     gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.grey[800],
+    backgroundColor: color4,
     textColor: Colors.white,
     fontSize: 16.0
   );
 }
 
 void showLongToast(String msg){
+  Fluttertoast.cancel();
   Fluttertoast.showToast(
     msg: msg,
     toastLength: Toast.LENGTH_LONG,
     gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.grey[800],
+    backgroundColor: color4,
     textColor: Colors.white,
     fontSize: 16.0
   );
