@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/components/image_gridview.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/library_song.dart';
 import 'package:my_music/components/album_card.dart';
@@ -27,7 +26,6 @@ class Albums extends StatelessWidget {
                   final artistName = notifier.albumInfo[index].artist!;
                   final id = notifier.albumInfo[index].id;
                   final hasArtWork = File(notifier.albumArtwork(notifier.albumInfo[index].id)).existsSync();
-                  final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
                   // final albumImage = isSdk28Below
                   //   ? albumArtwork != null
                   //     ? ImageGridFile(

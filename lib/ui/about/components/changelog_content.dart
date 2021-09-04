@@ -22,7 +22,7 @@ class ChangelogContent extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(version, style: textStyle.copyWith(
+            child: Text("Version: $version", style: textStyle.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w500
             ),),

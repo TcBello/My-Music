@@ -53,7 +53,6 @@ class LibrarySong extends StatelessWidget {
                   // final albumArtwork = albumInfo.albumArt;
                   final albumArtwork2 = notifier.albumArtwork(albumInfo.id);
                   final hasArtWork = File(notifier.albumArtwork(albumInfo.id)).existsSync();
-                  final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
 
                   return FlexibleSpaceBar(
                     title: ConstrainedBox(

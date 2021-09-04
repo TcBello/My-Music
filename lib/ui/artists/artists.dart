@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/data_placeholder.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/artists/artist_profile.dart';
 import 'package:my_music/components/image_gridview.dart';
@@ -28,8 +27,7 @@ class Artists extends StatelessWidget {
                 children: List.generate(notifier.artistInfo.length, (index){
                   final artistName = notifier.artistInfo[index].artist;     
                   // final artistArtwork = notifier.artistInfo[index].artistArtPath;
-                  final artistArtwork2 = notifier.artistArtwork(notifier.artistInfo[index].id);
-                  final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
+                  final artistArtwork2 = notifier.artistArtwork(notifier.artistInfo[index].id);                  
                   final hasArtWork = File(notifier.artistArtwork(notifier.artistInfo[index].id)).existsSync();
                   // final backgroundSliver = isSdk28Below
                   //   ? artistArtwork != null

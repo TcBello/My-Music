@@ -16,8 +16,6 @@ class LibrarySongBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<SongQueryProvider, SongPlayerProvider>(
       builder: (context, songQuery, songPlayer, child) {
-        final sdkInt = songQuery.androidDeviceInfo!.version.sdkInt;
-
         return ListBody(
           children: List.generate(songInfoList.length,(index) => SongTile2(
             songInfo: songInfoList[index],

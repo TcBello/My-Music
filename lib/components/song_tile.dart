@@ -38,7 +38,6 @@ class _SongTileState extends State<SongTile> {
     // final songArtwork = widget.songInfo.albumArtwork;
     final songArtwork2 = songQueryProvider.songArtwork(widget.songInfo.id);
     final hasArtWork = File(songQueryProvider.songArtwork(widget.songInfo.id)).existsSync();
-    final isSdk28Below = songQueryProvider.androidDeviceInfo!.version.sdkInt < 29;
 
     return ListTile(
         tileColor: Colors.transparent,
@@ -253,7 +252,6 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
       : "Unknown Artist";
     // final songArtwork = widget.songInfo.albumArtwork;
     final songArtwork2 = songQueryProvider.songArtwork(widget.playlistEntity.playlistSongs[widget.index].id);
-    final isSdk28Below = songQueryProvider.androidDeviceInfo!.version.sdkInt < 29;
     final song = widget.playlistEntity.playlistSongs[widget.index];
 
     return ListTile(
@@ -390,7 +388,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                                   onPressed: () async {
                                     await songQueryProvider.removeSongFromPlaylist(song, widget.playlistEntity.key);
                                     await songQueryProvider.getSongFromPlaylist(widget.index);
-                                    songQueryProvider.getSongs().whenComplete(() => Navigator.pop(context));
+                                    songQueryProvider.getPlaylists().whenComplete(() => Navigator.pop(context));
                                   },
                                 )
                               ],

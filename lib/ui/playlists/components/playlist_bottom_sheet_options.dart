@@ -4,7 +4,6 @@ import 'package:my_music/components/delete_dialog.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/utils/utils.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -23,7 +22,6 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
     final songPlayerProvider  = Provider.of<SongPlayerProvider>(context);
     final playlistName = playlistInfo.playlistName;
-    final sdkInt = songQueryProvider.androidDeviceInfo!.version.sdkInt;
 
     return Container(
       height: 290,
@@ -119,7 +117,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
                         content: "Are you sure you want to delete this playlist?",
                         onPressedDelete: () async {
                           await notifier.deletePlaylist(playlistInfo.key);
-                          await notifier.getSongs();
+                          await notifier.getPlaylists();
                           Navigator.pop(context);
                         },
                       );

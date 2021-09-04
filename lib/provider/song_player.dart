@@ -12,13 +12,23 @@ import 'package:my_music/model/audio_queue_data.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:on_audio_room/details/rooms/song_entity.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
   List<MediaItem> songList = [];
-  final String _defaultAlbum = "/data/user/0/com.tcbello.my_music/app_flutter/defalbum.png";
-  String songArtwork(int id) => "/data/user/0/com.tcbello.my_music/cache/$id";
+  String _tempDir = "";
+  String _appDir = "";
+  String _defaultAlbum() => "$_appDir/defalbum.png";
+  String songArtwork(int id) => "$_tempDir/$id";
   int _minuteTimer = 0;
+
+  void init() async{
+    var tempDir = await getTemporaryDirectory();
+    var appDir = await getApplicationDocumentsDirectory();
+    _tempDir = tempDir.path;
+    _appDir = appDir.path;
+  }
 
   Icon playPauseMiniPlayerIcon(bool isPlaying){
     return isPlaying
@@ -227,11 +237,14 @@ class SongPlayerProvider extends ChangeNotifier{
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
       // final songArtwork1 = e.albumArtwork;
       final songArtwork2 = songArtwork(e.id);
+      String artist = e.artist! != kDefaultArtistName
+        ? e.artist!
+        : "Unknown Artist";
 
       return MediaItem(
         id: e.data,
         title: e.title,
-        artist: e.artist,
+        artist: artist,
         album: e.album!,
         // artUri: isSdk28Below
         //   ? songArtwork1 != null
@@ -242,7 +255,7 @@ class SongPlayerProvider extends ChangeNotifier{
         //     : File(_defaultAlbum).uri,
         artUri: hasArtWork
           ? File(songArtwork2).uri
-          : File(_defaultAlbum).uri,
+          : File(_defaultAlbum()).uri,
         duration: Duration(milliseconds: e.duration!),
       );
     }).toList();
@@ -255,11 +268,14 @@ class SongPlayerProvider extends ChangeNotifier{
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
       // final songArtwork1 = e.albumArtwork;
       final songArtwork2 = songArtwork(e.id);
+      String artist = e.artist! != kDefaultArtistName
+        ? e.artist!
+        : "Unknown Artist";
 
       return MediaItem(
         id: e.lastData,
         title: e.title,
-        artist: e.artist,
+        artist: artist,
         album: e.album!,
         // artUri: isSdk28Below
         //   ? songArtwork1 != null
@@ -270,7 +286,7 @@ class SongPlayerProvider extends ChangeNotifier{
         //     : File(_defaultAlbum).uri,
         artUri: hasArtWork
           ? File(songArtwork2).uri
-          : File(_defaultAlbum).uri,
+          : File(_defaultAlbum()).uri,
         duration: Duration(milliseconds: e.duration!),
       );
     }).toList();

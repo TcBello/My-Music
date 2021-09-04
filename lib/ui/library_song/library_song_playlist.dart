@@ -82,8 +82,6 @@ class LibrarySongPlaylist extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: Consumer2<SongQueryProvider, SongPlayerProvider>(
             builder: (context, songQuery, songPlayer, child) {
-              final sdkInt = songQuery.androidDeviceInfo!.version.sdkInt;
-
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(

@@ -23,7 +23,6 @@ class _BackgroundState extends State<Background>
   TabController? _tabController;
   double _blurValue = 0.0;
   List<String> _imageList = [];
-  Image _defaultImage = Image.asset("assets/imgs/starry.jpg", fit: BoxFit.cover,);
   String _currentBG = "";
   bool _isChangeOnce = false;
 
@@ -50,7 +49,6 @@ class _BackgroundState extends State<Background>
 
     if(currentBackgroundId != null && File(image).existsSync()){
       setState(() {
-        _defaultImage = Image.file(File(image), fit: BoxFit.cover,);
         _currentBG = image;
         _imageList = currentList;
         _blurValue = currentBlur;
@@ -127,25 +125,38 @@ class _BackgroundState extends State<Background>
               width: 300,
               child: Stack(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    clipBehavior: Clip.hardEdge,
-                    child: ImageFiltered(
-                      imageFilter: ImageFilter.blur(
-                        sigmaX: _blurValue,
-                        sigmaY: _blurValue
-                      ),
-                      child: Container(
-                          height: 500,
-                          width: 300,
-                          child: _isChangeOnce
-                            ? ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.file(File(_currentBG)),
-                            )
-                            : _defaultImage
-                      ),
-                    ),
+                  Consumer<CustomThemeProvider>(
+                    builder: (context, theme, child) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        clipBehavior: Clip.hardEdge,
+                        child: ImageFiltered(
+                          imageFilter: ImageFilter.blur(
+                            sigmaX: _blurValue,
+                            sigmaY: _blurValue
+                          ),
+                          child: Container(
+                              height: 500,
+                              width: 300,
+                              child: _isChangeOnce
+                                ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.file(File(_currentBG), fit: BoxFit.cover),
+                                )
+                                : theme.backgroundFilePath != ""
+                                  ? Container(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.file(File(_currentBG), fit: BoxFit.cover),
+                                    )
+                                  )
+                                  : Container(
+                                    color: color2
+                                  )
+                          ),
+                        ),
+                      );
+                    }
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -283,8 +294,8 @@ class _BackgroundState extends State<Background>
                             InkWell(
                               onTap: (){
                                 setState(() {
-                                  _defaultImage = Image.file(File(imageList[index]), fit: BoxFit.cover,);
                                   _currentBG = imageList[index];
+                                  if(!_isChangeOnce) _isChangeOnce = true;
                                 });
                               },
                               child: Container(

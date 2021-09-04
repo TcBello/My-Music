@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/components/song_tile.dart';
-import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +22,7 @@ class SongBuilder extends StatelessWidget {
           itemBuilder: (context, index) {
             return SongTile(
               songInfo: songQueryProvider.songInfo[index],
-              onTap: (){
+              onTap: () async {
                 songPlayerProvider.playSong(songQueryProvider.songInfo, index);
               },
             );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/bottom_sheet.dart';
 import 'package:my_music/components/image_gridview.dart';
 import 'package:my_music/provider/song_query.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';

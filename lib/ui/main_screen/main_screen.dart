@@ -35,12 +35,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void init(){
-    final themeProvider = context.read<CustomThemeProvider>();
-    final songQueryProvider = context.read<SongQueryProvider>();
-    songQueryProvider.init();
-    themeProvider.getCurrentBackground();
-    themeProvider.initFont();
-    themeProvider.getCurrentTextColor();
+    final theme = context.read<CustomThemeProvider>();
+    final songQuery = context.read<SongQueryProvider>();
+    final songPlayer = context.read<SongPlayerProvider>();
+    songQuery.init();
+    songPlayer.init();
+    theme.getCurrentBackground();
+    theme.initFont();
+    theme.getCurrentTextColor();
   }
 
   @override

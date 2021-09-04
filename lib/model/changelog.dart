@@ -10,7 +10,14 @@ class Changelog{
 
 List<Changelog> changelogs = [
   Changelog(
-    version: "Version 1.1.0",
+    version: "2.0.0",
+    details: [
+      "Added support in android 11",
+      "Fix some bugs"
+    ]
+  ),
+  Changelog(
+    version: "1.1.0",
     details: [
       "Added skip next in collapsed miniplayer",
       "Changed color of shuffle and repeat when on",
@@ -18,7 +25,7 @@ List<Changelog> changelogs = [
     ]
   ),
   Changelog(
-    version: "Version: 1.0.1",
+    version: "1.0.1",
     details: [
       "Fix searching songs that are deleted bug",
       'Change "<unknown>" to "Unknown Artist"',
@@ -27,7 +34,7 @@ List<Changelog> changelogs = [
     ]
   ),
   Changelog(
-    version: "Version: 1.0.0",
+    version: "1.0.0",
     details: [
       "Added support on android 10",
       "Added all songs in artist",
@@ -35,7 +42,7 @@ List<Changelog> changelogs = [
     ],
   ),
   Changelog(
-    version: "Version: 0.9.0",
+    version: "0.9.0",
     details: [
       "Beta"
     ]

@@ -28,7 +28,7 @@ class PlaylistBuilder extends StatelessWidget {
               onTap: () async{
                 await notifier.addSongToPlaylist(songInfo, playlistName, notifier.playlistInfo![playlistIndex].key);
                 Navigator.pop(context);
-                notifier.getSongs();
+                notifier.getPlaylists();
               },
             );
           },

@@ -185,12 +185,16 @@ class SongQueryProvider extends ChangeNotifier{
     });
   }
 
+  Future<void> getPlaylists() async {
+    _playlistInfo = await _onAudioRoom.queryPlaylists();
+    notifyListeners();
+  }
+
   Future<void> createPlaylist(String name, SongModel songInfo, String playlistName) async {
-    // await getSongs();
     int? playlistKey = await _onAudioRoom.createPlaylist(playlistName);
     if(playlistKey != null){
       await _onAudioRoom.addTo(RoomType.PLAYLIST, songInfo.getMap.toSongEntity(), playlistKey: playlistKey);
-      await getSongs();
+      await getPlaylists();
       showShortToast("1 song added to $playlistName");
     }
     else{
@@ -320,11 +324,14 @@ class SongQueryProvider extends ChangeNotifier{
     return songInfoList.map((e){
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
       String artwork = songArtwork(e.id);
+      String artist = e.artist! != kDefaultArtistName
+        ? e.artist!
+        : "Unknown Artist";
 
       return MediaItem(
         id: e.data,
         title: e.title,
-        artist: e.artist ,
+        artist: artist,
         album: e.album!,
         // artUri: _androidDeviceInfo!.version.sdkInt < 29
         //   ? e. != null
@@ -344,11 +351,14 @@ class SongQueryProvider extends ChangeNotifier{
   MediaItem _convertToMediaItem(SongModel newSongInfo){
     bool hasArtWork = File(songArtwork(newSongInfo.id)).existsSync();
     String artwork = songArtwork(newSongInfo.id);
+    String artist = newSongInfo.artist! != kDefaultArtistName
+      ? newSongInfo.artist!
+      : "Unknown Artist";
 
     return MediaItem(
       id: newSongInfo.data,
       title: newSongInfo.title,
-      artist: newSongInfo.artist,
+      artist: artist,
       album: newSongInfo.album!,
       // artUri: _androidDeviceInfo!.version.sdkInt < 29
       //   ? newSongInfo.albumArtwork != null
@@ -368,11 +378,14 @@ class SongQueryProvider extends ChangeNotifier{
     return songInfoList.map((e){
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
       String artwork = songArtwork(e.id);
+      String artist = e.artist! != kDefaultArtistName
+        ? e.artist!
+        : "Unknown Artist";
 
       return MediaItem(
         id: e.lastData,
         title: e.title,
-        artist: e.artist ,
+        artist: artist,
         album: e.album!,
         // artUri: _androidDeviceInfo!.version.sdkInt < 29
         //   ? e. != null
@@ -392,6 +405,9 @@ class SongQueryProvider extends ChangeNotifier{
   MediaItem _convertEntityToMediaItem(SongEntity newSongInfo){
     bool hasArtWork = File(songArtwork(newSongInfo.id)).existsSync();
     String artwork = songArtwork(newSongInfo.id);
+    String artist = newSongInfo.artist! != kDefaultArtistName
+      ? newSongInfo.artist!
+      : "Unknown Artist";
 
     return MediaItem(
       id: newSongInfo.lastData,
@@ -441,52 +457,17 @@ class SongQueryProvider extends ChangeNotifier{
     final Directory dir = await getTemporaryDirectory();
     final valFile = await validatorFile();
     String dirPath = dir.path;
-    // _searchProgress = 0.0;
-    // _searchHeader = "Searching Songs...";
-    int totalItems = songInfo.length + artistInfo.length + albumInfo.length;
-    // int totalItems = _songInfo.length + _albumInfo.length;
+    int totalItems = _songInfo.length + _artistInfo.length + _albumInfo.length;
     notifyListeners();
 
     if(!valFile.existsSync()){
         int currentSearch = 0;
         _locationSongSearch = "";
-        // _songInfo.forEach((element) async {
-        //   String filePath = "$dirPath/${element.id}";
-        //   File file = File(filePath);
 
-        //   if(!file.existsSync()){
-        //     Uint8List artWork = await flutterAudioQuery.getArtwork(
-        //       type: ResourceType.SONG,
-        //       id: element.id,
-        //       size: Size(500, 500)
-        //     );
-
-        //     _locationSongSearch = element.filePath;
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-
-        //     try{
-        //       if(artWork.isNotEmpty){
-        //         file.writeAsBytesSync(artWork);
-        //         print("FilePath: ${file.path}\nSong Name: ${element.title}");
-        //       }
-              
-        //       // if(_searchProgress == 1.0){
-        //       //   valFile.writeAsString("validate");
-        //       //   notifyListeners();
-        //       // }
-        //     }
-        //     catch(e){
-        //       print(e);
-        //     }
-        //   }
-        //   else{
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-        //   }
-        // });
+        if(totalItems == 0){
+          valFile.writeAsString("validate");
+          notifyListeners();
+        }
 
         var resultSong = await Future.forEach(_songInfo, (SongModel element) async {
           String filePath = "$dirPath/${element.id}";
@@ -509,11 +490,6 @@ class SongQueryProvider extends ChangeNotifier{
                 file.writeAsBytesSync(artWork);
                 print("FilePath: ${file.path}\nSong Name: ${element.title}");
               }
-              
-              // if(_searchProgress == 1.0){
-              //   valFile.writeAsString("validate");
-              //   notifyListeners();
-              // }
             }
             catch(e){
               print(e);
@@ -527,10 +503,6 @@ class SongQueryProvider extends ChangeNotifier{
         });
 
         if(resultSong == null){
-          // _searchHeader = "Preparing...";
-          // _locationSongSearch = "Please wait...";
-          // notifyListeners();
-
           var resultArtist = await Future.forEach(_artistInfo, (ArtistModel element) async {
             String filePath = "$dirPath/ar${element.id}";
             File file = File(filePath);
@@ -620,156 +592,8 @@ class SongQueryProvider extends ChangeNotifier{
             });
           }
         }
-
-        // _artistInfo.forEach((element) async {
-        //   String filePath = "$dirPath/ar${element.id}";
-        //   File file = File(filePath);
-        //   _searchHeader = "Preparing...";
-
-        //   if(!file.existsSync()){
-        //     Uint8List artwork = await flutterAudioQuery.getArtwork(
-        //       id: element.id,
-        //       type: ResourceType.ARTIST,
-        //       size: Size(500, 500)
-        //     );
-
-        //     _locationSongSearch = "Please wait...";
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-
-        //     try{
-        //       if(artwork.isNotEmpty){
-        //         file.writeAsBytesSync(artwork);
-        //         print("Artist Name: ${element.name}");
-        //       }
-        //     }
-        //     catch(e){
-        //       print(e);
-        //     }
-        //   }
-        //   else{
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-        //   }
-        // });
-
-        // _searchHeader = "Preparing...";
-
-        // await Future.forEach(_artistInfo, (element) async {
-        //   String filePath = "$dirPath/ar${element.id}";
-        //   File file = File(filePath);
-
-        //   if(!file.existsSync()){
-        //     Uint8List artwork = await flutterAudioQuery.getArtwork(
-        //       id: element.id,
-        //       type: ResourceType.ARTIST,
-        //       size: Size(500, 500)
-        //     );
-
-        //     _locationSongSearch = "Please wait...";
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-
-        //     try{
-        //       if(artwork.isNotEmpty){
-        //         file.writeAsBytesSync(artwork);
-        //         print("Artist Name: ${element.name}");
-        //       }
-        //     }
-        //     catch(e){
-        //       print(e);
-        //     }
-        //   }
-        //   else{
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-        //   }
-        // });
-
-        // _albumInfo.forEach((element) async {
-        //   String filePath = "$dirPath/al${element.id}";
-        //   File file = File(filePath);
-
-        //   if(!file.existsSync()){
-        //     Uint8List artwork = await flutterAudioQuery.getArtwork(
-        //       id: element.id,
-        //       type: ResourceType.ALBUM,
-        //       size: Size(500, 500)
-        //     );
-
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-
-        //     try{
-        //       if(artwork.isNotEmpty){
-        //         file.writeAsBytesSync(artwork);
-        //         print("Album Name: ${element.title}");
-        //       }
-
-        //       if(_searchProgress == 1.0){
-        //         valFile.writeAsString("validate");
-        //         notifyListeners();
-        //       }
-        //     }
-        //     catch(e){
-        //       print(e);
-        //     }
-        //   }
-        //   else{
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-        //   }
-        // });
-
-        // Future.forEach(_albumInfo, (element) async {
-        //   String filePath = "$dirPath/al${element.id}";
-        //   File file = File(filePath);
-
-        //   if(!file.existsSync()){
-        //     Uint8List artwork = await flutterAudioQuery.getArtwork(
-        //       id: element.id,
-        //       type: ResourceType.ALBUM,
-        //       size: Size(500, 500)
-        //     );
-
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-
-        //     try{
-        //       if(artwork.isNotEmpty){
-        //         file.writeAsBytesSync(artwork);
-        //         print("Album Name: ${element.title}");
-        //       }
-
-        //       if(_searchProgress == 1.0){
-        //         valFile.writeAsString("validate");
-        //         notifyListeners();
-        //       }
-        //     }
-        //     catch(e){
-        //       print(e);
-        //     }
-        //   }
-        //   else{
-        //     currentSearch += 1;
-        //     _searchProgress = currentSearch / totalItems;
-        //     notifyListeners();
-        //   }
-        // });
-      }
+    }
   }
-
-  // void setQueue(List<SongInfo> songList){
-  //   _currentQueue = List.from(songList);
-  //   notifyListeners();
-  // }
 
   void reorderSong(int oldIndex, int newIndex){
     if(oldIndex < newIndex){

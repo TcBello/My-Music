@@ -5,7 +5,6 @@ import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/library_song_playlist.dart';
 import 'package:my_music/ui/playlists/components/playlist_card.dart';
 import 'package:provider/provider.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 class Playlists extends StatelessWidget {
   @override

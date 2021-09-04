@@ -13,8 +13,6 @@ class ArtistLibraryBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SongQueryProvider>(
       builder: (context, notifier, child){
-        final isSdk28Below = notifier.androidDeviceInfo!.version.sdkInt < 29;
-
         return Container(
           width: MediaQuery.of(context).size.width,
           child: GridView.count(
