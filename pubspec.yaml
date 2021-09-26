@@ -64,6 +64,7 @@ dependencies:
   flutter_inner_drawer:
     git:
       url: https://github.com/TcBello/flutter_inner_drawer.git
+  audio_video_progress_bar: ^0.9.0
 
 
   # DATABASE

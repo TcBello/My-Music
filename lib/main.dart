@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -12,6 +13,8 @@ import 'package:theme_provider/theme_provider.dart';
 
 void main() async {
   WidgetsBinding.instance;
+  debugRepaintTextRainbowEnabled = true;
+  debugRepaintRainbowEnabled = true;
   runApp(
     MultiProvider(
       providers: [
@@ -110,6 +113,7 @@ void main() async {
             child: Builder(
               builder: (context) => ThemeConsumer(
                 child: MaterialApp(
+                  showPerformanceOverlay: true,
                   theme: ThemeProvider.themeOf(context).data,
                   home: Splash(),
                 ),

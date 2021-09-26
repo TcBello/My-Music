@@ -14,7 +14,7 @@ class CollapsedMiniplayer extends StatelessWidget {
     required this.onPressed,
     required this.songTitle,
     required this.artistName,
-    required this.collapsedAlbumImage
+    required this.collapsedAlbumImage,
   });
 
   final Color backgroundColor;
@@ -31,17 +31,78 @@ class CollapsedMiniplayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final songPlayer = Provider.of<SongPlayerProvider>(context);
 
-    return AnimatedContainer(
-      duration: Duration(seconds: 1),
-      curve: Curves.easeOutQuart,
-      color: backgroundColor,
-      child: Column(
-        children: [
-          Expanded(
-            child: Row(
+    return RepaintBoundary(
+      child: AnimatedContainer(
+        width: MediaQuery.of(context).size.width,
+        height: playerMinHeight,
+        duration: Duration(seconds: 1),
+        curve: Curves.easeOutQuart,
+        decoration: BoxDecoration(
+          color: backgroundColor
+        ),
+        child: Column(
+          children: [
+            Stack(
               children: [
+                Row(
+                  children: [
+                    Container(
+                      height: playerMinHeight,
+                      width: playerMinHeight,
+                    ),
+                    Expanded(
+                      child: AnimatedOpacity(
+                        duration: Duration.zero,
+                        opacity: elementOpacity,
+                        child: InkWell(
+                          onTap: onPressed,
+                          child: SongTitleMiniPlayer(
+                            title: songTitle,
+                            artist: artistName,
+                          ),
+                        ),
+                      ),
+                    ),
+                    AnimatedOpacity(
+                      duration: Duration.zero,
+                      opacity: elementOpacity,
+                      child: StreamBuilder<PlaybackState>(
+                          stream: songPlayer.playbackStateStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  songPlayer.pauseResume();
+                                },
+                                icon: songPlayer.playPauseMiniPlayerIcon(
+                                    snapshot.data!.playing),
+                              );
+                            }
+    
+                            return IconButton(
+                              onPressed: () {
+                                songPlayer.pauseResume();
+                              },
+                              icon: songPlayer.playPauseMiniPlayerIcon(true),
+                            );
+                          }),
+                    ),
+                    AnimatedOpacity(
+                      duration: Duration.zero,
+                      opacity: elementOpacity,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: Icon(Icons.skip_next, color: Colors.white,),
+                        onPressed: (){
+                          songPlayer.skipNext();
+                        },
+                      ),
+                    )
+                  ],
+                ),
                 SizedBox(
-                  height: playerMinHeight + height,
+                  height: height,
                   child: FittedBox(
                     alignment: Alignment.centerLeft,
                     fit: BoxFit.cover,
@@ -57,56 +118,10 @@ class CollapsedMiniplayer extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Opacity(
-                    opacity: elementOpacity,
-                    child: InkWell(
-                      onTap: onPressed,
-                      child: SongTitleMiniPlayer(
-                        title: songTitle,
-                        artist: artistName,
-                      ),
-                    ),
-                  ),
-                ),
-                Opacity(
-                  opacity: elementOpacity,
-                  child: StreamBuilder<PlaybackState>(
-                      stream: songPlayer.playbackStateStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              songPlayer.pauseResume();
-                            },
-                            icon: songPlayer.playPauseMiniPlayerIcon(
-                                snapshot.data!.playing),
-                          );
-                        }
-
-                        return IconButton(
-                          onPressed: () {
-                            songPlayer.pauseResume();
-                          },
-                          icon: songPlayer.playPauseMiniPlayerIcon(true),
-                        );
-                      }),
-                ),
-                Opacity(
-                  opacity: elementOpacity,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(Icons.skip_next, color: Colors.white,),
-                    onPressed: (){
-                      songPlayer.skipNext();
-                    },
-                  ),
-                )
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

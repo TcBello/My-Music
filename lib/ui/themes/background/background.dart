@@ -127,89 +127,93 @@ class _BackgroundState extends State<Background>
                 children: [
                   Consumer<CustomThemeProvider>(
                     builder: (context, theme, child) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        clipBehavior: Clip.hardEdge,
-                        child: ImageFiltered(
-                          imageFilter: ImageFilter.blur(
-                            sigmaX: _blurValue,
-                            sigmaY: _blurValue
-                          ),
-                          child: Container(
-                              height: 500,
-                              width: 300,
-                              child: _isChangeOnce
-                                ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.file(File(_currentBG), fit: BoxFit.cover),
-                                )
-                                : theme.backgroundFilePath != ""
-                                  ? Container(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.file(File(_currentBG), fit: BoxFit.cover),
+                      return RepaintBoundary(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          clipBehavior: Clip.hardEdge,
+                          child: ImageFiltered(
+                            imageFilter: ImageFilter.blur(
+                              sigmaX: _blurValue,
+                              sigmaY: _blurValue
+                            ),
+                            child: Container(
+                                height: 500,
+                                width: 300,
+                                child: _isChangeOnce
+                                  ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.file(File(_currentBG), fit: BoxFit.cover),
+                                  )
+                                  : theme.backgroundFilePath != ""
+                                    ? Container(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.file(File(_currentBG), fit: BoxFit.cover),
+                                      )
                                     )
-                                  )
-                                  : Container(
-                                    color: color2
-                                  )
+                                    : Container(
+                                      color: color2
+                                    )
+                            ),
                           ),
                         ),
                       );
                     }
                   ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Scaffold(
-                      resizeToAvoidBottomInset: false,
-                      backgroundColor: Colors.transparent,
-                      body: NestedScrollView(
-                        headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
-                          return <Widget>[
-                            SliverAppBar(
-                              backgroundColor: Colors.transparent,
-                              forceElevated: true,
-                              title: Text("Music"),
-                              leading: IconButton(
-                                onPressed: () {
-                                  Scaffold.of(context).openDrawer();
-                                },
-                                icon: Icon(Icons.menu),
-                              ),
-                              actions: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.search),
-                                  onPressed: () {},
-                                )
-                              ],
-                              bottom: TabBar(
-                                controller: _tabController,
-                                indicatorColor: Colors.pinkAccent,
-                                tabs: <Widget>[
-                                  Tab(
-                                    text: "Songs",
-                                  ),
-                                  Tab(
-                                    text: "Artists",
-                                  ),
-                                  Tab(
-                                    text: "Albums",
-                                  ),
-                                  Tab(
-                                    text: "Playlists",
+                  RepaintBoundary(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Scaffold(
+                        resizeToAvoidBottomInset: false,
+                        backgroundColor: Colors.transparent,
+                        body: NestedScrollView(
+                          headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
+                            return <Widget>[
+                              SliverAppBar(
+                                backgroundColor: Colors.transparent,
+                                forceElevated: true,
+                                title: Text("Music"),
+                                leading: IconButton(
+                                  onPressed: () {
+                                    Scaffold.of(context).openDrawer();
+                                  },
+                                  icon: Icon(Icons.menu),
+                                ),
+                                actions: <Widget>[
+                                  IconButton(
+                                    icon: Icon(Icons.search),
+                                    onPressed: () {},
                                   )
                                 ],
-                              ),
-                            )
-                          ];
-                        },
-                        body: TabBarView(controller: _tabController, children: [
-                          Container(),
-                          Container(),
-                          Container(),
-                          Container()
-                        ])),
-                      drawer: Drawer(),
+                                bottom: TabBar(
+                                  controller: _tabController,
+                                  indicatorColor: Colors.pinkAccent,
+                                  tabs: <Widget>[
+                                    Tab(
+                                      text: "Songs",
+                                    ),
+                                    Tab(
+                                      text: "Artists",
+                                    ),
+                                    Tab(
+                                      text: "Albums",
+                                    ),
+                                    Tab(
+                                      text: "Playlists",
+                                    )
+                                  ],
+                                ),
+                              )
+                            ];
+                          },
+                          body: TabBarView(controller: _tabController, children: [
+                            Container(),
+                            Container(),
+                            Container(),
+                            Container()
+                          ])),
+                        drawer: Drawer(),
+                      ),
                     ),
                   ),
                 ],
@@ -239,8 +243,8 @@ class _BackgroundState extends State<Background>
             activeColor: color3,
             inactiveColor: color5,
             min: 0.0,
-            max: 12.0,
-            divisions: 3,
+            max: 10.0,
+            divisions: 10,
             onChanged: (val) {
               setState(() {
                 _blurValue = val;

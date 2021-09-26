@@ -14,9 +14,6 @@ class CustomThemeProvider with ChangeNotifier{
   String backgroundFilePath = "";
   String defaultBgPath = "assets/imgs/starry.jpg";
 
-  String _font = "default_theme";
-  String get font => _font;
-
   Future<void> getCurrentTextColor() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     int? color = _prefs.getInt('textcolor');
@@ -96,8 +93,6 @@ class CustomThemeProvider with ChangeNotifier{
     var result = await _prefs.setString('font', "default_theme");
 
     if(result){
-      _font = "default_theme";
-       notifyListeners();
        ThemeProvider.controllerOf(context).setTheme("default_theme");
     }
 
@@ -123,25 +118,13 @@ class CustomThemeProvider with ChangeNotifier{
     }
   }
   
-  void changeFont(String value){
-    _font = value;
-    print(_font);
-    notifyListeners();
-  }
 
-  Future<bool> applyFont(BuildContext context) async{
+  Future<bool> applyFont(BuildContext context, String font) async{
     var prefs = await SharedPreferences.getInstance();
-    var result = await prefs.setString('font', _font);
-    if(result)  ThemeProvider.controllerOf(context).setTheme(_font);
-    print(_font);
+    var result = await prefs.setString('font', font);
+    if(result)  ThemeProvider.controllerOf(context).setTheme(font);
+    print(font);
 
     return result;
-  }
-
-  void initFont() async{
-    var prefs = await SharedPreferences.getInstance();
-    String? currentFont = prefs.getString('font');
-
-    if(currentFont != null) _font = currentFont;
   }
 }

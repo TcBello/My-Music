@@ -19,16 +19,18 @@ class BackgroundWallpaper extends StatelessWidget {
             : Colors.transparent,
           child: theme.backgroundFilePath == "" || !File(theme.backgroundFilePath).existsSync()
               ? Container()
-              : ClipRect(
-                child: ImageFiltered(
-                  imageFilter: ImageFilter.blur(
-                    sigmaX: theme.blurValue,
-                    sigmaY: theme.blurValue
-                  ),
-                  child: Image.file(
-                      File(theme.backgroundFilePath),
-                      fit: BoxFit.cover,
+              : RepaintBoundary(
+                child: ClipRect(
+                  child: ImageFiltered(
+                    imageFilter: ImageFilter.blur(
+                      sigmaX: theme.blurValue,
+                      sigmaY: theme.blurValue
                     ),
+                    child: Image.file(
+                        File(theme.backgroundFilePath),
+                        fit: BoxFit.cover,
+                      ),
+                  ),
                 ),
               )
         );

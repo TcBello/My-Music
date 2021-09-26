@@ -41,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
     songQuery.init();
     songPlayer.init();
     theme.getCurrentBackground();
-    theme.initFont();
+    // theme.initFont();
     theme.getCurrentTextColor();
   }
 

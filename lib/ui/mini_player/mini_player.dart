@@ -47,14 +47,18 @@ class MiniPlayer extends StatelessWidget {
             print(snapshot.data?.title);
             songQuery.addPaletteData();
 
-            final collapsedAlbumImage = ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Image.file(File(snapshot.data!.artUri!.path), fit: BoxFit.cover)
+            final collapsedAlbumImage = RepaintBoundary(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.file(File(snapshot.data!.artUri!.path), fit: BoxFit.cover)
+              ),
             );
 
-            final expandedAlbumImage = ClipRRect(
-              borderRadius: BorderRadius.circular(18),
-              child: Image.file(File(snapshot.data!.artUri!.path), fit: BoxFit.cover,),
+            final expandedAlbumImage = RepaintBoundary(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: Image.file(File(snapshot.data!.artUri!.path), fit: BoxFit.cover,),
+              ),
             );
 
             final songTitle = snapshot.data!.title;
@@ -69,12 +73,13 @@ class MiniPlayer extends StatelessWidget {
               minHeight: playerMinHeight,
               maxHeight: playerMaxHeight,
               controller: miniPlayerController,
-              elevation: 4,
+              backgroundColor: Colors.transparent,
               onDismissed: () async{
                 songPlayer.stopSong();
                 songPlayer.dismissMiniPlayer();
               },
-              curve: Curves.easeOut,
+              curve: Curves.easeOutQuart,
+              duration: Duration(milliseconds: 500),
               builder: (height, percentage) {
                 final bool miniplayer = percentage < miniplayerPercentageDeclaration;
                 final double width = MediaQuery.of(context).size.width;
@@ -113,9 +118,7 @@ class MiniPlayer extends StatelessWidget {
                       ? miniplayerBackgroundColor(songQuery.currentPalette!.dominantColor!.color)
                       : backgroundColor,
                     bodyColor: songQuery.currentPalette != null
-                      // ? miniplayerBodyColor(songQuery.currentPalette.dominantColor.color)
                       ? miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color)
-                      // ? songQuery.currentPalette.colors.last
                       : Colors.pinkAccent,
                     opacityPercentageExpandedPlayer: opacityPercentageExpandedPlayer,
                     paddingLeft: paddingLeft,
@@ -142,8 +145,7 @@ class MiniPlayer extends StatelessWidget {
                   );
             
                   final elementOpacity = percentageMiniplayer;
-            
-                    
+                           
                   return CollapsedMiniplayer(
                     backgroundColor: songQuery.currentPalette != null && height > playerMinHeight
                       ? miniplayerBackgroundColor(songQuery.currentPalette!.dominantColor!.color)
@@ -157,7 +159,7 @@ class MiniPlayer extends StatelessWidget {
                     },
                     songTitle: songTitle,
                     artistName: artistName,
-                    collapsedAlbumImage: collapsedAlbumImage
+                    collapsedAlbumImage: collapsedAlbumImage,
                   );
               },
             );

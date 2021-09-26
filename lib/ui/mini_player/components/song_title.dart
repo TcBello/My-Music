@@ -21,15 +21,17 @@ class SongTitleMiniPlayer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MarqueeText(
-            alwaysScroll: false,
-            text: title,
-            style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 18
+          RepaintBoundary(
+            child: MarqueeText(
+              alwaysScroll: false,
+              text: title,
+              style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18
+              ),
+              speed: 20,
             ),
-            speed: 20,
           ),
           Text(
             artist,
@@ -53,15 +55,17 @@ class SongTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: MarqueeText(
-        text: title,
-        style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
-          fontSize: 22
+    return RepaintBoundary(
+      child: Container(
+        alignment: Alignment.center,
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: MarqueeText(
+          text: title,
+          style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
+            fontSize: 22
+          ),
+          speed: 20,
         ),
-        speed: 20,
       ),
     );
   }

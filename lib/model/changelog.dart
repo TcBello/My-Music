@@ -10,6 +10,14 @@ class Changelog{
 
 List<Changelog> changelogs = [
   Changelog(
+    version: "2.0.1",
+    details: [
+      "Improve performance on miniplayer",
+      "Improve performance on font selection",
+      "Improve performance of a background when blur is applied"
+    ]
+  ),
+  Changelog(
     version: "2.0.0",
     details: [
       "Added support in android 11",
