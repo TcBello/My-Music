@@ -71,7 +71,7 @@ class LibrarySong extends StatelessWidget {
                     background: Container(
                       color: color1,
                       child: Hero(
-                        tag: albumInfo.id,
+                        tag: "album${albumInfo.id}",
                         // child: isSdk28Below
                         //   ? albumArtwork != null
                         //     ? Image.file(

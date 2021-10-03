@@ -267,6 +267,50 @@ class SongQueryProvider extends ChangeNotifier{
     });
   }
 
+  void playNextArtist(List<SongModel> songInfoList, String artistName) async{
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
+      if(AudioService.running){
+        List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+        AudioService.customAction("setAudioSourceMode", 1);
+        AudioService.updateQueue(mediaList);
+        showShortToast("$artistName's songs will play next");
+      }
+    });
+  }
+
+  void playNextAlbum(List<SongModel> songInfoList, String albumName) async{
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
+      if(AudioService.running){
+        List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
+        AudioService.customAction("setAudioSourceMode", 1);
+        AudioService.updateQueue(mediaList);
+        showShortToast("$albumName will play next");
+      }
+    });
+  }
+
+  void addToQueueArtistSong(List<SongModel> songInfoList, String artistName) async{
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+      if(AudioService.running){
+        List<MediaItem> mediaItemList = _convertToMediaItemList(songInfoList);
+        AudioService.customAction("setAudioSourceMode", 2);
+        AudioService.updateQueue(mediaItemList);
+        showShortToast("$artistName's songs added to queue");
+      }
+    });
+  }
+
+  void addToQueueAlbumSong(List<SongModel> songInfoList, String albumName) async{
+    Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
+      if(AudioService.running){
+        List<MediaItem> mediaItemList = _convertToMediaItemList(songInfoList);
+        AudioService.customAction("setAudioSourceMode", 2);
+        AudioService.updateQueue(mediaItemList);
+        showShortToast("$albumName added to queue");
+      }
+    });
+  }
+
   void playNextPlaylistSong(SongEntity nextSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(AudioService.running){
@@ -412,7 +456,7 @@ class SongQueryProvider extends ChangeNotifier{
     return MediaItem(
       id: newSongInfo.lastData,
       title: newSongInfo.title,
-      artist: newSongInfo.artist,
+      artist: artist,
       album: newSongInfo.album!,
       // artUri: _androidDeviceInfo!.version.sdkInt < 29
       //   ? newSongInfo.albumArtwork != null

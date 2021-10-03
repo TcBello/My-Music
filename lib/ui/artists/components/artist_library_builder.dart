@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/album_card.dart';
 import 'package:my_music/components/image_gridview.dart';
 import 'package:my_music/provider/song_query.dart';
-import 'package:my_music/ui/artists/components/artist_card.dart';
 import 'package:my_music/ui/library_song/library_song.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,6 @@ class ArtistLibraryBuilder extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             children: List.generate(notifier.albumFromArtist!.length, (index){
-              final albumName = notifier.albumFromArtist?[index].album;
               // final albumArtwork = notifier.albumFromArtist?[index].albumArt;
               final albumArtwork2 = notifier.albumArtwork(notifier.albumFromArtist![index].id);
               final hasArtWork = File(notifier.albumArtwork(notifier.albumFromArtist![index].id)).existsSync();
@@ -46,11 +45,11 @@ class ArtistLibraryBuilder extends StatelessWidget {
               final albumImage = hasArtWork
                 ? ImageGridFile(
                   img: albumArtwork2,
-                  heroID: notifier.albumFromArtist![index].id.toString()
+                  heroID: "album${notifier.albumFromArtist![index].id}"
                 )
                 : ImageGridFile(
                   img: notifier.defaultAlbum,
-                  heroID: notifier.albumFromArtist![index].id.toString()
+                  heroID: "album${notifier.albumFromArtist![index].id}"
                 );
                 
               return InkWell(
@@ -61,9 +60,9 @@ class ArtistLibraryBuilder extends StatelessWidget {
                     songInfoList: notifier.songInfoFromAlbum!
                   )));
                 },
-                child: ArtistCard(
-                  artistName: albumName!,
+                child: ArtistProfileAlbumCard(
                   imageGrid: albumImage,
+                  albumInfo: notifier.albumFromArtist![index],
                 ),
               );
             }),

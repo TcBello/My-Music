@@ -64,12 +64,16 @@ class LibrarySongPlaylist extends StatelessWidget {
                   ),
                   background: Container(
                     color: color1,
-                    child: Hero(
-                      tag: "playlist$indexFromOutside",
-                      child: Image.asset(
-                        "assets/imgs/defalbum.png",
-                        fit: BoxFit.cover,
-                      ),
+                    // child: Hero(
+                    //   tag: "playlist$indexFromOutside",
+                    //   child: Image.asset(
+                    //     "assets/imgs/defalbum.png",
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
+                    child: Image.asset(
+                      "assets/imgs/defalbum.png",
+                      fit: BoxFit.cover,
                     ),
                   ),
                 );

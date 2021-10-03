@@ -34,13 +34,15 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  MarqueeText(
-                    text: playlistName,
-                    style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600
+                  RepaintBoundary(
+                    child: MarqueeText(
+                      text: playlistName,
+                      style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600
+                      ),
+                      speed: 20,
                     ),
-                    speed: 20,
                   ),
                   SizedBox(
                     height: 10,

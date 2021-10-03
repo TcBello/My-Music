@@ -184,7 +184,9 @@ class _NowPlayingSongTileState extends State<NowPlayingSongTile> {
                   child: Container(
                     height: imageSize * 0.5,
                     width: imageSize * 0.5,
-                    child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.fill,),
+                    child: RepaintBoundary(
+                      child: Image.asset("assets/imgs/playing.gif", fit: BoxFit.fill,)
+                    ),
                   ),
               )
               : Container()

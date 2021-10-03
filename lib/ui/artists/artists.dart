@@ -80,7 +80,7 @@ class Artists extends StatelessWidget {
                     },
                     child: ArtistCard(
                       imageGrid: albumImage,
-                      artistName: artistName,
+                      artistInfo: notifier.artistInfo[index],
                     ),
                   );
                 }

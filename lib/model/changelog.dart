@@ -14,7 +14,8 @@ List<Changelog> changelogs = [
     details: [
       "Improve performance on miniplayer",
       "Improve performance on font selection",
-      "Improve performance of a background when blur is applied"
+      "Improve performance of a background when blur is applied",
+      "Improve user interface"
     ]
   ),
   Changelog(

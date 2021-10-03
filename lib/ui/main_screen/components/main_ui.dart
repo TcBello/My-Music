@@ -5,8 +5,8 @@ import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/albums/albums.dart';
 import 'package:my_music/ui/artists/artists.dart';
 import 'package:my_music/components/controller.dart';
-import 'package:my_music/components/search.dart';
 import 'package:my_music/ui/playlists/playlists.dart';
+import 'package:my_music/ui/search_bar/search_bar.dart';
 import 'package:my_music/ui/songs/songs.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -61,7 +61,8 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
                     onPressed: () {
                       print(AudioService.connected);
                       songQueryProvider.initSongSearch();
-                      showSearch(context: context, delegate: Search());
+                      // showSearch(context: context, delegate: Search());
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SearchBar()));
                     },
                   ),
                 ],
@@ -88,7 +89,8 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
               )
             ];
           },
-          body: TabBarView(controller: tabController, children: _myTabs)),
+          body: TabBarView(controller: tabController, children: _myTabs)
+      ),
     );
   }
 }

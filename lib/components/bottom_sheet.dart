@@ -21,6 +21,38 @@ void showSongBottomSheet(BuildContext context, SongModel songInfo) {
   );
 }
 
+void showArtistBottomSheet(BuildContext context, ArtistModel artistInfo) {
+  showModalBottomSheet(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(30.0),
+        topLeft: Radius.circular(30.0)
+      )
+    ),
+    backgroundColor: Colors.white,
+    context: context,
+    builder: (context) {
+       return ArtistBottomSheetOptions(artistInfo: artistInfo,);
+    }
+  );
+}
+
+void showAlbumBottomSheet(BuildContext context, AlbumModel albumInfo) {
+  showModalBottomSheet(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(30.0),
+        topLeft: Radius.circular(30.0)
+      )
+    ),
+    backgroundColor: Colors.white,
+    context: context,
+    builder: (context) {
+       return AlbumBottomSheetOptions(albumInfo: albumInfo);
+    }
+  );
+}
+
 void showQueueBottomSheet(BuildContext context, SongModel songInfo, MediaItem mediaItem, int index){
   showModalBottomSheet(
     shape: RoundedRectangleBorder(

@@ -3,10 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/ui/mini_player/components/animated_pause_play.dart';
-import 'package:my_music/ui/mini_player/components/slider_bar.dart';
 import 'package:my_music/ui/mini_player/components/song_title.dart';
 import 'package:my_music/ui/now_playing/now_playing.dart';
-import 'package:my_music/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 

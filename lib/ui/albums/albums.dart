@@ -22,8 +22,6 @@ class Albums extends StatelessWidget {
                 physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(0, 15, 0, 70),
                 children: List.generate(notifier.albumInfo.length, (index){
-                  final albumName = notifier.albumInfo[index].album;
-                  final artistName = notifier.albumInfo[index].artist!;
                   final id = notifier.albumInfo[index].id;
                   final hasArtWork = File(notifier.albumArtwork(notifier.albumInfo[index].id)).existsSync();
                   // final albumImage = isSdk28Below
@@ -48,11 +46,11 @@ class Albums extends StatelessWidget {
                   final albumImage = hasArtWork
                     ? ImageGridFile(
                       img: notifier.albumArtwork(id),
-                      heroID: id.toString()
+                      heroID: "album$id"
                     )
                     : ImageGridFile(
                       img: notifier.defaultAlbum,
-                      heroID: id.toString()
+                      heroID: "album$id"
                     );
 
                   return InkWell(
@@ -64,8 +62,7 @@ class Albums extends StatelessWidget {
                       )));
                     },
                     child: AlbumCard(
-                      albumName: albumName,
-                      artistName: artistName,
+                      albumInfo: notifier.albumInfo[index],
                       imageGrid: albumImage,
                     ),
                   );
