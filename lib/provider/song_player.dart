@@ -145,8 +145,11 @@ class SongPlayerProvider extends ChangeNotifier{
   Stream<bool> get backgroundRunningStream => AudioService.runningStream;
   Stream get indexStream => AudioService.customEventStream;
 
-  bool _isPlayOnce = false;
-  bool get isPlayOnce => _isPlayOnce;
+  // bool _isPlayOnce = false;
+  // bool get isPlayOnce => _isPlayOnce;
+
+  ValueNotifier<bool> _isPlayOnce = ValueNotifier(false);
+  ValueNotifier<bool> get isPlayOnce => _isPlayOnce;
 
   Stream<Duration> get positionStream => AudioService.positionStream;
 
@@ -173,8 +176,13 @@ class SongPlayerProvider extends ChangeNotifier{
 
       AudioService.play();
 
-      if(!_isPlayOnce){
-        _isPlayOnce = true;
+      // if(!_isPlayOnce){
+      //   _isPlayOnce = true;
+      //   notifyListeners();
+      // }
+
+      if(!_isPlayOnce.value){
+        _isPlayOnce.value = true;
         notifyListeners();
       }
     });
@@ -199,8 +207,13 @@ class SongPlayerProvider extends ChangeNotifier{
 
       AudioService.play();
 
-      if(!_isPlayOnce){
-        _isPlayOnce = true;
+      // if(!_isPlayOnce){
+      //   _isPlayOnce = true;
+      //   notifyListeners();
+      // }
+
+      if(!_isPlayOnce.value){
+        _isPlayOnce.value = true;
         notifyListeners();
       }
     });
@@ -295,10 +308,11 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   void dismissMiniPlayer(){
-    _isPlayOnce = false;
+    // _isPlayOnce = false;
+    _isPlayOnce.value = false;
+    // notifyListeners();
     AudioService.customAction("connectUI", AudioService.connected);
     AudioService.stop();
-    notifyListeners();
   }
 
   void openEqualizer() async{

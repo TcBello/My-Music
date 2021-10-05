@@ -1,6 +1,6 @@
 const int kDelayMilliseconds = 200;
 
-const String kVersion = "2.0.1 (BETA)";
+const String kVersion = "2.1.0 (BETA)";
 
 const String kEmail = "tcbello.mymusic@gmail.com";
 

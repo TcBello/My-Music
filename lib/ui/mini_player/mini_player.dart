@@ -74,7 +74,7 @@ class MiniPlayer extends StatelessWidget {
               maxHeight: playerMaxHeight,
               controller: miniPlayerController,
               backgroundColor: Colors.transparent,
-              onDismissed: () async{
+              onDismissed: (){
                 songPlayer.stopSong();
                 songPlayer.dismissMiniPlayer();
               },
