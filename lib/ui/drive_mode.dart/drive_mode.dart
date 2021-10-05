@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/mini_player/components/animated_pause_play.dart';
-import 'package:my_music/ui/mini_player/components/slider_bar.dart';
 import 'package:my_music/ui/mini_player/components/song_title.dart';
 import 'package:my_music/ui/now_playing/now_playing.dart';
 import 'package:my_music/utils/utils.dart';
@@ -28,7 +28,6 @@ class DriveModeUI extends StatelessWidget {
               if(snapshot.hasData){
                 final songTitle = snapshot.data!.title;
                 final artistName = snapshot.data!.artist!;
-                final duration = toMinSecFormat(snapshot.data!.duration!);
                 final durationValue = snapshot.data!.duration!;
                 final albumImage = ClipRRect(
                   borderRadius: BorderRadius.circular(18),
@@ -125,56 +124,21 @@ class DriveModeUI extends StatelessWidget {
                                   stream: songPlayer.positionStream,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      final position = toMinSecFormat(snapshot.data!);
                                       final positionValue = snapshot.data!;
                 
-                                      return Column(
-                                        children: [
-                                          Container(
-                                            height: 70,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  width: _size.width,
-                                                  child: SliderBar(
-                                                    position: positionValue,
-                                                    duration: durationValue,
-                                                    color: songQuery.currentPalette != null
-                                                      ? miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color)
-                                                      : Colors.pinkAccent
-                                                  ),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                                      child: Text(
-                                                        position,
-                                                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
-                                                          fontWeight: FontWeight.w500
-                                                        )
-                                                      )
-                                                    ),
-                                                    Container(
-                                                      margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                                                      child: Text(
-                                                        duration,
-                                                        style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
-                                                          fontWeight:
-                                                          FontWeight.w500
-                                                        ),
-                                                      )
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
+                                      return ProgressBar(
+                                        progress: positionValue,
+                                        total: durationValue,
+                                        onSeek: (duration){
+                                          songPlayer.seek(duration);
+                                        },
+                                        progressBarColor: miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color),
+                                        thumbColor: miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color),
+                                        baseBarColor: Colors.grey[200],
+                                        timeLabelPadding: 15.0,
+                                        timeLabelTextStyle: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
+                                          fontWeight: FontWeight.w500
+                                        ),
                                       );
                                     } else {
                                       return Container();
