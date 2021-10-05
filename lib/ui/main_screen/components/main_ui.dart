@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/albums/albums.dart';
@@ -97,7 +98,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
             builder: (context, snapshot) {
               return Container(
                 margin: snapshot.data!
-                  ? const EdgeInsets.only(bottom: 70)
+                  ? const EdgeInsets.only(bottom: kMiniplayerMinHeight)
                   : EdgeInsets.zero,
                 child: TabBarView(controller: tabController, children: _myTabs),
               );

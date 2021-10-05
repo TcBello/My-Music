@@ -16,12 +16,10 @@ import 'package:my_music/components/controller.dart';
 import 'package:provider/provider.dart';
 
 class MiniPlayer extends StatelessWidget {
-  final double playerMinHeight = 70.0;
-
   final double miniplayerPercentageDeclaration = 0.25;
 
   ValueNotifier<double> get playerExpandProgress =>
-      ValueNotifier(playerMinHeight);
+      ValueNotifier(kMiniplayerMinHeight);
 
   final Color backgroundColor = color2;
 
@@ -70,7 +68,7 @@ class MiniPlayer extends StatelessWidget {
 
             return Miniplayer(
               valueNotifier: playerExpandProgress,
-              minHeight: playerMinHeight,
+              minHeight: kMiniplayerMinHeight,
               maxHeight: playerMaxHeight,
               controller: miniPlayerController,
               backgroundColor: Colors.transparent,
@@ -89,7 +87,7 @@ class MiniPlayer extends StatelessWidget {
                 if (!miniplayer) {
                   var percentageExpandedPlayer = percentageFromValueInRange(
                     min: playerMaxHeight * miniplayerPercentageDeclaration +
-                      playerMinHeight,
+                      kMiniplayerMinHeight,
                     max: playerMaxHeight,
                     value: height
                   );
@@ -139,18 +137,18 @@ class MiniPlayer extends StatelessWidget {
                 final percentageMiniplayer = percentage >= 0.16
                   ? 0.0
                   : percentageFromValueInRange(
-                    min: playerMaxHeight * 0.16 + playerMinHeight,
-                    max: playerMinHeight,
+                    min: playerMaxHeight * 0.16 + kMiniplayerMinHeight,
+                    max: kMiniplayerMinHeight,
                     value: height
                   );
             
                   final elementOpacity = percentageMiniplayer;
                            
                   return CollapsedMiniplayer(
-                    backgroundColor: songQuery.currentPalette != null && height > playerMinHeight
+                    backgroundColor: songQuery.currentPalette != null && height > kMiniplayerMinHeight
                       ? miniplayerBackgroundColor(songQuery.currentPalette!.dominantColor!.color)
                       : backgroundColor,
-                    playerMinHeight: playerMinHeight,
+                    playerMinHeight: kMiniplayerMinHeight,
                     height: height,
                     maxImgSize: maxImgSize,
                     elementOpacity: elementOpacity,
