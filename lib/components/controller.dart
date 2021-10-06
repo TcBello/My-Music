@@ -9,3 +9,11 @@ ScrollController? scrollController;
 TextEditingController? playlistController;
 
 TabController? tabController;
+
+ScrollController? songScrollController;
+
+ScrollController? artistScrollController;
+
+ScrollController? albumScrollController;
+
+ScrollController? playlistScrollController;

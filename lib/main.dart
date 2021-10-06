@@ -13,8 +13,8 @@ import 'package:theme_provider/theme_provider.dart';
 
 void main() async {
   WidgetsBinding.instance;
-  debugRepaintTextRainbowEnabled = true;
-  debugRepaintRainbowEnabled = true;
+  // debugRepaintTextRainbowEnabled = true;
+  // debugRepaintRainbowEnabled = true;
   runApp(
     MultiProvider(
       providers: [

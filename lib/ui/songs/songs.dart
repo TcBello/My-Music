@@ -1,5 +1,6 @@
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
@@ -13,46 +14,44 @@ class Songs extends StatelessWidget {
   Widget build(BuildContext context) {
     final songPlayerProvider = Provider.of<SongPlayerProvider>(context);
     final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final innerScrollController = PrimaryScrollController.of(context);
 
     return songQueryProvider.songInfo.length > 0
-      ? PrimaryScrollController(
-          controller: innerScrollController!,
-          child: DraggableScrollbar.semicircle(
-            controller: innerScrollController,
-            backgroundColor: color3,
-            labelTextBuilder: (offset){
-              final int currentItem = offset ~/ 72;
-      
-              var letter = currentItem <= songQueryProvider.songInfo.length - 1
-                ? songQueryProvider.songInfo[currentItem].title.substring(0, 1)
-                : songQueryProvider.songInfo.last.title.substring(0, 1);
-              return Text(
-                letter,
-                style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
-                  fontSize: 30
-                ),
+      ? RepaintBoundary(
+        child: DraggableScrollbar.semicircle(
+          controller: songScrollController!,
+          backgroundColor: color3,
+          labelTextBuilder: (offset){
+            final int currentItem = offset ~/ 72;
+        
+            var letter = currentItem <= songQueryProvider.songInfo.length - 1
+              ? songQueryProvider.songInfo[currentItem].title.substring(0, 1)
+              : songQueryProvider.songInfo.last.title.substring(0, 1);
+            return Text(
+              letter,
+              style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
+                fontSize: 30
+              ),
+            );
+          },
+          labelConstraints: BoxConstraints(
+            maxHeight: 80,
+            maxWidth: 80
+          ),
+          child: ListView.builder(
+            controller: songScrollController,
+            padding: EdgeInsets.zero,
+            itemCount: songQueryProvider.songInfo.length,
+            itemBuilder: (context, index) {
+              return SongTile(
+                songInfo: songQueryProvider.songInfo[index],
+                onTap: () async {
+                  songPlayerProvider.playSong(songQueryProvider.songInfo, index);
+                },
               );
             },
-            labelConstraints: BoxConstraints(
-              maxHeight: 80,
-              maxWidth: 80
-            ),
-            child: ListView.builder(
-              primary: true,
-              padding: EdgeInsets.zero,
-              itemCount: songQueryProvider.songInfo.length,
-              itemBuilder: (context, index) {
-                return SongTile(
-                  songInfo: songQueryProvider.songInfo[index],
-                  onTap: () async {
-                    songPlayerProvider.playSong(songQueryProvider.songInfo, index);
-                  },
-                );
-              },
-            ),
           ),
-        )
+        ),
+      )
       : DataPlaceholder(
         text: "Song is empty",
       );

@@ -17,11 +17,11 @@ const TabBarTheme kTabBarTheme = TabBarTheme(
   unselectedLabelColor: Colors.white,
   labelStyle: TextStyle(
     color: Colors.pinkAccent,
-    fontWeight: FontWeight.w600
+    fontWeight: FontWeight.bold
   ),
   unselectedLabelStyle: TextStyle(
     color: Colors.white,
-    fontWeight: FontWeight.w600
+    fontWeight: FontWeight.bold
   ),
 );
 

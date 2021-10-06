@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/data_placeholder.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -16,21 +17,19 @@ class Artists extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final innerScrollController = PrimaryScrollController.of(context);
 
     return Consumer<SongQueryProvider>(
       builder: (context, notifier, child){
         return notifier.artistInfo.length > 0
-          ? PrimaryScrollController(
-            controller: innerScrollController!,
-            child: Container(
-              width: size.width,
+          ? Container(
+            width: size.width,
+            child: RepaintBoundary(
               child: DraggableScrollbar.semicircle(
                 backgroundColor: color3,
-                controller: innerScrollController,
+                controller: artistScrollController!,
                 child: GridView.count(
+                  controller: artistScrollController,
                     crossAxisCount: 2,
-                    physics: NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(top: 15),
                     children: List.generate(notifier.artistInfo.length, (index){
                       final artistName = notifier.artistInfo[index].artist;     

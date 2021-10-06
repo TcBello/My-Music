@@ -28,6 +28,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     scrollController = ScrollController();
+    songScrollController = ScrollController();
+    artistScrollController = ScrollController();
+    albumScrollController = ScrollController();
+    playlistScrollController = ScrollController();
     miniPlayerController = MiniplayerController();
     playlistController = TextEditingController();
     init();
@@ -48,12 +52,28 @@ class _MainScreenState extends State<MainScreen> {
   void dispose() {
     scrollController?.dispose();
     scrollController = null;
+
+    songScrollController?.dispose();
+    songScrollController = null;
+
+    artistScrollController?.dispose();
+    artistScrollController = null;
+
+    albumScrollController?.dispose();
+    albumScrollController = null;
+
+    playlistScrollController?.dispose();
+    playlistScrollController = null;
+
     miniPlayerController?.dispose();
     miniPlayerController = null;
+
     playlistController?.dispose();
     playlistController = null;
+
     tabController?.dispose();
     tabController = null;
+    
     OnAudioRoom().closeRoom();
     super.dispose();
   }
