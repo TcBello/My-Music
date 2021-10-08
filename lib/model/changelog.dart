@@ -13,7 +13,8 @@ List<Changelog> changelogs = [
     version: "2.1.0",
     details: [
       "Added scroll bar",
-      "Improve performance on drive mode"
+      "Improve performance on drive mode",
+      "Change app bar"
     ]
   ),
   Changelog(
