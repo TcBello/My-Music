@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:miniplayer/miniplayer.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
@@ -14,8 +15,12 @@ import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
 import 'package:my_music/ui/main_screen/components/main_ui.dart';
 import 'package:my_music/ui/search_song/search_song.dart';
+import 'package:my_music/utils/utils.dart';
+import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:on_audio_room/on_audio_room.dart';
 import 'package:provider/provider.dart';
+import 'package:rate_my_app/rate_my_app.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -24,6 +29,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final _innerDrawerKey = GlobalKey<InnerDrawerState>();
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  RateMyApp? _rateMyApp;
   
   @override
   void initState() {
@@ -34,6 +41,111 @@ class _MainScreenState extends State<MainScreen> {
     playlistScrollController = ScrollController();
     miniPlayerController = MiniplayerController();
     playlistController = TextEditingController();
+    interstitialAd = InterstitialAd();
+    interstitialAd?.load();
+    _rateMyApp = RateMyApp(
+      minDays: 2,
+      minLaunches: 5,
+      remindLaunches: 1,
+      googlePlayIdentifier: kAppId
+    );
+
+    _rateMyApp?.init().then((_){
+      if(_rateMyApp!.shouldOpenDialog){
+        Future.delayed(Duration(seconds: 1), (){
+          _rateMyApp?.showStarRateDialog(
+              context,
+              title: "",
+              message: "Please write a review",
+              onDismissed: () => _rateMyApp?.callEvent(RateMyAppEventType.laterButtonPressed),
+              dialogStyle: DialogStyle(
+                dialogShape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
+                messageStyle: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
+                  color: Colors.black
+                ),
+                messagePadding: const EdgeInsets.symmetric(vertical: 10),
+                titlePadding: EdgeInsets.zero
+              ),
+              contentBuilder: (context , child){
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.green,
+                        margin: const EdgeInsets.only(bottom: 30),
+                      ),
+                      Text("Enjoying My Music?", style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
+                        color: Colors.black
+                      ),),
+                      child
+                    ],
+                  ),
+                );
+              },
+              actionsBuilder: (context, value){
+                return [
+                  Center(
+                    child: Column(
+                      children: [
+                        TextButton(
+                          child: Text("RATE", style: ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+                            color: Colors.white
+                          )),
+                          onPressed: () async{
+                            await _rateMyApp?.callEvent(RateMyAppEventType.rateButtonPressed);
+
+                            if(value! <= 3){
+                              sendEmail();
+                            }
+                            else{ 
+                              var result = await _rateMyApp?.launchStore();
+                              if (result == LaunchStoreResult.errorOccurred){
+                                showShortToast(kLaunchStoreError);
+                              }
+                            }
+
+                            Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.rate);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(color3),
+                            padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                              horizontal: 60,
+                              vertical: 15
+                            )),
+                            textStyle: MaterialStateProperty.all(ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+                              color: Colors.white
+                            ))
+                          ),
+                        ),
+                        SizedBox(height: 5,),
+                        TextButton(
+                          child: Text("NOT NOW", style: ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+                            color: Colors.black
+                          )),
+                          onPressed: () async{
+                            await _rateMyApp?.callEvent(RateMyAppEventType.laterButtonPressed);
+                            Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.later);
+                          },
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 15
+                            )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ];
+              },
+            );
+        });
+      }
+    });
+
     init();
     super.initState();
   }
@@ -73,6 +185,9 @@ class _MainScreenState extends State<MainScreen> {
 
     tabController?.dispose();
     tabController = null;
+
+    interstitialAd?.dispose();
+    interstitialAd = null;
     
     OnAudioRoom().closeRoom();
     super.dispose();
@@ -80,59 +195,244 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SongQueryProvider>(
-      builder: (context, songQuery, child){
-        return FutureBuilder<File>(
-          future: songQuery.validatorFile(),
-          builder: (context, snapshot) {
-            if(snapshot.hasData){
-              return snapshot.data!.existsSync()
-                ? InnerDrawer(
-                  key: _innerDrawerKey,
-                  swipe: true,
-                  swipeChild: true,
-                  onTapClose: true,
-                  scaffold: Stack(
-                    children: <Widget>[
-                      BackgroundWallpaper(),
-                      MainUI(globalKey: _innerDrawerKey,),
-                      Consumer<SongPlayerProvider>(
-                        builder: (context, songPlayer, child) {
-                          return StreamBuilder<bool>(
-                            stream: songPlayer.backgroundRunningStream,
-                            builder: (context, snapshot) {
-                              if(snapshot.hasData){
-                                print(snapshot.data);
-                                if(snapshot.data!){
-                                  return Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: MiniPlayer(),
-                                  );
-                                }
-                                
-                                return Container();
-                              }
+    return WillPopScope(
+      onWillPop: () async{
+        NavigatorState navigator = _navigatorKey.currentState!;
+        if (!navigator.canPop()) return true;
+        navigator.pop();
 
-                              return Container();
-                            },
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                  leftChild: MyDrawer()
-                )
-                : SearchSongUI();
-            }
-
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: color1,
-            );
-          },
-        );
+        return false;
       },
+      child: Consumer<SongQueryProvider>(
+        builder: (context, songQuery, child){
+          return FutureBuilder<File>(
+            future: songQuery.validatorFile(),
+            builder: (context, snapshot) {
+              if(snapshot.hasData){
+                return snapshot.data!.existsSync()
+                  ? InnerDrawer(
+                    key: _innerDrawerKey,
+                    swipe: true,
+                    swipeChild: true,
+                    onTapClose: true,
+                    scaffold: Stack(
+                      children: <Widget>[
+                        BackgroundWallpaper(),
+                        // MainUI(globalKey: _innerDrawerKey,),
+                        Navigator(
+                          key: _navigatorKey,
+                          onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(
+                            settings: settings,
+                            builder: (BuildContext context) => MainUI(globalKey: _innerDrawerKey,),
+                          ),
+                        ),
+                        Consumer<SongPlayerProvider>(
+                          builder: (context, songPlayer, child) {
+                            return StreamBuilder<bool>(
+                              stream: songPlayer.backgroundRunningStream,
+                              builder: (context, snapshot) {
+                                if(snapshot.hasData){
+                                  print(snapshot.data);
+                                  if(snapshot.data!){
+                                    return Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: MiniPlayer(),
+                                    );
+                                  }
+                                  
+                                  return Container();
+                                }
+    
+                                return Container();
+                              },
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                    leftChild: MyDrawer()
+                  )
+                  : SearchSongUI();
+              }
+    
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: color1,
+              );
+            },
+          );
+        },
+      ),
     );
+
+    // return RateMyAppBuilder(
+    //   rateMyApp: _rateMyApp,
+    //   onInitialized: (context, rateMyApp){
+    //     if(rateMyApp.shouldOpenDialog){
+    //       rateMyApp.showStarRateDialog(
+    //         context,
+    //         title: "",
+    //         message: "Please write a review",
+    //         onDismissed: () => rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+    //         dialogStyle: DialogStyle(
+    //           dialogShape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
+    //           messageStyle: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
+    //             color: Colors.black
+    //           ),
+    //           messagePadding: const EdgeInsets.symmetric(vertical: 10),
+    //           titlePadding: EdgeInsets.zero
+    //         ),
+    //         contentBuilder: (context , child){
+    //           return Container(
+    //             height: MediaQuery.of(context).size.height * 0.3,
+    //             child: Column(
+    //               children: [
+    //                 Container(
+    //                   width: 100,
+    //                   height: 100,
+    //                   color: Colors.green,
+    //                   margin: const EdgeInsets.only(bottom: 30),
+    //                 ),
+    //                 Text("Enjoying My Music?", style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
+    //                   color: Colors.black
+    //                 ),),
+    //                 child
+    //               ],
+    //             ),
+    //           );
+    //         },
+    //         actionsBuilder: (context, value){
+    //           return [
+    //             Center(
+    //               child: Column(
+    //                 children: [
+    //                   TextButton(
+    //                     child: Text("RATE", style: ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+    //                       color: Colors.white
+    //                     )),
+    //                     onPressed: () async{
+    //                       await rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
+
+    //                       if(value! <= 3){
+    //                         sendEmail();
+    //                       }
+    //                       else{ 
+    //                         var result = await rateMyApp.launchStore();
+    //                         if (result == LaunchStoreResult.errorOccurred){
+    //                           showShortToast(kLaunchStoreError);
+    //                         }
+    //                       }
+
+    //                       Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.rate);
+    //                     },
+    //                     style: ButtonStyle(
+    //                       backgroundColor: MaterialStateProperty.all(color3),
+    //                       padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+    //                         horizontal: 60,
+    //                         vertical: 15
+    //                       )),
+    //                       textStyle: MaterialStateProperty.all(ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+    //                         color: Colors.white
+    //                       ))
+    //                     ),
+    //                   ),
+    //                   SizedBox(height: 5,),
+    //                   TextButton(
+    //                     child: Text("NOT NOW", style: ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+    //                       color: Colors.black
+    //                     )),
+    //                     onPressed: () async{
+    //                       await rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
+    //                       Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.later);
+    //                     },
+    //                     style: ButtonStyle(
+    //                       padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+    //                         horizontal: 40,
+    //                         vertical: 15
+    //                       )),
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             )
+    //           ];
+    //         },
+    //       );
+    //     }
+    //   },
+    //   builder: (context) {
+    //     return WillPopScope(
+    //       onWillPop: () async{
+    //         NavigatorState navigator = _navigatorKey.currentState!;
+    //         if (!navigator.canPop()) return true;
+    //         navigator.pop();
+    
+    //         return false;
+    //       },
+    //       child: Consumer<SongQueryProvider>(
+    //         builder: (context, songQuery, child){
+    //           return FutureBuilder<File>(
+    //             future: songQuery.validatorFile(),
+    //             builder: (context, snapshot) {
+    //               if(snapshot.hasData){
+    //                 return snapshot.data!.existsSync()
+    //                   ? InnerDrawer(
+    //                     key: _innerDrawerKey,
+    //                     swipe: true,
+    //                     swipeChild: true,
+    //                     onTapClose: true,
+    //                     scaffold: Stack(
+    //                       children: <Widget>[
+    //                         BackgroundWallpaper(),
+    //                         // MainUI(globalKey: _innerDrawerKey,),
+    //                         Navigator(
+    //                           key: _navigatorKey,
+    //                           onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(
+    //                             settings: settings,
+    //                             builder: (BuildContext context) => MainUI(globalKey: _innerDrawerKey,),
+    //                           ),
+    //                         ),
+    //                         Consumer<SongPlayerProvider>(
+    //                           builder: (context, songPlayer, child) {
+    //                             return StreamBuilder<bool>(
+    //                               stream: songPlayer.backgroundRunningStream,
+    //                               builder: (context, snapshot) {
+    //                                 if(snapshot.hasData){
+    //                                   print(snapshot.data);
+    //                                   if(snapshot.data!){
+    //                                     return Container(
+    //                                       width: MediaQuery.of(context).size.width,
+    //                                       child: MiniPlayer(),
+    //                                     );
+    //                                   }
+                                      
+    //                                   return Container();
+    //                                 }
+        
+    //                                 return Container();
+    //                               },
+    //                             );
+    //                           },
+    //                         )
+    //                       ],
+    //                     ),
+    //                     leftChild: MyDrawer()
+    //                   )
+    //                   : SearchSongUI();
+    //               }
+        
+    //               return Container(
+    //                 width: MediaQuery.of(context).size.width,
+    //                 height: MediaQuery.of(context).size.height,
+    //                 color: color1,
+    //               );
+    //             },
+    //           );
+    //         },
+    //       ),
+    //     );
+    //   }
+    // );
   }
 }

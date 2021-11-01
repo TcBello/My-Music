@@ -16,6 +16,10 @@ const String kScanLogo = "assets/imgs/scan.png";
 
 const String kDefaultArtistName = "<unknown>";
 
+const String kPlayStoreLink = "https://play.google.com/store/apps/details?id=com.tcbello.my_music";
+
+const String kLaunchStoreError = "An error has occured on redirecting to Play Store";
+
 // const String kAppId = "com.miui.player";
 
 // LINK: https://play.google.com/store/apps/details?id=com.tcbello.my_music

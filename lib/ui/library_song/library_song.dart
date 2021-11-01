@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/library_song/components/header.dart';
 import 'package:my_music/ui/library_song/components/library_song_builder.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -22,6 +25,8 @@ class LibrarySong extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final songPlayer = Provider.of<SongPlayerProvider>(context);
+
     return Scaffold(
       backgroundColor: color1,
       body: NestedScrollView(
@@ -108,20 +113,32 @@ class LibrarySong extends StatelessWidget {
             ),
           ];
         },
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Header(
-                albumInfo: albumInfo,
-              ),
-              LibrarySongBuilder(
-                songInfoList: songInfoList,
+        body: StreamBuilder<bool>(
+          initialData: false,
+          stream: songPlayer.backgroundRunningStream,
+          builder: (context, snapshot) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Container(
+                margin: snapshot.data!
+                  ? const EdgeInsets.only(bottom: kMiniplayerMinHeight)
+                  : EdgeInsets.zero,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    myAdBanner(context, "unitId"),
+                    Header(
+                      albumInfo: albumInfo,
+                    ),
+                    LibrarySongBuilder(
+                      songInfoList: songInfoList,
+                    )
+                  ],
+                ),
               )
-            ],
-          )
+            );
+          }
         ),
       )
     );

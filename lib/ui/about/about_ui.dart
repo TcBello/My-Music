@@ -6,6 +6,7 @@ import 'package:my_music/utils/utils.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // class AboutUI extends StatelessWidget {
 
@@ -113,19 +114,120 @@ class _AboutUIState extends State<AboutUI> {
   }
 
   void rateApp() async{
-    await _rateMyApp?.showRateDialog(
+    // await _rateMyApp?.showRateDialog(
+    //   context,
+    //   message: "Enjoyed using this app? Please write a review",
+    //   rateButton: "RATE",
+    //   noButton: "NO THANKS",
+    //   laterButton: "MAYBE LATER",
+    //   onDismissed: () => _rateMyApp?.callEvent(RateMyAppEventType.laterButtonPressed),
+    //   listener: (button){
+    //     return true;
+    //   },
+    //   dialogStyle: DialogStyle(
+    //     dialogShape: ThemeProvider.themeOf(context).data.dialogTheme.shape
+    //   )
+    // );
+
+    await _rateMyApp?.showStarRateDialog(
       context,
-      title: "Rate this app",
-      message: "Enjoyed using this app? Please write a review",
-      rateButton: "RATE",
-      noButton: "NO THANKS",
-      laterButton: "MAYBE LATER",
-      listener: (button){
-        return true;
+      title: "",
+      message: "Please write a review",
+      onDismissed: () => _rateMyApp?.callEvent(RateMyAppEventType.laterButtonPressed),
+      dialogStyle: DialogStyle(
+        dialogShape: ThemeProvider.themeOf(context).data.dialogTheme.shape,
+        messageStyle: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
+          color: Colors.black
+        ),
+        messagePadding: const EdgeInsets.symmetric(vertical: 10),
+        titlePadding: EdgeInsets.zero
+      ),
+      contentBuilder: (context , child){
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.3,
+          child: Column(
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                color: Colors.green,
+                margin: const EdgeInsets.only(bottom: 30),
+              ),
+              Text("Enjoying My Music?", style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
+                color: Colors.black
+              ),),
+              child
+            ],
+          ),
+        );
       },
-        ignoreNativeDialog: true,
-        onDismissed: () => _rateMyApp?.callEvent(RateMyAppEventType.laterButtonPressed),
-      );
+      actionsBuilder: (context, value){
+        return [
+          Center(
+            child: Column(
+              children: [
+                TextButton(
+                  child: Text("RATE", style: ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+                    color: Colors.white
+                  )),
+                  onPressed: () async{
+                    await _rateMyApp?.callEvent(RateMyAppEventType.rateButtonPressed);
+
+                    if(value! <= 3){
+                      sendEmail();
+                    }
+                    else{ 
+                      var result = await _rateMyApp?.launchStore();
+                      if (result == LaunchStoreResult.errorOccurred){
+                        showShortToast(kLaunchStoreError);
+                      }
+                    }
+
+                    Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.rate);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(color3),
+                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                      horizontal: 60,
+                      vertical: 15
+                    )),
+                    textStyle: MaterialStateProperty.all(ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+                      color: Colors.white
+                    ))
+                  ),
+                ),
+                SizedBox(height: 5,),
+                TextButton(
+                  child: Text("NOT NOW", style: ThemeProvider.themeOf(context).data.textTheme.button?.copyWith(
+                    color: Colors.black
+                  )),
+                  onPressed: () async{
+                    await _rateMyApp?.callEvent(RateMyAppEventType.laterButtonPressed);
+                    Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.later);
+                  },
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 15
+                    )),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ];
+      },
+    );
+  }
+
+  void launchPlayStore() async{
+    if(await canLaunch(kPlayStoreLink)){
+      var result = await launch(kPlayStoreLink);
+      
+      if(!result){
+        showShortToast(kLaunchStoreError);
+      }
+    }
   }
 
   @override
@@ -175,7 +277,7 @@ class _AboutUIState extends State<AboutUI> {
               subtitle: Text("Enjoyed using this app? Write a review", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
-              onTap: () => rateApp(),
+              onTap: () => launchPlayStore(),
             ),
             ListTile(
               title: Text("Share", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
@@ -197,6 +299,15 @@ class _AboutUIState extends State<AboutUI> {
               subtitle: Text(kVersion, style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
+            ),
+            ListTile(
+              title: Text("Test Rate Popup", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
+                fontWeight: FontWeight.bold
+              ),),
+              subtitle: Text("Temporary", style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
+                color: Colors.white
+              ),),
+              onTap: rateApp,
             ),
           ],
         ),

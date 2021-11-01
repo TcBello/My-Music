@@ -90,7 +90,8 @@ class DriveModeUI extends StatelessWidget {
                             width: maxImageSize,
                             child: albumImage,
                           ),
-                          Expanded(
+                          Container(
+                            height: _size.height * 0.47,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -119,31 +120,34 @@ class DriveModeUI extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                StreamBuilder<Duration>(
-                                  initialData: Duration.zero,
-                                  stream: songPlayer.positionStream,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      final positionValue = snapshot.data!;
+                                Container(
+                                  width: _size.width * 0.9,
+                                  child: StreamBuilder<Duration>(
+                                    initialData: Duration.zero,
+                                    stream: songPlayer.positionStream,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        final positionValue = snapshot.data!;
                 
-                                      return ProgressBar(
-                                        progress: positionValue,
-                                        total: durationValue,
-                                        onSeek: (duration){
-                                          songPlayer.seek(duration);
-                                        },
-                                        progressBarColor: miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color),
-                                        thumbColor: miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color),
-                                        baseBarColor: Colors.grey[200],
-                                        timeLabelPadding: 15.0,
-                                        timeLabelTextStyle: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
-                                          fontWeight: FontWeight.w500
-                                        ),
-                                      );
-                                    } else {
-                                      return Container();
-                                    }
-                                  },
+                                        return ProgressBar(
+                                          progress: positionValue,
+                                          total: durationValue,
+                                          onSeek: (duration){
+                                            songPlayer.seek(duration);
+                                          },
+                                          progressBarColor: miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color),
+                                          thumbColor: miniplayerBodyColor(songQuery.currentPalette!.colors.last, songQuery.currentPalette!.dominantColor!.color),
+                                          baseBarColor: Colors.grey[200],
+                                          timeLabelPadding: 15.0,
+                                          timeLabelTextStyle: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
+                                            fontWeight: FontWeight.w500
+                                          ),
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    },
+                                  ),
                                 ),
                                 Container(
                                   width: MediaQuery.of(context).size.width * 0.9,

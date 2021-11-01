@@ -7,9 +7,11 @@ import 'package:provider/provider.dart';
 class ResultSong extends StatelessWidget {
   const ResultSong({
     required this.suggestionNotifier,
+    required this.focusNode
   });
 
   final ValueNotifier<List<SongModel>> suggestionNotifier;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class ResultSong extends StatelessWidget {
               songInfo: suggestion[index],
               onTap: (){
                 songPlayer.playSong(suggestion, index);
+                focusNode.unfocus();
               }
             );
           }),
@@ -36,9 +39,11 @@ class ResultSong extends StatelessWidget {
 class ResultArtist extends StatelessWidget {
   const ResultArtist({
     required this.suggestionNotifier,
+    required this.focusNode
   });
 
   final ValueNotifier<List<SongModel>> suggestionNotifier;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +58,7 @@ class ResultArtist extends StatelessWidget {
               songInfo: suggestion[index],
               onTap: (){
                 songPlayer.playSong(suggestion, index);
+                focusNode.unfocus();
               }
             );
           }),

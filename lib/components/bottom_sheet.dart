@@ -7,6 +7,7 @@ import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 
 void showSongBottomSheet(BuildContext context, SongModel songInfo) {
   showModalBottomSheet(
+    useRootNavigator: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(30.0),
@@ -23,6 +24,7 @@ void showSongBottomSheet(BuildContext context, SongModel songInfo) {
 
 void showArtistBottomSheet(BuildContext context, ArtistModel artistInfo) {
   showModalBottomSheet(
+    useRootNavigator: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(30.0),
@@ -39,6 +41,7 @@ void showArtistBottomSheet(BuildContext context, ArtistModel artistInfo) {
 
 void showAlbumBottomSheet(BuildContext context, AlbumModel albumInfo) {
   showModalBottomSheet(
+    useRootNavigator: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(30.0),
@@ -55,6 +58,7 @@ void showAlbumBottomSheet(BuildContext context, AlbumModel albumInfo) {
 
 void showQueueBottomSheet(BuildContext context, SongModel songInfo, MediaItem mediaItem, int index){
   showModalBottomSheet(
+    useRootNavigator: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(30.0),
@@ -71,6 +75,7 @@ void showQueueBottomSheet(BuildContext context, SongModel songInfo, MediaItem me
 
 void showPlaylistBottomSheet(BuildContext context, PlaylistEntity playlistInfo, index){
   showModalBottomSheet(
+    useRootNavigator: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(30.0),

@@ -110,7 +110,8 @@ class ExpandedMiniplayer extends StatelessWidget {
                     child: SizedBox(height: imageSize),
                   ),
                 ),
-                Expanded(
+                Container(
+                  height: _size.height * 0.47,
                   child: Opacity(
                     opacity: opacityPercentageExpandedPlayer,
                     child: Column(

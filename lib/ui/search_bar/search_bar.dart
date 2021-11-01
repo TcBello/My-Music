@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
 import 'package:my_music/ui/search_bar/component/result.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -62,6 +65,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     final songQuery = Provider.of<SongQueryProvider>(context);
+    final songPlayer = Provider.of<SongPlayerProvider>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -98,28 +102,42 @@ class _SearchBarState extends State<SearchBar> {
           BackgroundWallpaper(),
           Material(
             color: Colors.transparent,
-            child: SingleChildScrollView(
-              child: ValueListenableBuilder<String>(
-                valueListenable: _keyword,
-                builder: (context, keyword, child) {
-                  return Visibility(
-                    visible: keyword.isNotEmpty,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _header("Song"),
-                        ResultSong(
-                          suggestionNotifier: _suggestionSong,
-                        ),
-                        _header("Artist"),
-                        ResultArtist(
-                          suggestionNotifier: _suggestionArtist,
-                        )
-                      ],
+            child: StreamBuilder<bool>(
+              initialData: false,
+              stream: songPlayer.backgroundRunningStream,
+              builder: (context, snapshot) {
+                return SingleChildScrollView(
+                  child: Container(
+                    margin: snapshot.data!
+                      ? const EdgeInsets.only(bottom: kMiniplayerMinHeight)
+                      : EdgeInsets.zero,
+                    child: ValueListenableBuilder<String>(
+                      valueListenable: _keyword,
+                      builder: (context, keyword, child) {
+                        return Visibility(
+                          visible: keyword.isNotEmpty,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              myAdBanner(context, "unitId"),
+                              _header("Song"),
+                              ResultSong(
+                                suggestionNotifier: _suggestionSong,
+                                focusNode: _focusNode!,
+                              ),
+                              _header("Artist"),
+                              ResultArtist(
+                                suggestionNotifier: _suggestionArtist,
+                                focusNode: _focusNode!
+                              )
+                            ],
+                          ),
+                        );
+                      }
                     ),
-                  );
-                }
-              ),
+                  ),
+                );
+              }
             ),
           ),
         ],

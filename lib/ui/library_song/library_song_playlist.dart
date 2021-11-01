@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
@@ -20,6 +22,8 @@ class LibrarySongPlaylist extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final songPlayer = Provider.of<SongPlayerProvider>(context);
+
     return Scaffold(
       backgroundColor: color1,
         body: NestedScrollView(
@@ -82,24 +86,40 @@ class LibrarySongPlaylist extends StatelessWidget {
           ),
         ];
       },
-      body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Consumer2<SongQueryProvider, SongPlayerProvider>(
-            builder: (context, songQuery, songPlayer, child) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(
-                    playlistEntity.playlistSongs.length, (index) => PlaylistSongTile(
-                      onTap: (){
-                        songPlayer.playPlaylistSong(playlistEntity.playlistSongs, index);
-                      },
-                      index: index,
-                      playlistEntity: playlistEntity,
-                    )
+      body: StreamBuilder<bool>(
+        initialData: false,
+        stream: songPlayer.backgroundRunningStream,
+        builder: (context, snapshot) {
+          return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Container(
+                margin: snapshot.data!
+                  ? const EdgeInsets.only(bottom: kMiniplayerMinHeight)
+                  : EdgeInsets.zero,
+                child: Consumer2<SongQueryProvider, SongPlayerProvider>(
+                  builder: (context, songQuery, songPlayer, child) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        myAdBanner(context, "unitId"),
+                        Column(
+                          children: List.generate(
+                              playlistEntity.playlistSongs.length, (index) => PlaylistSongTile(
+                                onTap: (){
+                                  songPlayer.playPlaylistSong(playlistEntity.playlistSongs, index);
+                                },
+                                index: index,
+                                playlistEntity: playlistEntity,
+                              )
+                          ),
+                        )
+                      ]
+                    );
+                  },
                 ),
-              );
-            },
-          )
+              )
+          );
+        }
       ),
     ));
   }

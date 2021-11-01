@@ -1,7 +1,10 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/constant.dart';
+import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/style.dart';
+import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 double valueFromPercentageInRange(
@@ -122,4 +125,49 @@ void sendEmail() async{
   else{
     showShortToast("An error has occured");
   }
+}
+
+void showAd() async{
+  print("Ad availability: ${interstitialAd?.isAvailable}");
+  if(interstitialAd!.isAvailable && !AudioService.playbackState.playing){
+    await interstitialAd?.show();
+  }
+}
+
+Widget myAdBanner(BuildContext context, String unitId){
+  return NativeAd(
+    buildLayout: adBannerLayoutBuilder,
+    width: MediaQuery.of(context).size.width,
+    height: 60,
+    builder: (context, child){
+      return Material(
+        child: child,
+      );
+    },
+    icon: AdImageView(
+      margin: const EdgeInsets.only(left: 10)
+    ),
+    headline: AdTextView(
+      margin: const EdgeInsets.only(left: 10)
+    ),
+    attribution: AdTextView(
+      margin: const EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+      width: WRAP_CONTENT,
+      decoration: AdDecoration(
+        backgroundColor: color3,
+        borderRadius: AdBorderRadius.all(16)
+      ),
+      style: TextStyle(color: Colors.white)
+    ),
+    button: AdButtonView(
+      textStyle: TextStyle(color: Colors.white),
+      decoration: AdDecoration(
+        backgroundColor: color3,
+        borderRadius: AdBorderRadius.all(15)
+      ),
+      margin: const EdgeInsets.only(right: 10),
+      height: 40
+    ),
+  );
 }

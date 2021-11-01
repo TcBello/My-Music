@@ -50,6 +50,8 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
         ),),
         leading: IconButton(
           onPressed: () {
+            // TODO: TEMP COMMENT SHOW AD
+            // showAd();
             widget.globalKey.currentState?.toggle(direction: InnerDrawerDirection.start);
           },
             icon: Icon(Icons.menu, color: Color(customTheme.textHexColor),),
@@ -65,7 +67,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
           ),
         ],
         bottom: TabBar(
-          unselectedLabelColor: Color(customTheme.textHexColor),
+          unselectedLabelColor: Colors.grey[350],
           labelStyle: ThemeProvider.themeOf(context).data.tabBarTheme.labelStyle,
           unselectedLabelStyle: ThemeProvider.themeOf(context).data.tabBarTheme.unselectedLabelStyle,
           controller: tabController,

@@ -7,12 +7,17 @@ import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
 import 'package:my_music/ui/main_screen/main_screen.dart'; 
 import 'package:my_music/components/style.dart';
+import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 void main() async {
-  WidgetsBinding.instance;
+  WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.initialize(
+    nativeAdUnitId: MobileAds.nativeAdTestUnitId,
+    interstitialAdUnitId: MobileAds.interstitialAdVideoTestUnitId
+  );
   // debugRepaintTextRainbowEnabled = true;
   // debugRepaintRainbowEnabled = true;
   runApp(
