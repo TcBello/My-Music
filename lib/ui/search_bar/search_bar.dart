@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
 import 'package:my_music/ui/search_bar/component/result.dart';
 import 'package:my_music/utils/utils.dart';
@@ -18,6 +18,7 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
   FocusNode? _focusNode;
   ValueNotifier<List<SongModel>> _suggestionSong = ValueNotifier([]);
   ValueNotifier<List<SongModel>> _suggestionArtist = ValueNotifier([]);
@@ -65,7 +66,6 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     final songQuery = Provider.of<SongQueryProvider>(context);
-    final songPlayer = Provider.of<SongPlayerProvider>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -104,7 +104,7 @@ class _SearchBarState extends State<SearchBar> {
             color: Colors.transparent,
             child: StreamBuilder<bool>(
               initialData: false,
-              stream: songPlayer.backgroundRunningStream,
+              stream: _musicPlayerService.audioBackgroundRunningStream,
               builder: (context, snapshot) {
                 return SingleChildScrollView(
                   child: Container(

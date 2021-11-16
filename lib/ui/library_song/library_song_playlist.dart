@@ -6,6 +6,7 @@ import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
@@ -15,15 +16,15 @@ class LibrarySongPlaylist extends StatelessWidget {
   final int indexFromOutside;
   final PlaylistEntity playlistEntity;
   
-  const LibrarySongPlaylist({
+  LibrarySongPlaylist({
     required this.indexFromOutside,
     required this.playlistEntity
   });
 
+  final _musicPlayerService = MusicPlayerService();
+
   @override
   Widget build(BuildContext context) {
-    final songPlayer = Provider.of<SongPlayerProvider>(context);
-
     return Scaffold(
       backgroundColor: color1,
         body: NestedScrollView(
@@ -88,7 +89,7 @@ class LibrarySongPlaylist extends StatelessWidget {
       },
       body: StreamBuilder<bool>(
         initialData: false,
-        stream: songPlayer.backgroundRunningStream,
+        stream: _musicPlayerService.audioBackgroundRunningStream,
         builder: (context, snapshot) {
           return SingleChildScrollView(
               scrollDirection: Axis.vertical,

@@ -1,144 +1,114 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:audio_session/audio_session.dart';
 import 'package:equalizer/equalizer.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 
-void audioPlayerTaskEntrypoint() async{
-  AudioServiceBackground.run(() => AudioPlayerTask());
-}
-
-class AudioPlayerTask extends BackgroundAudioTask{
+class AudioPlayerHandler extends BaseAudioHandler with SeekHandler{
   AudioPlayer _audioPlayer = AudioPlayer();
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
 
   List<MediaItem> _queue = [];
-
-  AudioProcessingState? _skipState;
 
   int _index = 0;
   int? _removeIndex;
   int _audioSourceMode = 0;
-  
-  StreamSubscription<PlaybackEvent>? _eventSubscription;
   
   Timer? _timer;
 
   ConcatenatingAudioSource _nowPlayingAudioSource = ConcatenatingAudioSource(
     children: []
   );
-  
-  @override
-  Future<void> onStart(Map<String, dynamic>? params) async {
-    final audioSession = await AudioSession.instance;
-    await audioSession.configure(AudioSessionConfiguration.music());
 
-    _audioPlayer.processingStateStream.listen((state) {
-      switch (state) {
-        case ProcessingState.completed:
-          // In this example, the service stops when reaching the end.
-          onStop();
-          break;
-        case ProcessingState.ready:
-          // If we just came from skipping between tracks, clear the skip
-          // state now that we're ready to play.
-          _skipState = null;
-          break;
-        default:
-          break;
-      }
-    });
-
-    _eventSubscription = _audioPlayer.playbackEventStream.listen((event) {
-      _broadcastState();
-    });
+  AudioPlayerHandler(){
+    _audioPlayer.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
     _audioPlayer.androidAudioSessionIdStream.listen((id) {
       if(id != null)  Equalizer.setAudioSessionId(id);
     });
 
     _audioPlayer.currentIndexStream.listen((i) {
-      print("CURRENT INDEX: $i");
+      print("CURRENT INDEX STREAM VALUE: $i");
       if(i != null){
-         AudioServiceBackground.setMediaItem(_queue[i]);
-         AudioServiceBackground.sendCustomEvent(i);
+        mediaItem.add(_queue[i]);
+        customEvent.add(i);
+      }
+    });
+
+    _audioPlayer.processingStateStream.listen((event) {
+      print("PROCESSING STATE: $event");
+      switch(event){
+        case ProcessingState.idle:
+          // _musicPlayerService.closeAudioBackground();
+          break;
+        case ProcessingState.loading:
+          break;
+        case ProcessingState.buffering:        
+          break;
+        case ProcessingState.ready:
+          _musicPlayerService.openAudioBackground();
+          break;
+        case ProcessingState.completed:
+          stop();
+          break;
       }
     });
   }
 
-  Future<void> _broadcastState() async {
-    await AudioServiceBackground.setState(
+
+  PlaybackState _transformEvent(PlaybackEvent event){
+    return PlaybackState(
       controls: [
         MediaControl.skipToPrevious,
-        _audioPlayer.playing
-          ? MediaControl.pause
-          : MediaControl.play,
+        if (_audioPlayer.playing) MediaControl.pause else MediaControl.play,
         MediaControl.stop,
         MediaControl.skipToNext,
       ],
-      systemActions: [
-        MediaAction.seekTo,
+      systemActions: const {
+        MediaAction.seek,
         MediaAction.seekForward,
         MediaAction.seekBackward,
-      ],
-      androidCompactActions: [0, 1, 3],
-      processingState: _getProcessingState(),
+      },
+      androidCompactActionIndices: const [0, 1, 3],
+      processingState: const {
+        ProcessingState.idle: AudioProcessingState.idle,
+        ProcessingState.loading: AudioProcessingState.loading,
+        ProcessingState.buffering: AudioProcessingState.buffering,
+        ProcessingState.ready: AudioProcessingState.ready,
+        ProcessingState.completed: AudioProcessingState.completed,
+      }[_audioPlayer.processingState]!,
       playing: _audioPlayer.playing,
-      position: _audioPlayer.position,
+      updatePosition: _audioPlayer.position,
       bufferedPosition: _audioPlayer.bufferedPosition,
       speed: _audioPlayer.speed,
+      queueIndex: event.currentIndex,
     );
   }
 
-  AudioProcessingState _getProcessingState() {
-    if (_skipState != null) return _skipState!;
-    switch (_audioPlayer.processingState) {
-      case ProcessingState.idle:
-        return AudioProcessingState.stopped;
-      case ProcessingState.loading:
-        return AudioProcessingState.connecting;
-      case ProcessingState.buffering:
-        return AudioProcessingState.buffering;
-      case ProcessingState.ready:
-        return AudioProcessingState.ready;
-      case ProcessingState.completed:
-        return AudioProcessingState.completed;
-      default:
-        throw Exception("Invalid state: ${_audioPlayer.processingState}");
-    }
+  @override
+  Future<void> play() => _audioPlayer.play();
+
+  @override
+  Future<void> pause() => _audioPlayer.pause();
+
+  @override
+  Future<void> skipToNext() => _audioPlayer.seekToNext();
+
+  @override
+  Future<void> skipToPrevious() => _audioPlayer.seekToPrevious();
+
+  @override
+  Future<void> seek(Duration position) => _audioPlayer.seek(position);
+
+  @override
+  Future<void> stop() async{
+    _musicPlayerService.closeAudioBackground();
+    _audioPlayer.stop();
   }
 
   @override
-  Future<void> onPlay() => _audioPlayer.play();
-
-  @override
-  Future<void> onPause() => _audioPlayer.pause();
-
-  @override
-  Future<void> onSkipToNext() async{
-    _skipState = AudioProcessingState.skippingToNext;
-    _audioPlayer.seekToNext();
-  }
-
-  @override
-  Future<void> onSkipToPrevious() async{
-    _skipState = AudioProcessingState.skippingToPrevious;
-    _audioPlayer.seekToPrevious();
-  }
-
-  @override
-  Future<void> onSeekTo(Duration position) async => _audioPlayer.seek(position);
-
-  @override
-  Future<void> onStop() async {
-    await _audioPlayer.dispose();
-    _eventSubscription?.cancel();
-    await _broadcastState();
-    await super.onStop();
-  }
-
-  @override
-  Future<void> onUpdateQueue(List<MediaItem> newQueue) async {
+  Future<void> updateQueue(List<MediaItem> newQueue) async {
     // CASE 0: PLAY SONG
     // CASE 1 : PLAY NEXT SONG
     // CASE 2: ADD QUEUE SONG
@@ -159,7 +129,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
           _nowPlayingAudioSource.addAll(
             newQueue.map((e) => AudioSource.uri(Uri.parse(e.id))).toList()
           );
-          AudioServiceBackground.setMediaItem(_queue[_index]);
+          mediaItem.add(_queue[_index]);
         }
         
         _audioPlayer.setAudioSource(
@@ -185,26 +155,26 @@ class AudioPlayerTask extends BackgroundAudioTask{
         break;
     }
 
-    AudioServiceBackground.setQueue(_queue);
+    queue.add(_queue);
   }
 
   @override
-  Future<void> onAddQueueItem(MediaItem mediaItem) async{
+  Future<void> addQueueItem(MediaItem mediaItem) async{
     int lastIndex = _queue.length;
     _queue.insert(lastIndex, mediaItem);
     _nowPlayingAudioSource.insert(lastIndex, AudioSource.uri(Uri.parse(mediaItem.id)));
-    AudioServiceBackground.setQueue(_queue);
+    queue.add(_queue);
   }
 
   @override
-  Future<void> onAddQueueItemAt(MediaItem mediaItem, int index) async{
+  Future<void> insertQueueItem(int index, MediaItem mediaItem) async {
     _queue.insert(index, mediaItem);
     _nowPlayingAudioSource.insert(index, AudioSource.uri(Uri.parse(mediaItem.id)));
-    AudioServiceBackground.setQueue(_queue);
+    queue.add(_queue);
   }
 
   @override
-  Future<void> onSetRepeatMode(AudioServiceRepeatMode repeatMode) async{
+  Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async{
     switch(repeatMode){
       case AudioServiceRepeatMode.none:
         _audioPlayer.setLoopMode(LoopMode.off);
@@ -220,7 +190,7 @@ class AudioPlayerTask extends BackgroundAudioTask{
     }
   }
   @override
-  Future<void> onSetShuffleMode(AudioServiceShuffleMode shuffleMode) async{
+  Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async{
     switch(shuffleMode){
       case AudioServiceShuffleMode.none:
         _audioPlayer.setShuffleModeEnabled(false);
@@ -234,27 +204,27 @@ class AudioPlayerTask extends BackgroundAudioTask{
   }
 
   @override
-  Future<void> onRemoveQueueItem(MediaItem mediaItem) async {
+  Future<void> removeQueueItem(MediaItem mediaItem) async {
     _queue.removeAt(_removeIndex!);
     await _nowPlayingAudioSource.removeAt(_removeIndex!);
     _removeIndex = null;
 
-    AudioServiceBackground.setQueue(_queue);
+    queue.add(_queue);
   }
 
 
   @override
-  Future onCustomAction(String name, arguments) async {
+  Future customAction(String name, [arguments]) async {
     switch(name){
       case "setIndex":
-        _index = arguments;
+        _index = arguments!['index'];
         break;
       case "isPlaying":
         return Future.value(_audioPlayer.playing);
       case "getCurrentIndex":
         return Future.value(_audioPlayer.currentIndex! + 1);
       case "setAudioSourceMode":
-        _audioSourceMode = arguments;
+        _audioSourceMode = arguments!['audioSourceMode'];
         break;
       case "getAudioSessionId":
         return Future.value(_audioPlayer.androidAudioSessionId);
@@ -263,25 +233,25 @@ class AudioPlayerTask extends BackgroundAudioTask{
       case "isShuffle":
         return Future.value(_audioPlayer.shuffleModeEnabled);
       case "reorderSong":
-        final mediaItem = _queue[arguments[0]];
-        _queue.removeAt(arguments[0]);
-        _queue.insert(arguments[1], mediaItem);
-        _nowPlayingAudioSource.move(arguments[0], arguments[1]);
-        AudioServiceBackground.setQueue(_queue);
+        final mediaItem = _queue[arguments!['oldIndex']];
+        _queue.removeAt(arguments['oldIndex']);
+        _queue.insert(arguments['newIndex'], mediaItem);
+        _nowPlayingAudioSource.move(arguments['oldIndex'], arguments['newIndex']);
+        queue.add(_queue);
         break;
       case "initIndex":
-        AudioServiceBackground.sendCustomEvent(_audioPlayer.currentIndex);
+        customEvent.add(_audioPlayer.currentIndex);
         break;
       case "setTimer":
         _timer?.cancel();
-        if(arguments > 0){
-          _timer = Timer(Duration(minutes: arguments), (){
-            onStop();
+        if(arguments!['value'] > 0){
+          _timer = Timer(Duration(minutes: arguments['value']), (){
+            stop();
           });
         }
         break;
       case "removeFromQueue":
-        _removeIndex = arguments;
+        _removeIndex = arguments!['index'];
         break;
       default:
         break;

@@ -69,6 +69,7 @@ class _NowPlayingBuilderState extends State<NowPlayingBuilder> {
     return StreamBuilder<AudioQueueData>(
       stream: songPlayerProvider.nowPlayingStream(),
       builder: (context, snapshot) {
+        print("SNAPSHOT HAS DATA: ${snapshot.hasData}");
         if(snapshot.hasData){
           final queue = snapshot.data!.queue ?? [];
           final currentIndex = snapshot.data!.index;

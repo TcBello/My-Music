@@ -10,6 +10,7 @@ import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/main_screen/components/my_drawer.dart';
 import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
@@ -31,6 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   final _innerDrawerKey = GlobalKey<InnerDrawerState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
   RateMyApp? _rateMyApp;
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
   
   @override
   void initState() {
@@ -46,6 +48,12 @@ class _MainScreenState extends State<MainScreen> {
     _rateMyApp = RateMyApp(
       minDays: 2,
       minLaunches: 5,
+      remindLaunches: 1,
+      googlePlayIdentifier: kAppId
+    );
+    _rateMyApp = RateMyApp(
+      minDays: 0,
+      minLaunches: 2,
       remindLaunches: 1,
       googlePlayIdentifier: kAppId
     );
@@ -188,6 +196,8 @@ class _MainScreenState extends State<MainScreen> {
 
     interstitialAd?.dispose();
     interstitialAd = null;
+
+    _musicPlayerService.dispose();
     
     OnAudioRoom().closeRoom();
     super.dispose();
@@ -229,7 +239,7 @@ class _MainScreenState extends State<MainScreen> {
                         Consumer<SongPlayerProvider>(
                           builder: (context, songPlayer, child) {
                             return StreamBuilder<bool>(
-                              stream: songPlayer.backgroundRunningStream,
+                              stream: _musicPlayerService.audioBackgroundRunningStream,
                               builder: (context, snapshot) {
                                 if(snapshot.hasData){
                                   print(snapshot.data);
@@ -239,10 +249,10 @@ class _MainScreenState extends State<MainScreen> {
                                       child: MiniPlayer(),
                                     );
                                   }
-                                  
+
                                   return Container();
                                 }
-    
+
                                 return Container();
                               },
                             );
@@ -254,7 +264,7 @@ class _MainScreenState extends State<MainScreen> {
                   )
                   : SearchSongUI();
               }
-    
+
               return Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,

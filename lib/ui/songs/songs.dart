@@ -7,6 +7,7 @@ import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/utils/utils.dart';
+import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -55,7 +56,10 @@ class Songs extends StatelessWidget {
             controller: songScrollController,
             padding: EdgeInsets.zero,
             children: [
-              myAdBanner(context, "unitId"),
+              Visibility(
+                visible: MobileAds.isInitialized,
+                child: myAdBanner(context, "unitId"),
+              ),
               // NativeAd(
               //   buildLayout: adBannerLayoutBuilder,
               //   width: MediaQuery.of(context).size.width,

@@ -1,10 +1,8 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/provider/custom_theme.dart';
-import 'package:my_music/provider/song_player.dart';
-import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/albums/albums.dart';
 import 'package:my_music/ui/artists/artists.dart';
 import 'package:my_music/components/controller.dart';
@@ -26,6 +24,7 @@ class MainUI extends StatefulWidget {
 
 class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
   final List<Widget> _myTabs = [Songs(), Artists(), Albums(), Playlists()];
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
 
   @override
   void initState() {
@@ -35,8 +34,6 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final songQueryProvider = Provider.of<SongQueryProvider>(context);
-    final songPlayer = Provider.of<SongPlayerProvider>(context);
     final customTheme = Provider.of<CustomThemeProvider>(context);
 
     return Scaffold(
@@ -60,8 +57,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.search, color: Color(customTheme.textHexColor),),
             onPressed: () {
-              print(AudioService.connected);
-              songQueryProvider.initSongSearch();
+              // songQueryProvider.initSongSearch();
               Navigator.push(context, MaterialPageRoute(builder: (context) => SearchBar()));
             },
           ),
@@ -90,7 +86,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
       ),
       body: StreamBuilder<bool>(
         initialData: false,
-        stream: songPlayer.backgroundRunningStream,
+        stream: _musicPlayerService.audioBackgroundRunningStream,
         builder: (context, snapshot) {
           return Container(
             margin: snapshot.data!
@@ -99,7 +95,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
             child: TabBarView(controller: tabController, children: _myTabs),
           );
         }
-      )
+      ),
       // body: NestedScrollView(
       //     controller: scrollController,
       //     headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {

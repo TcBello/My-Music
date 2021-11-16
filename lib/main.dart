@@ -1,7 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
+import 'package:my_music/components/audio_player_handler/audio_player_handler.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
@@ -12,12 +12,27 @@ import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+late AudioHandler audioHandler;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.initialize(
+  
+  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //   systemNavigationBarColor: color2,
+  //   systemNavigationBarDividerColor: color2
+  // ));
+
+  audioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: AudioServiceConfig(
+      androidStopForegroundOnPause: true,
+    )
+  );
+  MobileAds.initialize(
     nativeAdUnitId: MobileAds.nativeAdTestUnitId,
     interstitialAdUnitId: MobileAds.interstitialAdVideoTestUnitId
   );
+
   // debugRepaintTextRainbowEnabled = true;
   // debugRepaintRainbowEnabled = true;
   runApp(
@@ -130,16 +145,16 @@ void main() async {
     )
   );
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: color2,
-    systemNavigationBarDividerColor: color2
-  ));
+  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //   systemNavigationBarColor: color2,
+  //   systemNavigationBarDividerColor: color2
+  // ));
 }
 
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     return SplashScreen(
       loadingTextPadding: const EdgeInsets.all(0),
@@ -149,10 +164,8 @@ class Splash extends StatelessWidget {
       loaderColor: Colors.white,
       loadingText: Text("TCBELLO", style: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.black),),
       styleTextUnderTheLoader: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.black),
-      navigateAfterSeconds: AudioServiceWidget(
-        child: Material(
-          child: MainScreen(),
-        ),
+      navigateAfterSeconds: Material(
+        child: MainScreen(),
       ),
       title: Text("My Music\n(Test Phase)", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, color: Colors.black),),
     );

@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
-import 'package:my_music/provider/song_player.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/artists/components/artist_library_builder.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/ui/artists/components/artist_song_builder.dart';
 import 'package:my_music/utils/utils.dart';
-import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class ArtistProfile extends StatelessWidget {
@@ -17,16 +16,16 @@ class ArtistProfile extends StatelessWidget {
   final int index;
   final String backgroundSliver;
   
-  const ArtistProfile({
+  ArtistProfile({
     required this.title,
     required this.index,
     required this.backgroundSliver
   });
 
+  final _musicPlayerService = MusicPlayerService();
+
   @override
   Widget build(BuildContext context) {
-    final songPlayer = Provider.of<SongPlayerProvider>(context);
-
     return Scaffold(
       backgroundColor: color1,
       body: NestedScrollView(
@@ -62,7 +61,7 @@ class ArtistProfile extends StatelessWidget {
         },
         body: StreamBuilder<bool>(
           initialData: false,
-          stream: songPlayer.backgroundRunningStream,
+          stream: _musicPlayerService.audioBackgroundRunningStream,
           builder: (context, snapshot) {
             return Container(
               width: MediaQuery.of(context).size.width,

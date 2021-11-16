@@ -7,6 +7,8 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:my_music/components/constant.dart';
+import 'package:my_music/main.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:on_audio_room/on_audio_room.dart';
@@ -18,6 +20,8 @@ class SongQueryProvider extends ChangeNotifier{
   final OnAudioQuery _onAudioQuery = OnAudioQuery();
   final OnAudioRoom _onAudioRoom = OnAudioRoom();
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
 
   String _tempDirPath = "";
   String _appDirPath = "";
@@ -83,6 +87,8 @@ class SongQueryProvider extends ChangeNotifier{
   String _locationSongSearch = "";
   String get locationSongSearch => _locationSongSearch;
 
+  bool get _isBackgroundRunning => _musicPlayerService.isAudioBackgroundRunning;
+
   void init() async{
     setDefaultAlbumArt();
     var appDir = await getApplicationDocumentsDirectory();
@@ -91,7 +97,7 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   void addPaletteData() async{
-    var mediaItem = AudioService.currentMediaItem!;
+    var mediaItem = audioHandler.mediaItem.value!;
 
     if(_initialSongId != mediaItem.id){
       var generator = await PaletteGenerator.fromImageProvider(
@@ -258,10 +264,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void playNextSong(SongModel nextSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
-        int nextIndex = await AudioService.customAction("getCurrentIndex");
-        AudioService.addQueueItemAt(mediaItem, nextIndex);
+        int nextIndex = await audioHandler.customAction("getCurrentIndex");
+        audioHandler.insertQueueItem(nextIndex, mediaItem);
         showShortToast("Song will play next");
       }
     });
@@ -269,10 +275,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void playNextArtist(List<SongModel> songInfoList, String artistName) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-        AudioService.customAction("setAudioSourceMode", 1);
-        AudioService.updateQueue(mediaList);
+        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 1});
+        audioHandler.updateQueue(mediaList);
         showShortToast("$artistName's songs will play next");
       }
     });
@@ -280,10 +286,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void playNextAlbum(List<SongModel> songInfoList, String albumName) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-        AudioService.customAction("setAudioSourceMode", 1);
-        AudioService.updateQueue(mediaList);
+        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 1});
+        audioHandler.updateQueue(mediaList);
         showShortToast("$albumName will play next");
       }
     });
@@ -291,10 +297,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void addToQueueArtistSong(List<SongModel> songInfoList, String artistName) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         List<MediaItem> mediaItemList = _convertToMediaItemList(songInfoList);
-        AudioService.customAction("setAudioSourceMode", 2);
-        AudioService.updateQueue(mediaItemList);
+        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 2});
+        audioHandler.updateQueue(mediaItemList);
         showShortToast("$artistName's songs added to queue");
       }
     });
@@ -302,10 +308,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void addToQueueAlbumSong(List<SongModel> songInfoList, String albumName) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         List<MediaItem> mediaItemList = _convertToMediaItemList(songInfoList);
-        AudioService.customAction("setAudioSourceMode", 2);
-        AudioService.updateQueue(mediaItemList);
+        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 2});
+        audioHandler.updateQueue(mediaItemList);
         showShortToast("$albumName added to queue");
       }
     });
@@ -313,10 +319,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void playNextPlaylistSong(SongEntity nextSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         MediaItem mediaItem = _convertEntityToMediaItem(nextSongInfo);
-        int nextIndex = await AudioService.customAction("getCurrentIndex");
-        AudioService.addQueueItemAt(mediaItem, nextIndex);
+        int nextIndex = await audioHandler.customAction("getCurrentIndex");
+        audioHandler.insertQueueItem(nextIndex, mediaItem);
         showShortToast("Song will play next");
       }
     });
@@ -324,9 +330,9 @@ class SongQueryProvider extends ChangeNotifier{
 
   void addToQueueSong(SongModel addToQueueSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
-        AudioService.addQueueItem(mediaItem);
+        audioHandler.addQueueItem(mediaItem);
         showShortToast("Song added to queue");
       }
     });
@@ -334,9 +340,9 @@ class SongQueryProvider extends ChangeNotifier{
 
   void addToQueuePlaylistSong(SongEntity addToQueueSongInfo) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         MediaItem mediaItem = _convertEntityToMediaItem(addToQueueSongInfo);
-        AudioService.addQueueItem(mediaItem);
+        audioHandler.addQueueItem(mediaItem);
         showShortToast("Song added to queue");
       }
     });
@@ -344,10 +350,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void playNextPlaylist(List<SongEntity> songInfoList) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertEntityToMediaItemList(songInfoList);
-        AudioService.customAction("setAudioSourceMode", 1);
-        AudioService.updateQueue(mediaList);
+        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 1});
+        audioHandler.updateQueue(mediaList);
         showShortToast("Playlist will play next");
       }
     });
@@ -355,10 +361,10 @@ class SongQueryProvider extends ChangeNotifier{
 
   void addToQueuePlaylist(List<SongEntity> songInfoList) async{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
-      if(AudioService.running){
+      if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertEntityToMediaItemList(songInfoList);
-        AudioService.customAction("setAudioSourceMode", 2);
-        AudioService.updateQueue(mediaList);
+        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 2});
+        audioHandler.updateQueue(mediaList);
         showShortToast("Playlist added to queue");
       }
     });
@@ -643,13 +649,19 @@ class SongQueryProvider extends ChangeNotifier{
     if(oldIndex < newIndex){
       newIndex--;
     }
-    AudioService.customAction("reorderSong", [oldIndex, newIndex]);
+    audioHandler.customAction(
+      "reorderSong",
+      {
+        'oldIndex': oldIndex,
+        'newIndex': newIndex
+      }
+    );
   }
 
   void removeQueueSong(MediaItem mediaItem, int index){
-    AudioService.customAction("removeFromQueue", index);
+    audioHandler.customAction("removeFromQueue", {'index': index});
     print("REMOVE ${mediaItem.title} AT INDEX $index");
-    AudioService.removeQueueItem(mediaItem);
+    audioHandler.removeQueueItem(mediaItem);
   }
 
   Future<void> reset() async {
@@ -662,7 +674,7 @@ class SongQueryProvider extends ChangeNotifier{
 
     if(tempDir.existsSync()){
       try{
-        if(AudioService.running) AudioService.stop();
+        if(_isBackgroundRunning) audioHandler.stop();
         tempDir.deleteSync(recursive: true);
       }
       catch(e){

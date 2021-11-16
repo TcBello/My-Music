@@ -2,6 +2,8 @@ const int kDelayMilliseconds = 200;
 
 const double kMiniplayerMinHeight = 70.0;
 
+const double kSystemBottomNavigationBarHeight = 50.0;
+
 const String kVersion = "2.1.0 (BETA)";
 
 const String kEmail = "tcbello.mymusic@gmail.com";

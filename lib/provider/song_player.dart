@@ -5,10 +5,10 @@ import 'package:audio_service/audio_service.dart';
 import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:my_music/components/audio_player_task/audio_player_task.dart';
 import 'package:my_music/components/constant.dart';
+import 'package:my_music/main.dart';
 import 'package:my_music/model/audio_queue_data.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:on_audio_room/details/rooms/song_entity.dart';
@@ -16,6 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
   List<MediaItem> songList = [];
   String _tempDir = "";
   String _appDir = "";
@@ -141,9 +142,9 @@ class SongPlayerProvider extends ChangeNotifier{
     }
   }
 
-  Stream<MediaItem?> get audioItemStream => AudioService.currentMediaItemStream;
-  Stream<bool> get backgroundRunningStream => AudioService.runningStream;
-  Stream get indexStream => AudioService.customEventStream;
+  Stream<MediaItem?> get audioItemStream => audioHandler.mediaItem;
+  // Stream<PlaybackState> get playbackStream => audioHandler.playbackState;
+  Stream get indexStream => audioHandler.customEvent;
 
   // bool _isPlayOnce = false;
   // bool get isPlayOnce => _isPlayOnce;
@@ -151,35 +152,21 @@ class SongPlayerProvider extends ChangeNotifier{
   ValueNotifier<bool> _isPlayOnce = ValueNotifier(false);
   ValueNotifier<bool> get isPlayOnce => _isPlayOnce;
 
-  Stream<Duration> get positionStream => AudioService.positionStream;
+  Stream<Duration> get positionStream => AudioService.position;
 
-  bool get isBackgroundRunning => AudioService.running;
-  AudioProcessingState get processingState => AudioService.playbackState.processingState;
-  Stream<PlaybackState> get playbackStateStream => AudioService.playbackStateStream;
+  bool get _isBackgroundRunning => _musicPlayerService.isAudioBackgroundRunning;
+  AudioProcessingState get processingState => audioHandler.playbackState.value.processingState;
+  Stream<PlaybackState> get playbackStateStream => audioHandler.playbackState;
 
   void playSong(List<SongModel> songInfoList, int index) async{
     _convertToMediaItemList(songInfoList);
 
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      if(!AudioService.running){
-        _repeatIndex = 0;
-        _shuffleIndex = 0;
-        await AudioService.start(
-          backgroundTaskEntrypoint: audioPlayerTaskEntrypoint,
-          androidStopForegroundOnPause: true
-        );
-      }
+      audioHandler.customAction("setIndex", {'index': index});
+      audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
+      audioHandler.updateQueue(songList);
 
-      AudioService.customAction("setIndex", index);
-      AudioService.customAction("setAudioSourceMode", 0);
-      AudioService.updateQueue(songList);
-
-      AudioService.play();
-
-      // if(!_isPlayOnce){
-      //   _isPlayOnce = true;
-      //   notifyListeners();
-      // }
+      audioHandler.play();
 
       if(!_isPlayOnce.value){
         _isPlayOnce.value = true;
@@ -192,25 +179,11 @@ class SongPlayerProvider extends ChangeNotifier{
     _convertEntityToMediaItemList(songEntityList);
 
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      if(!AudioService.running){
-        _repeatIndex = 0;
-        _shuffleIndex = 0;
-        await AudioService.start(
-          backgroundTaskEntrypoint: audioPlayerTaskEntrypoint,
-          androidStopForegroundOnPause: true
-        );
-      }
+      audioHandler.customAction("setIndex", {'index': index});
+      audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
+      audioHandler.updateQueue(songList);
 
-      AudioService.customAction("setIndex", index);
-      AudioService.customAction("setAudioSourceMode", 0);
-      AudioService.updateQueue(songList);
-
-      AudioService.play();
-
-      // if(!_isPlayOnce){
-      //   _isPlayOnce = true;
-      //   notifyListeners();
-      // }
+      audioHandler.play();
 
       if(!_isPlayOnce.value){
         _isPlayOnce.value = true;
@@ -220,26 +193,26 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   void playQueueSong(int index, List<MediaItem> queue){
-    AudioService.customAction("setIndex", index);
-    AudioService.customAction("setAudioSourceMode", 0);
-    AudioService.updateQueue(queue);
-    AudioService.play();
+    audioHandler.customAction("setIndex", {'index': index});
+    audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
+    audioHandler.updateQueue(queue);
+    audioHandler.play();
   }
 
-  void stopSong() => AudioService.stop();
+  void stopSong() => audioHandler.stop();
 
-  void skipNext() => AudioService.skipToNext();
+  void skipNext() => audioHandler.skipToNext();
 
-  void skipPrevious() => AudioService.skipToPrevious();
+  void skipPrevious() => audioHandler.skipToPrevious();
 
-  void seek(Duration position) async => AudioService.seekTo(position);
+  void seek(Duration position) async => audioHandler.seek(position);
 
   void pauseResume() async{
-    if(await AudioService.customAction("isPlaying")){
-      AudioService.pause();
+    if(await audioHandler.customAction("isPlaying")){
+      audioHandler.pause();
     }
     else{
-      AudioService.play();
+      audioHandler.play();
     }
 
     notifyListeners();
@@ -311,13 +284,12 @@ class SongPlayerProvider extends ChangeNotifier{
     // _isPlayOnce = false;
     _isPlayOnce.value = false;
     // notifyListeners();
-    AudioService.customAction("connectUI", AudioService.connected);
-    AudioService.stop();
+    audioHandler.stop();
   }
 
   void openEqualizer() async{
-    if(AudioService.running){
-      int id = await AudioService.customAction("getAudioSessionId");
+    if(_isBackgroundRunning){
+      int id = await audioHandler.customAction("getAudioSessionId");
       Equalizer.open(id);
     }
     else{
@@ -335,15 +307,15 @@ class SongPlayerProvider extends ChangeNotifier{
 
     switch(_repeatIndex){
       case 0:
-        AudioService.setRepeatMode(AudioServiceRepeatMode.none);
+        audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
         showShortToast("Repeat off");
         break;
       case 1:
-        AudioService.setRepeatMode(AudioServiceRepeatMode.all);
+        audioHandler.setRepeatMode(AudioServiceRepeatMode.all);
         showShortToast("Repeat on");
         break;
       case 2:
-        AudioService.setRepeatMode(AudioServiceRepeatMode.one);
+        audioHandler.setRepeatMode(AudioServiceRepeatMode.one);
         showShortToast("Repeat single song");
         break;
     }
@@ -360,29 +332,29 @@ class SongPlayerProvider extends ChangeNotifier{
 
     switch(_shuffleIndex){
       case 0:
-        AudioService.setShuffleMode(AudioServiceShuffleMode.none);
+        audioHandler.setShuffleMode(AudioServiceShuffleMode.none);
         showShortToast("Shuffle off");
         break;
       case 1:
-        AudioService.setShuffleMode(AudioServiceShuffleMode.all);
+        audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
         showShortToast("Shuffle on");
         break;
     }
   }
 
   Future<int> getCurrentIndex() async{
-    AudioService.customAction("initIndex");
-    int index = (await AudioService.customAction("getCurrentIndex")) - 1;
+    audioHandler.customAction("initIndex");
+    int index = (await audioHandler.customAction("getCurrentIndex")) - 1;
     return index;
   }
 
   int getQueueLength(){
-    return AudioService.queue!.length;
+    return audioHandler.queue.value.length;
   }
 
   void setTimer(){
-    if(AudioService.running){
-      AudioService.customAction("setTimer", _minuteTimer);
+    if(_isBackgroundRunning){
+      audioHandler.customAction("setTimer", {'value': _minuteTimer});
       if(_minuteTimer != 0){
         showShortToast("Music will stop at $_minuteTimer minutes");
       }
@@ -406,13 +378,24 @@ class SongPlayerProvider extends ChangeNotifier{
     _minuteTimer = 0;
   }
 
+  // Stream<AudioQueueData> nowPlayingStream(){
+  //   return Rx.combineLatest2<List<MediaItem>?, dynamic, AudioQueueData>(
+  //     audioHandler.queue,
+  //     audioHandler.customEvent,
+  //     (queue, index) => AudioQueueData(
+  //       queue: queue,
+  //       index: index
+  //     )
+  //   );
+  // }
+
   Stream<AudioQueueData> nowPlayingStream(){
-    return Rx.combineLatest2<List<MediaItem>?, dynamic, AudioQueueData>(
-      AudioService.queueStream,
-      AudioService.customEventStream,
-      (queue, index) => AudioQueueData(
+    return Rx.combineLatest2<List<MediaItem>?, PlaybackState, AudioQueueData>(
+      audioHandler.queue,
+      audioHandler.playbackState,
+      (queue, playbackState) => AudioQueueData(
         queue: queue,
-        index: index
+        index: playbackState.queueIndex!
       )
     );
   }

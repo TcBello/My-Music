@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/search.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/library_song/components/header.dart';
 import 'package:my_music/ui/library_song/components/library_song_builder.dart';
 import 'package:my_music/utils/utils.dart';
@@ -18,15 +18,15 @@ class LibrarySong extends StatelessWidget {
   final AlbumModel albumInfo;
   final List<SongModel> songInfoList;
 
-  const LibrarySong({
+  LibrarySong({
     required this.albumInfo,
     required this.songInfoList
   });
 
+  final _musicPlayerService = MusicPlayerService();
+
   @override
   Widget build(BuildContext context) {
-    final songPlayer = Provider.of<SongPlayerProvider>(context);
-
     return Scaffold(
       backgroundColor: color1,
       body: NestedScrollView(
@@ -115,7 +115,7 @@ class LibrarySong extends StatelessWidget {
         },
         body: StreamBuilder<bool>(
           initialData: false,
-          stream: songPlayer.backgroundRunningStream,
+          stream: _musicPlayerService.audioBackgroundRunningStream,
           builder: (context, snapshot) {
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
