@@ -1,6 +1,8 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:my_music/components/audio_player_handler/audio_player_handler.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
@@ -14,13 +16,29 @@ import 'package:theme_provider/theme_provider.dart';
 
 late AudioHandler audioHandler;
 
+void addFontLicense(String value){
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/Chivo/SIL Open Font License.txt');
+    yield LicenseEntryWithLineBreaks(['chivo'], license);
+  });
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/Comfortaa/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['comfortaa'], license);
+  });
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/HK Grotesk/SIL Open Font License.txt');
+    yield LicenseEntryWithLineBreaks(['hk_grotesk'], license);
+  });
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/Montserrat/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['montserrat'], license);
+  });
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  //   systemNavigationBarColor: color2,
-  //   systemNavigationBarDividerColor: color2
-  // ));
+  compute(addFontLicense, "");
 
   audioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
