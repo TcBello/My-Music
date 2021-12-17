@@ -39,19 +39,6 @@ class Songs extends StatelessWidget {
             maxHeight: 80,
             maxWidth: 80
           ),
-          // child: ListView.builder(
-          //   controller: songScrollController,
-          //   padding: EdgeInsets.zero,
-          //   itemCount: songQueryProvider.songInfo.length,
-          //   itemBuilder: (context, index) {
-          //     return SongTile(
-          //       songInfo: songQueryProvider.songInfo[index],
-          //       onTap: () async {
-          //         songPlayerProvider.playSong(songQueryProvider.songInfo, index);
-          //       },
-          //     );
-          //   },
-          // ),
           child: ListView(
             controller: songScrollController,
             padding: EdgeInsets.zero,
@@ -60,41 +47,6 @@ class Songs extends StatelessWidget {
                 visible: MobileAds.isInitialized,
                 child: myAdBanner(context, "unitId"),
               ),
-              // NativeAd(
-              //   buildLayout: adBannerLayoutBuilder,
-              //   width: MediaQuery.of(context).size.width,
-              //   height: 60,
-              //   builder: (context, child){
-              //     return Material(
-              //       child: child,
-              //     );
-              //   },
-              //   icon: AdImageView(
-              //     margin: const EdgeInsets.only(left: 10)
-              //   ),
-              //   headline: AdTextView(
-              //     margin: const EdgeInsets.only(left: 10)
-              //   ),
-              //   attribution: AdTextView(
-              //     margin: const EdgeInsets.only(left: 10),
-              //     padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-              //     width: WRAP_CONTENT,
-              //     decoration: AdDecoration(
-              //       backgroundColor: color3,
-              //       borderRadius: AdBorderRadius.all(16)
-              //     ),
-              //     style: TextStyle(color: Colors.white)
-              //   ),
-              //   button: AdButtonView(
-              //     textStyle: TextStyle(color: Colors.white),
-              //     decoration: AdDecoration(
-              //       backgroundColor: color3,
-              //       borderRadius: AdBorderRadius.all(15)
-              //     ),
-              //     margin: const EdgeInsets.only(right: 10),
-              //     height: 40
-              //   ),
-              // ),
               Column(
                 children: List.generate(songQueryProvider.songInfo.length, (index) => SongTile(
                   songInfo: songQueryProvider.songInfo[index],

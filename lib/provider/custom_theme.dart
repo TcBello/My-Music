@@ -43,13 +43,6 @@ class CustomThemeProvider with ChangeNotifier{
       blurValue = _currentBlur;
     }
 
-    // if(_currentBlur == null){
-    //   blurValue = 0.0;
-    // }
-    // else{
-    //   blurValue = _currentBlur;
-    // }
-
     notifyListeners();
   }
 
@@ -78,8 +71,6 @@ class CustomThemeProvider with ChangeNotifier{
       File(imagePath).writeAsBytesSync(imageBytes);
       await _prefs.setString('backgroundId', uuid);
     }
-    // await _prefs.setString('currentbg', bgPath);
-    // await _prefs.setDouble('currentblur', blurValue);
   }
 
   Future<void> resetTheme(BuildContext context) async {

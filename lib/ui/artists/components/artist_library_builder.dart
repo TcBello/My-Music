@@ -20,31 +20,11 @@ class ArtistLibraryBuilder extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             children: List.generate(notifier.albumFromArtist!.length, (index){
-              // final albumArtwork = notifier.albumFromArtist?[index].albumArt;
-              final albumArtwork2 = notifier.albumArtwork(notifier.albumFromArtist![index].id);
+              final albumArt = notifier.albumArtwork(notifier.albumFromArtist![index].id);
               final hasArtWork = File(notifier.albumArtwork(notifier.albumFromArtist![index].id)).existsSync();
-              // final albumImage = isSdk28Below
-              //   ? albumArtwork != null
-              //     ? ImageGridFile(
-              //       img: albumArtwork,
-              //       heroID: notifier.albumFromArtist![index].id
-              //     )
-              //     : ImageGridFile(
-              //       img: notifier.defaultAlbum,
-              //       heroID: notifier.albumFromArtist![index].id
-              //     )
-              //   : hasArtWork
-              //     ? ImageGridFile(
-              //       img: albumArtwork2,
-              //       heroID: notifier.albumFromArtist![index].id
-              //     )
-              //     : ImageGridFile(
-              //       img: notifier.defaultAlbum,
-              //       heroID: notifier.albumFromArtist![index].id
-              //     );
               final albumImage = hasArtWork
                 ? ImageGridFile(
-                  img: albumArtwork2,
+                  img: albumArt,
                   heroID: "album${notifier.albumFromArtist![index].id}"
                 )
                 : ImageGridFile(

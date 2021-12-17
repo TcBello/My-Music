@@ -33,41 +33,14 @@ class Artists extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 15),
                     children: List.generate(notifier.artistInfo.length, (index){
                       final artistName = notifier.artistInfo[index].artist;     
-                      // final artistArtwork = notifier.artistInfo[index].artistArtPath;
-                      final artistArtwork2 = notifier.artistArtwork(notifier.artistInfo[index].id);                  
+                      final artistArt = notifier.artistArtwork(notifier.artistInfo[index].id);                  
                       final hasArtWork = File(notifier.artistArtwork(notifier.artistInfo[index].id)).existsSync();
-                      // final backgroundSliver = isSdk28Below
-                      //   ? artistArtwork != null
-                      //     ? artistArtwork
-                      //     : notifier.defaultAlbum
-                      //   : hasArtWork
-                      //     ? artistArtwork2
-                      //     : notifier.defaultAlbum;
                       final backgroundSliver = hasArtWork
-                        ? artistArtwork2
+                        ? artistArt
                         : notifier.defaultAlbum;
-                      // final albumImage = isSdk28Below
-                      //   ? artistArtwork != null
-                      //     ? ImageGridFile(
-                      //       img: artistArtwork,
-                      //       heroID: "artist$index"
-                      //     )
-                      //     : ImageGridFile(
-                      //       img: notifier.defaultAlbum,
-                      //       heroID: "artist$index"
-                      //     )
-                      //   : hasArtWork
-                      //     ? ImageGridFile(
-                      //       img: artistArtwork2,
-                      //       heroID: "artist$index"
-                      //     )
-                      //     : ImageGridFile(
-                      //       img: notifier.defaultAlbum,
-                      //       heroID: "artist$index"
-                      //     );
                       final albumImage = hasArtWork
                         ? ImageGridFile(
-                          img: artistArtwork2,
+                          img: artistArt,
                           heroID: "artist$index"
                         )
                         : ImageGridFile(

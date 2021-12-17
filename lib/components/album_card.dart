@@ -11,7 +11,7 @@ class AlbumCard extends StatelessWidget {
   });
 
   final AlbumModel albumInfo;
-  final imageGrid;
+  final Widget imageGrid;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class ArtistProfileAlbumCard extends StatelessWidget {
   });
 
   final AlbumModel albumInfo;
-  final imageGrid;
+  final Widget imageGrid;
 
   @override
   Widget build(BuildContext context) {

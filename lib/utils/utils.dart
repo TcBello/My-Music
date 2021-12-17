@@ -7,19 +7,12 @@ import 'package:my_music/main.dart';
 import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-double valueFromPercentageInRange(
-    {required final double min, max, percentage}) {
+double valueFromPercentageInRange({required final double min, required double max, required double percentage}){
   return percentage * (max - min) + min;
 }
 
-double percentageFromValueInRange({required final double min, max, value}) {
+double percentageFromValueInRange({required final double min, required double max, required double value}) {
   return (value - min) / (max - min);
-}
-
-String toMinSecFormat(Duration duration) {
-  return RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-    .firstMatch("$duration")
-    ?.group(1) ?? '$duration';
 }
 
 void showShortToast(String msg){

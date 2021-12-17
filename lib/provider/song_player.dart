@@ -143,11 +143,7 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   Stream<MediaItem?> get audioItemStream => audioHandler.mediaItem;
-  // Stream<PlaybackState> get playbackStream => audioHandler.playbackState;
   Stream get indexStream => audioHandler.customEvent;
-
-  // bool _isPlayOnce = false;
-  // bool get isPlayOnce => _isPlayOnce;
 
   ValueNotifier<bool> _isPlayOnce = ValueNotifier(false);
   ValueNotifier<bool> get isPlayOnce => _isPlayOnce;
@@ -208,7 +204,9 @@ class SongPlayerProvider extends ChangeNotifier{
   void seek(Duration position) async => audioHandler.seek(position);
 
   void pauseResume() async{
-    if(await audioHandler.customAction("isPlaying")){
+    bool isPlaying= await audioHandler.customAction("isPlaying") as bool;
+
+    if(isPlaying){
       audioHandler.pause();
     }
     else{
@@ -221,8 +219,7 @@ class SongPlayerProvider extends ChangeNotifier{
   void _convertToMediaItemList(List<SongModel> songInfoList){
     songList = songInfoList.map((e){
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
-      // final songArtwork1 = e.albumArtwork;
-      final songArtwork2 = songArtwork(e.id);
+      final songArt = songArtwork(e.id);
       String artist = e.artist! != kDefaultArtistName
         ? e.artist!
         : "Unknown Artist";
@@ -232,15 +229,8 @@ class SongPlayerProvider extends ChangeNotifier{
         title: e.title,
         artist: artist,
         album: e.album!,
-        // artUri: isSdk28Below
-        //   ? songArtwork1 != null
-        //     ? File(songArtwork1).uri
-        //     : File(_defaultAlbum).uri
-        //   : hasArtWork
-        //     ? File(songArtwork2).uri
-        //     : File(_defaultAlbum).uri,
         artUri: hasArtWork
-          ? File(songArtwork2).uri
+          ? File(songArt).uri
           : File(_defaultAlbum()).uri,
         duration: Duration(milliseconds: e.duration!),
       );
@@ -252,8 +242,7 @@ class SongPlayerProvider extends ChangeNotifier{
   void _convertEntityToMediaItemList(List<SongEntity> songEntityList){
     songList = songEntityList.map((e){
       bool hasArtWork = File(songArtwork(e.id)).existsSync();
-      // final songArtwork1 = e.albumArtwork;
-      final songArtwork2 = songArtwork(e.id);
+      final songArt = songArtwork(e.id);
       String artist = e.artist! != kDefaultArtistName
         ? e.artist!
         : "Unknown Artist";
@@ -263,15 +252,8 @@ class SongPlayerProvider extends ChangeNotifier{
         title: e.title,
         artist: artist,
         album: e.album!,
-        // artUri: isSdk28Below
-        //   ? songArtwork1 != null
-        //     ? File(songArtwork1).uri
-        //     : File(_defaultAlbum).uri
-        //   : hasArtWork
-        //     ? File(songArtwork2).uri
-        //     : File(_defaultAlbum).uri,
         artUri: hasArtWork
-          ? File(songArtwork2).uri
+          ? File(songArt).uri
           : File(_defaultAlbum()).uri,
         duration: Duration(milliseconds: e.duration!),
       );
@@ -281,15 +263,13 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   void dismissMiniPlayer(){
-    // _isPlayOnce = false;
     _isPlayOnce.value = false;
-    // notifyListeners();
     audioHandler.stop();
   }
 
   void openEqualizer() async{
     if(_isBackgroundRunning){
-      int id = await audioHandler.customAction("getAudioSessionId");
+      int id = await audioHandler.customAction("getAudioSessionId") as int;
       Equalizer.open(id);
     }
     else{
@@ -344,7 +324,7 @@ class SongPlayerProvider extends ChangeNotifier{
 
   Future<int> getCurrentIndex() async{
     audioHandler.customAction("initIndex");
-    int index = (await audioHandler.customAction("getCurrentIndex")) - 1;
+    int index = (await audioHandler.customAction("getCurrentIndex") as int) - 1;
     return index;
   }
 
@@ -377,17 +357,6 @@ class SongPlayerProvider extends ChangeNotifier{
   void resetTimer(){
     _minuteTimer = 0;
   }
-
-  // Stream<AudioQueueData> nowPlayingStream(){
-  //   return Rx.combineLatest2<List<MediaItem>?, dynamic, AudioQueueData>(
-  //     audioHandler.queue,
-  //     audioHandler.customEvent,
-  //     (queue, index) => AudioQueueData(
-  //       queue: queue,
-  //       index: index
-  //     )
-  //   );
-  // }
 
   Stream<AudioQueueData> nowPlayingStream(){
     return Rx.combineLatest2<List<MediaItem>?, PlaybackState, AudioQueueData>(

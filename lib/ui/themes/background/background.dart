@@ -76,23 +76,6 @@ class _BackgroundState extends State<Background>
         showShortToast("An error has occured");
       }
     }
-
-    // if(newList == null){
-    //   setState(() {
-    //     newList = [_imgFile.path];
-    //   });
-    //   await _prefs.setStringList('images', newList);
-    // }
-    // else{
-    //   if(_imgFile != null) newList.insert(0, _imgFile.path);
-
-    //   //DELETE IMAGE WHEN LIST LENGTH HIT 11
-    //   if(newList.length >= 11){
-    //     newList.removeLast();
-    //   }
-
-    //   await _prefs.setStringList('images', newList);
-    // }
   }
 
   Stream<List<String>> imageStream() async*{

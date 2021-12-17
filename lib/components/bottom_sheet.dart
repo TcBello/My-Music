@@ -73,7 +73,7 @@ void showQueueBottomSheet(BuildContext context, SongModel songInfo, MediaItem me
   );
 }
 
-void showPlaylistBottomSheet(BuildContext context, PlaylistEntity playlistInfo, index){
+void showPlaylistBottomSheet(BuildContext context, PlaylistEntity playlistInfo, int index){
   showModalBottomSheet(
     useRootNavigator: true,
     shape: RoundedRectangleBorder(

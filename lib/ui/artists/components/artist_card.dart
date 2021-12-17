@@ -11,7 +11,7 @@ class ArtistCard extends StatelessWidget {
   });
 
   final ArtistModel artistInfo;
-  final imageGrid;
+  final Widget imageGrid;
 
   @override
   Widget build(BuildContext context) {

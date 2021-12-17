@@ -57,7 +57,6 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.search, color: Color(customTheme.textHexColor),),
             onPressed: () {
-              // songQueryProvider.initSongSearch();
               Navigator.push(context, MaterialPageRoute(builder: (context) => SearchBar()));
             },
           ),
@@ -96,71 +95,6 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
           );
         }
       ),
-      // body: NestedScrollView(
-      //     controller: scrollController,
-      //     headerSliverBuilder: (BuildContext context, bool isScreenScrolled) {
-      //       return <Widget>[
-      //         SliverAppBar(
-      //           elevation: 0,
-      //           backgroundColor: Colors.grey[900]?.withOpacity(0.5),
-      //           forceElevated: true,
-      //           snap: true,
-      //           pinned: true,
-      //           floating: true,
-      //           title: Text("My Music", style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle,),
-      //           leading: IconButton(
-      //             onPressed: () {
-      //               widget.globalKey.currentState?.toggle(direction: InnerDrawerDirection.start);
-      //             },
-      //             icon: Icon(Icons.menu),
-      //           ),
-      //           actions: <Widget>[
-      //             IconButton(
-      //               icon: Icon(Icons.search),
-      //               onPressed: () {
-      //                 print(AudioService.connected);
-      //                 songQueryProvider.initSongSearch();
-      //                 // showSearch(context: context, delegate: Search());
-      //                 Navigator.push(context, MaterialPageRoute(builder: (context) => SearchBar()));
-      //               },
-      //             ),
-      //           ],
-      //           bottom: TabBar(
-      //             labelStyle: ThemeProvider.themeOf(context).data.tabBarTheme.labelStyle,
-      //             unselectedLabelStyle: ThemeProvider.themeOf(context).data.tabBarTheme.unselectedLabelStyle,
-      //             controller: tabController,
-      //             indicatorColor: Colors.pinkAccent,
-      //             tabs: <Widget>[
-      //               Tab(
-      //                 text: "Songs",
-      //               ),
-      //               Tab(
-      //                 text: "Artists",
-      //               ),
-      //               Tab(
-      //                 text: "Albums",
-      //               ),
-      //               Tab(
-      //                 text: "Playlists",
-      //               )
-      //             ],
-      //           ),
-      //         )
-      //       ];
-      //     },
-          // body: StreamBuilder<bool>(
-          //   initialData: false,
-          //   stream: songPlayer.backgroundRunningStream,
-          //   builder: (context, snapshot) {
-          //     return Container(
-          //       margin: snapshot.data!
-          //         ? const EdgeInsets.only(bottom: kMiniplayerMinHeight)
-          //         : EdgeInsets.zero,
-          //       child: TabBarView(controller: tabController, children: _myTabs),
-          //     );
-          //   }
-          // )
-      // ),
     );
   }
 }

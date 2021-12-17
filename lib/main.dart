@@ -14,6 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+// TODO: ADD REAL BANNER AND INTERSTITIAL VIDEO ID
+// TODO: IMPLEMENT DEPENDENCY INJECTION ON AUDIO HANDLER
+
 late AudioHandler audioHandler;
 
 void addFontLicense(String value){
@@ -51,8 +54,6 @@ void main() async {
     interstitialAdUnitId: MobileAds.interstitialAdVideoTestUnitId
   );
 
-  // debugRepaintTextRainbowEnabled = true;
-  // debugRepaintRainbowEnabled = true;
   runApp(
     MultiProvider(
       providers: [
@@ -162,18 +163,12 @@ void main() async {
       )
     )
   );
-
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  //   systemNavigationBarColor: color2,
-  //   systemNavigationBarDividerColor: color2
-  // ));
 }
 
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
+    // TODO: ADD REAL SPLASHSREEN
     return SplashScreen(
       loadingTextPadding: const EdgeInsets.all(0),
       useLoader: true,

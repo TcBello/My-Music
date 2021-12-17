@@ -72,7 +72,6 @@ class _SearchBarState extends State<SearchBar> {
       appBar: AppBar(
         backgroundColor: color2,
         title: TextField(
-          // controller: _textEditingController,
           cursorColor: Colors.white,
           focusNode: _focusNode,
           style: ThemeProvider.themeOf(context).data.textTheme.headline6,

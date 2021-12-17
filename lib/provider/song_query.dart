@@ -50,7 +50,6 @@ class SongQueryProvider extends ChangeNotifier{
   AndroidDeviceInfo? get androidDeviceInfo => _androidDeviceInfo;
 
   String get defaultAlbum => "$_appDirPath/defalbum.png";
-  // String get defaultAlbum => _defaultAlbum;
 
   List<SongModel> _songInfo = [];
   List<SongModel> get songInfo => _songInfo;
@@ -75,9 +74,6 @@ class SongQueryProvider extends ChangeNotifier{
 
   List<PlaylistEntity>? _playlistInfo = [];
   List<PlaylistEntity>? get playlistInfo => _playlistInfo;
-
-  // List<SongInfo> _currentQueue = [];
-  // List<SongInfo> get currentQueue => _currentQueue;
 
   final List stringSongs = [];
 
@@ -221,10 +217,6 @@ class SongQueryProvider extends ChangeNotifier{
     }
   }
 
-  Future<void> updatePlaylist() async {
-    // _playlistInfo = await flutterAudioQuery.getPlaylists();
-  }
-
   Future<void> deletePlaylist(int key) async {
     await _onAudioRoom.deletePlaylist(key);
   }
@@ -249,7 +241,7 @@ class SongQueryProvider extends ChangeNotifier{
 
   Future<void> getAlbumFromArtist(String name) async {
     var albums = await _onAudioQuery.queryWithFilters(name, WithFiltersType.ALBUMS, AlbumsArgs.ARTIST);
-    _albumFromArtist = albums.map((e) => AlbumModel(e)).toList();
+    _albumFromArtist = albums.map((e) => AlbumModel(e as Map<dynamic, dynamic>)).toList();
 
     print("GET ALBUM FROM ARTIST COMPLETED!");
 
@@ -257,8 +249,6 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   Future<PlaylistEntity?> getSongFromPlaylist(int key) async {
-    // _songInfoFromPlaylist = await flutterAudioQuery.getSongsFromPlaylist(playlist: _playlistInfo![index]);
-    // await _onAudioRoom.queryPlaylist(key);
     return await _onAudioRoom.queryPlaylist(key);
   }
 
@@ -266,7 +256,7 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(_isBackgroundRunning){
         MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
-        int nextIndex = await audioHandler.customAction("getCurrentIndex");
+        int nextIndex = await audioHandler.customAction("getCurrentIndex") as int;
         audioHandler.insertQueueItem(nextIndex, mediaItem);
         showShortToast("Song will play next");
       }
@@ -321,7 +311,7 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(_isBackgroundRunning){
         MediaItem mediaItem = _convertEntityToMediaItem(nextSongInfo);
-        int nextIndex = await audioHandler.customAction("getCurrentIndex");
+        int nextIndex = await audioHandler.customAction("getCurrentIndex") as int;
         audioHandler.insertQueueItem(nextIndex, mediaItem);
         showShortToast("Song will play next");
       }
@@ -383,13 +373,6 @@ class SongQueryProvider extends ChangeNotifier{
         title: e.title,
         artist: artist,
         album: e.album!,
-        // artUri: _androidDeviceInfo!.version.sdkInt < 29
-        //   ? e. != null
-        //     ? File(e.albumArtwork!).uri
-        //     : File(defaultAlbum).uri
-        //   : hasArtWork
-        //     ? File(artwork).uri
-        //     : File(defaultAlbum).uri,
         artUri: hasArtWork
           ? File(artwork).uri
           : File(defaultAlbum).uri,
@@ -410,13 +393,6 @@ class SongQueryProvider extends ChangeNotifier{
       title: newSongInfo.title,
       artist: artist,
       album: newSongInfo.album!,
-      // artUri: _androidDeviceInfo!.version.sdkInt < 29
-      //   ? newSongInfo.albumArtwork != null
-      //     ? File(newSongInfo.albumArtwork!).uri
-      //     : File(defaultAlbum).uri
-      //   : hasArtWork
-      //     ? File(artwork).uri
-      //     : File(defaultAlbum).uri,
       artUri: hasArtWork
         ? File(artwork).uri
         : File(defaultAlbum).uri,
@@ -437,13 +413,6 @@ class SongQueryProvider extends ChangeNotifier{
         title: e.title,
         artist: artist,
         album: e.album!,
-        // artUri: _androidDeviceInfo!.version.sdkInt < 29
-        //   ? e. != null
-        //     ? File(e.albumArtwork!).uri
-        //     : File(defaultAlbum).uri
-        //   : hasArtWork
-        //     ? File(artwork).uri
-        //     : File(defaultAlbum).uri,
         artUri: hasArtWork
           ? File(artwork).uri
           : File(defaultAlbum).uri,
@@ -464,13 +433,6 @@ class SongQueryProvider extends ChangeNotifier{
       title: newSongInfo.title,
       artist: artist,
       album: newSongInfo.album!,
-      // artUri: _androidDeviceInfo!.version.sdkInt < 29
-      //   ? newSongInfo.albumArtwork != null
-      //     ? File(newSongInfo.albumArtwork!).uri
-      //     : File(defaultAlbum).uri
-      //   : hasArtWork
-      //     ? File(artwork).uri
-      //     : File(defaultAlbum).uri,
       artUri: hasArtWork
         ? File(artwork).uri
         : File(defaultAlbum).uri,
@@ -557,7 +519,7 @@ class SongQueryProvider extends ChangeNotifier{
             String filePath = "$dirPath/ar${element.id}";
             File file = File(filePath);
             var albums = await _onAudioQuery.queryWithFilters(element.artist, WithFiltersType.ALBUMS, AlbumsArgs.ARTIST);
-            List<AlbumModel> album = albums.map((e) => AlbumModel(e)).toList();
+            List<AlbumModel> album = albums.map((e) => AlbumModel(e as Map<dynamic, dynamic>)).toList();
 
             if(!file.existsSync() && albums.length != 0){
               Uint8List? artwork = await _onAudioQuery.queryArtwork(

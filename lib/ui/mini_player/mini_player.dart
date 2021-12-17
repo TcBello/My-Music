@@ -63,7 +63,7 @@ class MiniPlayer extends StatelessWidget {
             final artistName = snapshot.data!.artist! != kDefaultArtistName
               ? snapshot.data!.artist!
               : "Unknown Artist";
-            final duration = toMinSecFormat(snapshot.data!.duration!);
+            // final duration = toMinSecFormat(snapshot.data!.duration!);
             final durationValue = snapshot.data!.duration!;
 
             return Miniplayer(
@@ -127,7 +127,6 @@ class MiniPlayer extends StatelessWidget {
                     },
                     songTitle: songTitle,
                     artistName: artistName,
-                    duration: duration,
                     durationValue: durationValue,
                     expandedAlbumImage: expandedAlbumImage
                   );

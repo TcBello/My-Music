@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/artists/components/artist_library_builder.dart';
-import 'package:my_music/components/search.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/ui/artists/components/artist_song_builder.dart';
+import 'package:my_music/ui/search_bar/search_bar.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -37,20 +37,13 @@ class ArtistProfile extends StatelessWidget {
               actions: [
                 IconButton(
                   icon: Icon(Icons.search, color: Colors.white),
-                  onPressed: (){showSearch(context: context, delegate: Search());},
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchBar()));
+                  },
                 )
               ],
               expandedHeight: 165,
               flexibleSpace: FlexibleSpaceBar(
-                // background: backgroundSliver != null
-                //   ? Hero(
-                //     tag: "artist$index",
-                //     child: Image.file(File(backgroundSliver), fit: BoxFit.cover,),
-                //   )
-                //   : Hero(
-                //     tag: "artist$index",
-                //     child: Image.asset('assets/imgs/defalbum.png', fit: BoxFit.cover,),
-                //   )
                 background: Hero(
                   tag: "artist$index",
                   child: Image.file(File(backgroundSliver), fit: BoxFit.cover,),

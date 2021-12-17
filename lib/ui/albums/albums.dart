@@ -31,25 +31,6 @@ class Albums extends StatelessWidget {
                     children: List.generate(notifier.albumInfo.length, (index){
                       final id = notifier.albumInfo[index].id;
                       final hasArtWork = File(notifier.albumArtwork(notifier.albumInfo[index].id)).existsSync();
-                      // final albumImage = isSdk28Below
-                      //   ? albumArtwork != null
-                      //     ? ImageGridFile(
-                      //       img: albumArtwork,
-                      //       heroID: notifier.albumInfo[index].id
-                      //     )
-                      //     : ImageGridFile(
-                      //       img: notifier.defaultAlbum,
-                      //       heroID: notifier.albumInfo[index].id
-                      //     )
-                      //   : hasArtWork
-                      //     ? ImageGridFile(
-                      //       img: notifier.albumArtwork(id),
-                      //       heroID: id.toString()
-                      //     )
-                      //     : ImageGridFile(
-                      //       img: notifier.defaultAlbum,
-                      //       heroID: id.toString()
-                      //     );
                       final albumImage = hasArtWork
                         ? ImageGridFile(
                           img: notifier.albumArtwork(id),

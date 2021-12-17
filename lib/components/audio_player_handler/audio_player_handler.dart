@@ -217,14 +217,14 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler{
   Future customAction(String name, [arguments]) async {
     switch(name){
       case "setIndex":
-        _index = arguments!['index'];
+        _index = arguments!['index'] as int;
         break;
       case "isPlaying":
         return Future.value(_audioPlayer.playing);
       case "getCurrentIndex":
         return Future.value(_audioPlayer.currentIndex! + 1);
       case "setAudioSourceMode":
-        _audioSourceMode = arguments!['audioSourceMode'];
+        _audioSourceMode = arguments!['audioSourceMode'] as int;
         break;
       case "getAudioSessionId":
         return Future.value(_audioPlayer.androidAudioSessionId);
@@ -233,10 +233,10 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler{
       case "isShuffle":
         return Future.value(_audioPlayer.shuffleModeEnabled);
       case "reorderSong":
-        final mediaItem = _queue[arguments!['oldIndex']];
-        _queue.removeAt(arguments['oldIndex']);
-        _queue.insert(arguments['newIndex'], mediaItem);
-        _nowPlayingAudioSource.move(arguments['oldIndex'], arguments['newIndex']);
+        final mediaItem = _queue[arguments!['oldIndex'] as int];
+        _queue.removeAt(arguments['oldIndex'] as int);
+        _queue.insert(arguments['newIndex'] as int, mediaItem);
+        _nowPlayingAudioSource.move(arguments['oldIndex'] as int, arguments['newIndex'] as int);
         queue.add(_queue);
         break;
       case "initIndex":
@@ -244,14 +244,14 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler{
         break;
       case "setTimer":
         _timer?.cancel();
-        if(arguments!['value'] > 0){
-          _timer = Timer(Duration(minutes: arguments['value']), (){
+        if((arguments!['value'] as int) > 0){
+          _timer = Timer(Duration(minutes: arguments['value'] as int), (){
             stop();
           });
         }
         break;
       case "removeFromQueue":
-        _removeIndex = arguments!['index'];
+        _removeIndex = arguments!['index'] as int;
         break;
       default:
         break;

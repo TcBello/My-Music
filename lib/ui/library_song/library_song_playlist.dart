@@ -1,12 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
-import 'package:my_music/components/search.dart';
 import 'package:my_music/components/song_tile.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/singleton/music_player_service.dart';
+import 'package:my_music/ui/search_bar/search_bar.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_room/details/rooms/playlists/playlist_entity.dart';
 import 'package:provider/provider.dart';
@@ -44,8 +44,7 @@ class LibrarySongPlaylist extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      notifier.initSongSearch();
-                      showSearch(context: context, delegate: Search());
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SearchBar()));
                     },
                   );
               })
@@ -69,13 +68,6 @@ class LibrarySongPlaylist extends StatelessWidget {
                   ),
                   background: Container(
                     color: color1,
-                    // child: Hero(
-                    //   tag: "playlist$indexFromOutside",
-                    //   child: Image.asset(
-                    //     "assets/imgs/defalbum.png",
-                    //     fit: BoxFit.cover,
-                    //   ),
-                    // ),
                     child: Image.asset(
                       "assets/imgs/defalbum.png",
                       fit: BoxFit.cover,

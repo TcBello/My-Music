@@ -8,8 +8,6 @@ import 'package:theme_provider/theme_provider.dart';
 class SearchSongUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final songQuery = Provider.of<SongQueryProvider>(context);
-
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,

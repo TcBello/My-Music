@@ -18,7 +18,6 @@ class ExpandedMiniplayer extends StatelessWidget {
     required this.onPressed,
     required this.songTitle,
     required this.artistName,
-    required this.duration,
     required this.durationValue,
     required this.expandedAlbumImage,
     required this.bodyColor
@@ -32,7 +31,6 @@ class ExpandedMiniplayer extends StatelessWidget {
   final Function() onPressed;
   final String songTitle;
   final String artistName;
-  final String duration;
   final Duration durationValue;
   final Widget expandedAlbumImage;
   final Color bodyColor;
@@ -165,53 +163,6 @@ class ExpandedMiniplayer extends StatelessWidget {
                                     fontWeight: FontWeight.w500
                                   ),
                                 );
-                          
-                                // return Column(
-                                //   children: [
-                                //     Container(
-                                //       height: 70,
-                                //       child: Column(
-                                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                //         crossAxisAlignment: CrossAxisAlignment.center,
-                                //         children: [
-                                //           SizedBox(
-                                //             width: _size.width,
-                                //             child: SliderBar(
-                                //               position: positionValue,
-                                //               duration: durationValue,
-                                //               color: bodyColor,
-                                //             ),
-                                //           ),
-                                //           Row(
-                                //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                //             crossAxisAlignment: CrossAxisAlignment.center,
-                                //             children: [
-                                //               Container(
-                                //                 margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                //                 child: Text(
-                                //                   position,
-                                //                   style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
-                                //                     fontWeight: FontWeight.w500
-                                //                   )
-                                //                 )
-                                //               ),
-                                //               Container(
-                                //                 margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                                //                 child: Text(
-                                //                   duration,
-                                //                   style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
-                                //                     fontWeight:
-                                //                     FontWeight.w500
-                                //                   ),
-                                //                 )
-                                //               )
-                                //             ],
-                                //           ),
-                                //         ],
-                                //       ),
-                                //     )
-                                //   ],
-                                // );
                               } else {
                                 return Container();
                               }

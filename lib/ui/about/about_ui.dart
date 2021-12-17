@@ -8,6 +8,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// TODO: ADD REAL APP ICON ON POPUP
+
 // class AboutUI extends StatelessWidget {
 
 //   RateMyApp _rateMyApp = RateMyApp(
