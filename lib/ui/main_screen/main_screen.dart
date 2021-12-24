@@ -10,7 +10,7 @@ import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
-import 'package:my_music/singleton/music_player_service.dart';
+import 'package:my_music/singleton/music_player_singleton.dart';
 import 'package:my_music/ui/main_screen/components/my_drawer.dart';
 import 'package:my_music/ui/mini_player/mini_player.dart';
 import 'package:my_music/ui/main_screen/components/background_wallpaper.dart';
@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   final _innerDrawerKey = GlobalKey<InnerDrawerState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
   RateMyApp? _rateMyApp;
-  MusicPlayerService _musicPlayerService = MusicPlayerService();
+  MusicPlayerSingleton _musicPlayerSingleton = MusicPlayerSingleton();
   
   @override
   void initState() {
@@ -159,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
   }
 
-  void init(){
+  void init() async{
     final theme = context.read<CustomThemeProvider>();
     final songQuery = context.read<SongQueryProvider>();
     final songPlayer = context.read<SongPlayerProvider>();
@@ -198,7 +198,7 @@ class _MainScreenState extends State<MainScreen> {
     interstitialAd?.dispose();
     interstitialAd = null;
 
-    _musicPlayerService.dispose();
+    _musicPlayerSingleton.dispose();
     
     OnAudioRoom().closeRoom();
     super.dispose();
@@ -239,7 +239,7 @@ class _MainScreenState extends State<MainScreen> {
                         Consumer<SongPlayerProvider>(
                           builder: (context, songPlayer, child) {
                             return StreamBuilder<bool>(
-                              stream: _musicPlayerService.audioBackgroundRunningStream,
+                              stream: _musicPlayerSingleton.audioBackgroundRunningStream,
                               builder: (context, snapshot) {
                                 if(snapshot.hasData){
                                   print(snapshot.data);

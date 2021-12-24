@@ -1,11 +1,11 @@
 import 'dart:async';
 
-class MusicPlayerService{
-  static final MusicPlayerService _instance = MusicPlayerService._internal();
+class MusicPlayerSingleton{
+  static final MusicPlayerSingleton _instance = MusicPlayerSingleton._internal();
 
-  factory MusicPlayerService() => _instance;
+  factory MusicPlayerSingleton() => _instance;
 
-  MusicPlayerService._internal(){
+  MusicPlayerSingleton._internal(){
     _controller = StreamController<bool>.broadcast();
     _controller?.add(false);
     _attempt = 0;
