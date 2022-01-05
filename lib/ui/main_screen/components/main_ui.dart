@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/provider/custom_theme.dart';
-import 'package:my_music/singleton/music_player_singleton.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/albums/albums.dart';
 import 'package:my_music/ui/artists/artists.dart';
 import 'package:my_music/components/controller.dart';
@@ -24,7 +24,7 @@ class MainUI extends StatefulWidget {
 
 class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
   final List<Widget> _myTabs = [Songs(), Artists(), Albums(), Playlists()];
-  MusicPlayerSingleton _musicPlayerSingleton = MusicPlayerSingleton();
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
 
   @override
   void initState() {
@@ -85,7 +85,7 @@ class _MainUIState extends State<MainUI> with SingleTickerProviderStateMixin {
       ),
       body: StreamBuilder<bool>(
         initialData: false,
-        stream: _musicPlayerSingleton.audioBackgroundRunningStream,
+        stream: _musicPlayerService.audioBackgroundRunningStream,
         builder: (context, snapshot) {
           return Container(
             margin: snapshot.data!

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
-import 'package:my_music/singleton/music_player_singleton.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/artists/components/artist_library_builder.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/ui/artists/components/artist_song_builder.dart';
@@ -22,7 +22,7 @@ class ArtistProfile extends StatelessWidget {
     required this.backgroundSliver
   });
 
-  final _musicPlayerSingleton = MusicPlayerSingleton();
+  final _musicPlayerService = MusicPlayerService();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class ArtistProfile extends StatelessWidget {
         },
         body: StreamBuilder<bool>(
           initialData: false,
-          stream: _musicPlayerSingleton.audioBackgroundRunningStream,
+          stream: _musicPlayerService.audioBackgroundRunningStream,
           builder: (context, snapshot) {
             return Container(
               width: MediaQuery.of(context).size.width,

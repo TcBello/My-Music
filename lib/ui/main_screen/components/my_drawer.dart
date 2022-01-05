@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_music/components/style.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
-import 'package:my_music/singleton/music_player_singleton.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/ui/about/about_ui.dart';
 import 'package:my_music/ui/drive_mode.dart/drive_mode.dart';
 import 'package:my_music/ui/scan/scan.dart';
@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class MyDrawer extends StatelessWidget {
-  final _musicPlayerSingleton = MusicPlayerSingleton();
+  final _musicPlayerService = MusicPlayerService();
 
   void _showDialogTimer(BuildContext context){
     showDialog(
@@ -136,7 +136,7 @@ class MyDrawer extends StatelessWidget {
                   onTap: (){
                     Navigator.pop(context);
                     
-                    if(_musicPlayerSingleton.isAudioBackgroundRunning){
+                    if(_musicPlayerService.isAudioBackgroundRunning){
                       Navigator.push(context, CupertinoPageRoute(builder: (context) => DriveModeUI()));
                     }
                     else{

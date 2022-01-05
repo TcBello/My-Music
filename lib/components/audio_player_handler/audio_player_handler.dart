@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:equalizer/equalizer.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_music/singleton/music_player_singleton.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 
-class AudioPlayerService extends BaseAudioHandler with SeekHandler{
+class AudioPlayerHandler extends BaseAudioHandler with SeekHandler{
   AudioPlayer _audioPlayer = AudioPlayer();
-  MusicPlayerSingleton _musicPlayerSingleton = MusicPlayerSingleton();
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
 
   List<MediaItem> _queue = [];
 
@@ -40,14 +40,14 @@ class AudioPlayerService extends BaseAudioHandler with SeekHandler{
       print("PROCESSING STATE: $event");
       switch(event){
         case ProcessingState.idle:
-          // _musicPlayerSingleton.closeAudioBackground();
+          // _musicPlayerService.closeAudioBackground();
           break;
         case ProcessingState.loading:
           break;
         case ProcessingState.buffering:        
           break;
         case ProcessingState.ready:
-          _musicPlayerSingleton.openAudioBackground();
+          _musicPlayerService.openAudioBackground();
           break;
         case ProcessingState.completed:
           stop();
@@ -103,7 +103,7 @@ class AudioPlayerService extends BaseAudioHandler with SeekHandler{
 
   @override
   Future<void> stop() async{
-    _musicPlayerSingleton.closeAudioBackground();
+    _musicPlayerService.closeAudioBackground();
     _audioPlayer.stop();
   }
 

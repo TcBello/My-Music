@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/singleton/audio_handler_singleton.dart';
+import 'package:my_music/main.dart';
 import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -121,10 +121,8 @@ void sendEmail() async{
 }
 
 void showVideoAd() async{
-  AudioHandlerSingleton audioHandlerSingleton = AudioHandlerSingleton();
-
   print("Ad availability: ${interstitialAd?.isAvailable}");
-  if(interstitialAd!.isAvailable && !audioHandlerSingleton.audioHandler.playbackState.value.playing && MobileAds.isInitialized){
+  if(interstitialAd!.isAvailable && !audioHandler.playbackState.value.playing && MobileAds.isInitialized){
     await interstitialAd?.show();
   }
 }

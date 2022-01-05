@@ -1,11 +1,12 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:my_music/components/audio_player_handler/audio_player_handler.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
-import 'package:my_music/singleton/audio_handler_singleton.dart';
 import 'package:my_music/ui/main_screen/main_screen.dart'; 
 import 'package:my_music/components/style.dart';
 import 'package:native_admob_flutter/native_admob_flutter.dart';
@@ -14,7 +15,9 @@ import 'package:splashscreen/splashscreen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 // TODO: ADD REAL BANNER AND INTERSTITIAL VIDEO ID
-// TODO: FIX INIT AD BUG ON DEBUG MODE
+// TODO: IMPLEMENT DEPENDENCY INJECTION ON AUDIO HANDLER
+
+late AudioHandler audioHandler;
 
 void addFontLicense(String value){
   LicenseRegistry.addLicense(() async* {
@@ -37,19 +40,19 @@ void addFontLicense(String value){
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  AudioHandlerSingleton audioHandlerSingleton = AudioHandlerSingleton();
-
-  // ADD FONT LICENSES  
+  
   compute(addFontLicense, "");
 
-  // INIT ADS
+  audioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: AudioServiceConfig(
+      androidStopForegroundOnPause: true,
+    )
+  );
   MobileAds.initialize(
     nativeAdUnitId: MobileAds.nativeAdTestUnitId,
     interstitialAdUnitId: MobileAds.interstitialAdVideoTestUnitId
   );
-
-  // INIT AUDIO HANDLER
-  await audioHandlerSingleton.setHandler();
 
   runApp(
     MultiProvider(

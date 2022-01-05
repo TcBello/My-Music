@@ -6,9 +6,9 @@ import 'package:equalizer/equalizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
+import 'package:my_music/main.dart';
 import 'package:my_music/model/audio_queue_data.dart';
-import 'package:my_music/singleton/audio_handler_singleton.dart';
-import 'package:my_music/singleton/music_player_singleton.dart';
+import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:on_audio_room/details/rooms/song_entity.dart';
@@ -16,8 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SongPlayerProvider extends ChangeNotifier{
-  MusicPlayerSingleton _musicPlayerSingleton = MusicPlayerSingleton();
-  AudioHandlerSingleton _audioHandlerSingleton = AudioHandlerSingleton();
+  MusicPlayerService _musicPlayerService = MusicPlayerService();
   List<MediaItem> songList = [];
   String _tempDir = "";
   String _appDir = "";
@@ -143,27 +142,27 @@ class SongPlayerProvider extends ChangeNotifier{
     }
   }
 
-  Stream<MediaItem?> get audioItemStream => _audioHandlerSingleton.audioHandler.mediaItem;
-  Stream get indexStream => _audioHandlerSingleton.audioHandler.customEvent;
+  Stream<MediaItem?> get audioItemStream => audioHandler.mediaItem;
+  Stream get indexStream => audioHandler.customEvent;
 
   ValueNotifier<bool> _isPlayOnce = ValueNotifier(false);
   ValueNotifier<bool> get isPlayOnce => _isPlayOnce;
 
   Stream<Duration> get positionStream => AudioService.position;
 
-  bool get _isBackgroundRunning => _musicPlayerSingleton.isAudioBackgroundRunning;
-  AudioProcessingState get processingState => _audioHandlerSingleton.audioHandler.playbackState.value.processingState;
-  Stream<PlaybackState> get playbackStateStream => _audioHandlerSingleton.audioHandler.playbackState;
+  bool get _isBackgroundRunning => _musicPlayerService.isAudioBackgroundRunning;
+  AudioProcessingState get processingState => audioHandler.playbackState.value.processingState;
+  Stream<PlaybackState> get playbackStateStream => audioHandler.playbackState;
 
   void playSong(List<SongModel> songInfoList, int index) async{
     _convertToMediaItemList(songInfoList);
 
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      _audioHandlerSingleton.audioHandler.customAction("setIndex", {'index': index});
-      _audioHandlerSingleton.audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
-      _audioHandlerSingleton.audioHandler.updateQueue(songList);
+      audioHandler.customAction("setIndex", {'index': index});
+      audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
+      audioHandler.updateQueue(songList);
 
-      _audioHandlerSingleton.audioHandler.play();
+      audioHandler.play();
 
       if(!_isPlayOnce.value){
         _isPlayOnce.value = true;
@@ -176,11 +175,11 @@ class SongPlayerProvider extends ChangeNotifier{
     _convertEntityToMediaItemList(songEntityList);
 
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
-      _audioHandlerSingleton.audioHandler.customAction("setIndex", {'index': index});
-      _audioHandlerSingleton.audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
-      _audioHandlerSingleton.audioHandler.updateQueue(songList);
+      audioHandler.customAction("setIndex", {'index': index});
+      audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
+      audioHandler.updateQueue(songList);
 
-      _audioHandlerSingleton.audioHandler.play();
+      audioHandler.play();
 
       if(!_isPlayOnce.value){
         _isPlayOnce.value = true;
@@ -190,28 +189,28 @@ class SongPlayerProvider extends ChangeNotifier{
   }
 
   void playQueueSong(int index, List<MediaItem> queue){
-    _audioHandlerSingleton.audioHandler.customAction("setIndex", {'index': index});
-    _audioHandlerSingleton.audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
-    _audioHandlerSingleton.audioHandler.updateQueue(queue);
-    _audioHandlerSingleton.audioHandler.play();
+    audioHandler.customAction("setIndex", {'index': index});
+    audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 0});
+    audioHandler.updateQueue(queue);
+    audioHandler.play();
   }
 
-  void stopSong() => _audioHandlerSingleton.audioHandler.stop();
+  void stopSong() => audioHandler.stop();
 
-  void skipNext() => _audioHandlerSingleton.audioHandler.skipToNext();
+  void skipNext() => audioHandler.skipToNext();
 
-  void skipPrevious() => _audioHandlerSingleton.audioHandler.skipToPrevious();
+  void skipPrevious() => audioHandler.skipToPrevious();
 
-  void seek(Duration position) async => _audioHandlerSingleton.audioHandler.seek(position);
+  void seek(Duration position) async => audioHandler.seek(position);
 
   void pauseResume() async{
-    bool isPlaying= await _audioHandlerSingleton.audioHandler.customAction("isPlaying") as bool;
+    bool isPlaying= await audioHandler.customAction("isPlaying") as bool;
 
     if(isPlaying){
-      _audioHandlerSingleton.audioHandler.pause();
+      audioHandler.pause();
     }
     else{
-      _audioHandlerSingleton.audioHandler.play();
+      audioHandler.play();
     }
 
     notifyListeners();
@@ -265,12 +264,12 @@ class SongPlayerProvider extends ChangeNotifier{
 
   void dismissMiniPlayer(){
     _isPlayOnce.value = false;
-    _audioHandlerSingleton.audioHandler.stop();
+    audioHandler.stop();
   }
 
   void openEqualizer() async{
     if(_isBackgroundRunning){
-      int id = await _audioHandlerSingleton.audioHandler.customAction("getAudioSessionId") as int;
+      int id = await audioHandler.customAction("getAudioSessionId") as int;
       Equalizer.open(id);
     }
     else{
@@ -288,15 +287,15 @@ class SongPlayerProvider extends ChangeNotifier{
 
     switch(_repeatIndex){
       case 0:
-        _audioHandlerSingleton.audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
+        audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
         showShortToast("Repeat off");
         break;
       case 1:
-        _audioHandlerSingleton.audioHandler.setRepeatMode(AudioServiceRepeatMode.all);
+        audioHandler.setRepeatMode(AudioServiceRepeatMode.all);
         showShortToast("Repeat on");
         break;
       case 2:
-        _audioHandlerSingleton.audioHandler.setRepeatMode(AudioServiceRepeatMode.one);
+        audioHandler.setRepeatMode(AudioServiceRepeatMode.one);
         showShortToast("Repeat single song");
         break;
     }
@@ -313,29 +312,29 @@ class SongPlayerProvider extends ChangeNotifier{
 
     switch(_shuffleIndex){
       case 0:
-        _audioHandlerSingleton.audioHandler.setShuffleMode(AudioServiceShuffleMode.none);
+        audioHandler.setShuffleMode(AudioServiceShuffleMode.none);
         showShortToast("Shuffle off");
         break;
       case 1:
-        _audioHandlerSingleton.audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
+        audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
         showShortToast("Shuffle on");
         break;
     }
   }
 
   Future<int> getCurrentIndex() async{
-    _audioHandlerSingleton.audioHandler.customAction("initIndex");
-    int index = (await _audioHandlerSingleton.audioHandler.customAction("getCurrentIndex") as int) - 1;
+    audioHandler.customAction("initIndex");
+    int index = (await audioHandler.customAction("getCurrentIndex") as int) - 1;
     return index;
   }
 
   int getQueueLength(){
-    return _audioHandlerSingleton.audioHandler.queue.value.length;
+    return audioHandler.queue.value.length;
   }
 
   void setTimer(){
     if(_isBackgroundRunning){
-      _audioHandlerSingleton.audioHandler.customAction("setTimer", {'value': _minuteTimer});
+      audioHandler.customAction("setTimer", {'value': _minuteTimer});
       if(_minuteTimer != 0){
         showShortToast("Music will stop at $_minuteTimer minutes");
       }
@@ -361,8 +360,8 @@ class SongPlayerProvider extends ChangeNotifier{
 
   Stream<AudioQueueData> nowPlayingStream(){
     return Rx.combineLatest2<List<MediaItem>?, PlaybackState, AudioQueueData>(
-      _audioHandlerSingleton.audioHandler.queue,
-      _audioHandlerSingleton.audioHandler.playbackState,
+      audioHandler.queue,
+      audioHandler.playbackState,
       (queue, playbackState) => AudioQueueData(
         queue: queue,
         index: playbackState.queueIndex!
