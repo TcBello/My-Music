@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';

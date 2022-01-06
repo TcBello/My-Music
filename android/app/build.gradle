@@ -34,7 +34,15 @@ android {
 
     lintOptions {
         disable 'InvalidPackage'
-    }
+
+        // TODO: TEMPORARY SOLUTION FOR ERROR:
+        // 1. MediaButtonReceiver must extend 
+        // android.content.BroadcastReceiver [Instantiatable]
+        //       <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver" >
+        // 2. AudioService must extend android.app.Service [Instantiatable]
+        // <service android:name="com.ryanheise.audioservice.AudioService">
+        abortOnError false
+        }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).

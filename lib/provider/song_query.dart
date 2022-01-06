@@ -240,7 +240,7 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   Future<void> getAlbumFromArtist(String name) async {
-    var albums = await _onAudioQuery.queryWithFilters(name, WithFiltersType.ALBUMS, AlbumsArgs.ARTIST);
+    var albums = await _onAudioQuery.queryWithFilters(name, WithFiltersType.ALBUMS, args: AlbumsArgs.ARTIST);
     _albumFromArtist = albums.map((e) => AlbumModel(e as Map<dynamic, dynamic>)).toList();
 
     print("GET ALBUM FROM ARTIST COMPLETED!");
@@ -518,7 +518,7 @@ class SongQueryProvider extends ChangeNotifier{
           var resultArtist = await Future.forEach(_artistInfo, (ArtistModel element) async {
             String filePath = "$dirPath/ar${element.id}";
             File file = File(filePath);
-            var albums = await _onAudioQuery.queryWithFilters(element.artist, WithFiltersType.ALBUMS, AlbumsArgs.ARTIST);
+            var albums = await _onAudioQuery.queryWithFilters(element.artist, WithFiltersType.ALBUMS, args: AlbumsArgs.ARTIST);
             List<AlbumModel> album = albums.map((e) => AlbumModel(e as Map<dynamic, dynamic>)).toList();
 
             if(!file.existsSync() && albums.length != 0){

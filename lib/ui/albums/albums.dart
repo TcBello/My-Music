@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/data_placeholder.dart';

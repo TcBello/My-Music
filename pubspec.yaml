@@ -47,7 +47,8 @@ dependencies:
   supercharged: ^2.0.0
   marquee_text: ^2.0.0
   image_picker: ^0.7.4
-  flutter_colorpicker: ^0.4.0
+  # flutter_colorpicker: ^0.4.0
+  flutter_colorpicker: ^1.0.3
   palette_generator: ^0.3.0
 
   # UI

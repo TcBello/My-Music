@@ -26,18 +26,10 @@ const TabBarTheme kTabBarTheme = TabBarTheme(
 );
 
 AppBarTheme appBarTheme = AppBarTheme(
-  backwardsCompatibility: false,
   systemOverlayStyle: SystemUiOverlayStyle(
     statusBarColor: Colors.grey[900]?.withOpacity(0.5),
     statusBarBrightness: Brightness.light,
     statusBarIconBrightness: Brightness.light,
-  ),
-  textTheme: TextTheme(
-    headline6: TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
-      fontSize: 20
-    )
   ),
   titleTextStyle: TextStyle(
     color: Colors.white,

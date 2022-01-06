@@ -24,7 +24,7 @@ class SongTitleMiniPlayer extends StatelessWidget {
           RepaintBoundary(
             child: MarqueeText(
               alwaysScroll: false,
-              text: title,
+              text: TextSpan(text: title),
               style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -60,7 +60,7 @@ class SongTitle extends StatelessWidget {
         alignment: Alignment.center,
         width: MediaQuery.of(context).size.width * 0.8,
         child: MarqueeText(
-          text: title,
+          text: TextSpan(text: title),
           style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
             fontSize: 22
           ),

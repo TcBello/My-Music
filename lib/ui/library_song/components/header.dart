@@ -23,7 +23,7 @@ class Header extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(artistName, style: ThemeProvider.themeOf(context).data.appBarTheme.textTheme?.headline6,),
+          Text(artistName, style: ThemeProvider.themeOf(context).data.appBarTheme.titleTextStyle),
           SizedBox(height: 5,),
           Text(songNumber, style: ThemeProvider.themeOf(context).data.textTheme.bodyText1?.copyWith(
             fontWeight: FontWeight.w600,

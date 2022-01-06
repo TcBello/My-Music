@@ -40,7 +40,7 @@ class SongBottomSheetOptions extends StatelessWidget {
                 children: [
                   RepaintBoundary(
                     child: MarqueeText(
-                      text: songTitle,
+                      text: TextSpan(text: songTitle),
                       style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.black
@@ -126,7 +126,7 @@ class QueueBottomSheetOptions extends StatelessWidget {
                 children: [
                   RepaintBoundary(
                     child: MarqueeText(
-                      text: songTitle,
+                      text: TextSpan(text: songTitle),
                       style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.w600
@@ -212,7 +212,7 @@ class ArtistBottomSheetOptions extends StatelessWidget {
                 children: [
                   RepaintBoundary(
                     child: MarqueeText(
-                      text: artistName,
+                      text: TextSpan(text: artistName),
                       style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.black
@@ -291,7 +291,7 @@ class AlbumBottomSheetOptions extends StatelessWidget {
                 children: [
                   RepaintBoundary(
                     child: MarqueeText(
-                      text: albumName,
+                      text: TextSpan(text: albumName),
                       style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.black

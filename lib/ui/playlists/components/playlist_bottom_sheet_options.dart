@@ -36,7 +36,7 @@ class PlaylistBottomSheetOptions extends StatelessWidget {
                 children: [
                   RepaintBoundary(
                     child: MarqueeText(
-                      text: playlistName,
+                      text: TextSpan(text: playlistName),
                       style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.w600

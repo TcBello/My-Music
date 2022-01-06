@@ -320,7 +320,7 @@ class _PlaylistSongTileState extends State<PlaylistSongTile> {
                         child: Column(
                         children: [
                           MarqueeText(
-                            text: songTitle,
+                            text: TextSpan(text: songTitle),
                             style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                               color: Colors.black,
                               fontWeight: FontWeight.w500
