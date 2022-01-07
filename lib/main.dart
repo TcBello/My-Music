@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -169,17 +171,26 @@ class Splash extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: ADD REAL SPLASHSREEN
     return SplashScreen(
-      loadingTextPadding: const EdgeInsets.all(0),
-      useLoader: true,
-      seconds: 2,
+      image: Image.asset("assets/imgs/image_splash.png"),
+      photoSize: 40.0,
       backgroundColor: Colors.white,
-      loaderColor: Colors.white,
-      loadingText: Text("TCBELLO", style: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.black),),
+      useLoader: false,
+      loadingTextPadding: const EdgeInsets.all(0),
+      seconds: 2,
+      loadingText: Text("TCBELLO", style: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.white),),
       styleTextUnderTheLoader: TextStyle(fontSize: 20, letterSpacing: 2, color: Colors.black),
       navigateAfterSeconds: Material(
         child: MainScreen(),
       ),
-      title: Text("My Music\n(Test Phase)", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, color: Colors.black),),
+      title: Text("My Music", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, color: Colors.white),),
+      gradientBackground: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFFFF3673),
+          Color(0xFFFFA1BD)
+        ]
+      ),
     );
   }
 }

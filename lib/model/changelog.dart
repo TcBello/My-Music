@@ -10,6 +10,13 @@ class Changelog{
 
 List<Changelog> changelogs = [
   Changelog(
+    version: "2.2.1",
+    details: [
+      "New Icon",
+      "New SplashScreen"
+    ]
+  ),
+  Changelog(
     version: "2.2.0",
     details: [
       "Added advertisement",
