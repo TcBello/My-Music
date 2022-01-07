@@ -169,7 +169,6 @@ void main() async {
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: ADD REAL SPLASHSREEN
     return SplashScreen(
       image: Image.asset("assets/imgs/image_splash.png"),
       photoSize: 40.0,
