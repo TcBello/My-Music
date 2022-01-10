@@ -26,7 +26,6 @@ class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
 }
-
 class _MainScreenState extends State<MainScreen> {
   final _innerDrawerKey = GlobalKey<InnerDrawerState>();
   final _navigatorKey = GlobalKey<NavigatorState>();
@@ -47,13 +46,8 @@ class _MainScreenState extends State<MainScreen> {
     _rateMyApp = RateMyApp(
       minDays: 2,
       minLaunches: 5,
-      remindLaunches: 1,
-      googlePlayIdentifier: kAppId
-    );
-    _rateMyApp = RateMyApp(
-      minDays: 0,
-      minLaunches: 2,
-      remindLaunches: 1,
+      remindLaunches: 3,
+      remindDays: 3,
       googlePlayIdentifier: kAppId
     );
 
@@ -78,12 +72,14 @@ class _MainScreenState extends State<MainScreen> {
                   height: MediaQuery.of(context).size.height * 0.3,
                   child: Column(
                     children: [
-                      // TODO: ADD REAL APP ICON
                       Container(
+                        margin: const EdgeInsets.only(bottom: 20),
                         width: 100,
                         height: 100,
-                        color: Colors.green,
-                        margin: const EdgeInsets.only(bottom: 30),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset("assets/imgs/icon.png"),
+                        ),
                       ),
                       Text("Enjoying My Music?", style: ThemeProvider.themeOf(context).data.textTheme.headline6?.copyWith(
                         color: Colors.black
