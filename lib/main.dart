@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:injector/injector.dart' as dpinjector;
 import 'package:my_music/components/audio_player_handler/audio_player_handler.dart';
-import 'package:my_music/dependency/audio_handler.dart';
+import 'package:my_music/dependency/music_handler.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';

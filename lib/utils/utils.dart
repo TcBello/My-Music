@@ -4,7 +4,7 @@ import 'package:injector/injector.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/dependency/audio_handler.dart';
+import 'package:my_music/dependency/music_handler.dart';
 import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
