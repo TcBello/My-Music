@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/style.dart';
+import 'package:my_music/model/changelog.dart';
 import 'package:my_music/ui/about/components/changelog_dialog.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:share_plus/share_plus.dart';
@@ -72,7 +73,7 @@ class AboutUI extends StatelessWidget {
               title: Text("Version", style: ThemeProvider.themeOf(context).data.textTheme.bodyText2?.copyWith(
                 fontWeight: FontWeight.bold
               ),),
-              subtitle: Text(kVersion, style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
+              subtitle: Text(changelogs[0].version, style: ThemeProvider.themeOf(context).data.textTheme.subtitle2?.copyWith(
                 color: Colors.white
               ),),
             ),
