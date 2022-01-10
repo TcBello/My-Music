@@ -7,7 +7,6 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:my_music/components/constant.dart';
-import 'package:my_music/main.dart';
 import 'package:my_music/singleton/music_player_service.dart';
 import 'package:my_music/utils/utils.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -17,6 +16,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SongQueryProvider extends ChangeNotifier{
+  AudioHandler? audioHandler;
+  SongQueryProvider({this.audioHandler});
+
   final OnAudioQuery _onAudioQuery = OnAudioQuery();
   final OnAudioRoom _onAudioRoom = OnAudioRoom();
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -93,7 +95,7 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   void addPaletteData() async{
-    var mediaItem = audioHandler.mediaItem.value!;
+    var mediaItem = audioHandler!.mediaItem.value!;
 
     if(_initialSongId != mediaItem.id){
       var generator = await PaletteGenerator.fromImageProvider(
@@ -256,8 +258,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(_isBackgroundRunning){
         MediaItem mediaItem = _convertToMediaItem(nextSongInfo);
-        int nextIndex = await audioHandler.customAction("getCurrentIndex") as int;
-        audioHandler.insertQueueItem(nextIndex, mediaItem);
+        int nextIndex = await audioHandler?.customAction("getCurrentIndex") as int;
+        audioHandler?.insertQueueItem(nextIndex, mediaItem);
         showShortToast("Song will play next");
       }
     });
@@ -267,8 +269,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 1});
-        audioHandler.updateQueue(mediaList);
+        audioHandler?.customAction("setAudioSourceMode", {'audioSourceMode': 1});
+        audioHandler?.updateQueue(mediaList);
         showShortToast("$artistName's songs will play next");
       }
     });
@@ -278,8 +280,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertToMediaItemList(songInfoList);
-        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 1});
-        audioHandler.updateQueue(mediaList);
+        audioHandler?.customAction("setAudioSourceMode", {'audioSourceMode': 1});
+        audioHandler?.updateQueue(mediaList);
         showShortToast("$albumName will play next");
       }
     });
@@ -289,8 +291,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(_isBackgroundRunning){
         List<MediaItem> mediaItemList = _convertToMediaItemList(songInfoList);
-        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 2});
-        audioHandler.updateQueue(mediaItemList);
+        audioHandler?.customAction("setAudioSourceMode", {'audioSourceMode': 2});
+        audioHandler?.updateQueue(mediaItemList);
         showShortToast("$artistName's songs added to queue");
       }
     });
@@ -300,8 +302,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(_isBackgroundRunning){
         List<MediaItem> mediaItemList = _convertToMediaItemList(songInfoList);
-        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 2});
-        audioHandler.updateQueue(mediaItemList);
+        audioHandler?.customAction("setAudioSourceMode", {'audioSourceMode': 2});
+        audioHandler?.updateQueue(mediaItemList);
         showShortToast("$albumName added to queue");
       }
     });
@@ -311,8 +313,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), () async {
       if(_isBackgroundRunning){
         MediaItem mediaItem = _convertEntityToMediaItem(nextSongInfo);
-        int nextIndex = await audioHandler.customAction("getCurrentIndex") as int;
-        audioHandler.insertQueueItem(nextIndex, mediaItem);
+        int nextIndex = await audioHandler?.customAction("getCurrentIndex") as int;
+        audioHandler?.insertQueueItem(nextIndex, mediaItem);
         showShortToast("Song will play next");
       }
     });
@@ -322,7 +324,7 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(_isBackgroundRunning){
         MediaItem mediaItem = _convertToMediaItem(addToQueueSongInfo);
-        audioHandler.addQueueItem(mediaItem);
+        audioHandler?.addQueueItem(mediaItem);
         showShortToast("Song added to queue");
       }
     });
@@ -332,7 +334,7 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(_isBackgroundRunning){
         MediaItem mediaItem = _convertEntityToMediaItem(addToQueueSongInfo);
-        audioHandler.addQueueItem(mediaItem);
+        audioHandler?.addQueueItem(mediaItem);
         showShortToast("Song added to queue");
       }
     });
@@ -342,8 +344,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertEntityToMediaItemList(songInfoList);
-        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 1});
-        audioHandler.updateQueue(mediaList);
+        audioHandler?.customAction("setAudioSourceMode", {'audioSourceMode': 1});
+        audioHandler?.updateQueue(mediaList);
         showShortToast("Playlist will play next");
       }
     });
@@ -353,8 +355,8 @@ class SongQueryProvider extends ChangeNotifier{
     Future.delayed(Duration(milliseconds: kDelayMilliseconds), (){
       if(_isBackgroundRunning){
         List<MediaItem> mediaList = _convertEntityToMediaItemList(songInfoList);
-        audioHandler.customAction("setAudioSourceMode", {'audioSourceMode': 2});
-        audioHandler.updateQueue(mediaList);
+        audioHandler?.customAction("setAudioSourceMode", {'audioSourceMode': 2});
+        audioHandler?.updateQueue(mediaList);
         showShortToast("Playlist added to queue");
       }
     });
@@ -611,7 +613,7 @@ class SongQueryProvider extends ChangeNotifier{
     if(oldIndex < newIndex){
       newIndex--;
     }
-    audioHandler.customAction(
+    audioHandler?.customAction(
       "reorderSong",
       {
         'oldIndex': oldIndex,
@@ -621,9 +623,9 @@ class SongQueryProvider extends ChangeNotifier{
   }
 
   void removeQueueSong(MediaItem mediaItem, int index){
-    audioHandler.customAction("removeFromQueue", {'index': index});
+    audioHandler?.customAction("removeFromQueue", {'index': index});
     print("REMOVE ${mediaItem.title} AT INDEX $index");
-    audioHandler.removeQueueItem(mediaItem);
+    audioHandler?.removeQueueItem(mediaItem);
   }
 
   Future<void> reset() async {
@@ -636,7 +638,7 @@ class SongQueryProvider extends ChangeNotifier{
 
     if(tempDir.existsSync()){
       try{
-        if(_isBackgroundRunning) audioHandler.stop();
+        if(_isBackgroundRunning) audioHandler?.stop();
         tempDir.deleteSync(recursive: true);
       }
       catch(e){

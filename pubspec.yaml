@@ -27,6 +27,7 @@ dependencies:
   # STATE MANAGEMENT
   provider: ^6.0.0
   rxdart: ^0.27.1
+  injector: ^2.0.0
   
   # AUDIO
   just_audio: ^0.7.4+1

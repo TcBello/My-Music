@@ -2,7 +2,9 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:injector/injector.dart' as dpinjector;
 import 'package:my_music/components/audio_player_handler/audio_player_handler.dart';
+import 'package:my_music/dependency/audio_handler.dart';
 import 'package:my_music/provider/song_player.dart';
 import 'package:my_music/provider/song_query.dart';
 import 'package:my_music/provider/custom_theme.dart';
@@ -14,9 +16,6 @@ import 'package:splashscreen/splashscreen.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 // TODO: ADD REAL BANNER AND INTERSTITIAL VIDEO ID
-// TODO: IMPLEMENT DEPENDENCY INJECTION ON AUDIO HANDLER
-
-late AudioHandler audioHandler;
 
 void addFontLicense(String value){
   LicenseRegistry.addLicense(() async* {
@@ -38,16 +37,24 @@ void addFontLicense(String value){
 }
 
 void main() async {
+  MusicHandler musicHandler = MusicHandler();
+
+  final injector = dpinjector.Injector.appInstance;
+
   WidgetsFlutterBinding.ensureInitialized();
   
   compute(addFontLicense, "");
 
-  audioHandler = await AudioService.init(
+  musicHandler.audio = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: AudioServiceConfig(
       androidStopForegroundOnPause: true,
     )
   );
+
+  injector.registerDependency<MusicHandler>(() => musicHandler);
+  final dpMusicHandler = injector.get<MusicHandler>();
+
   MobileAds.initialize(
     nativeAdUnitId: MobileAds.nativeAdTestUnitId,
     interstitialAdUnitId: MobileAds.interstitialAdVideoTestUnitId
@@ -57,10 +64,10 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => SongQueryProvider(),
+          create: (context) => SongQueryProvider(audioHandler: dpMusicHandler.audio),
         ),
         ChangeNotifierProvider(
-          create: (context) => SongPlayerProvider(),
+          create: (context) => SongPlayerProvider(audioHandler: dpMusicHandler.audio),
         ),
         ChangeNotifierProvider(
           create: (context) => CustomThemeProvider(),

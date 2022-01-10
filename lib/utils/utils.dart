@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:injector/injector.dart';
 import 'package:my_music/components/constant.dart';
 import 'package:my_music/components/controller.dart';
 import 'package:my_music/components/style.dart';
-import 'package:my_music/main.dart';
+import 'package:my_music/dependency/audio_handler.dart';
 import 'package:native_admob_flutter/native_admob_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -121,8 +122,10 @@ void sendEmail() async{
 }
 
 void showVideoAd() async{
+  final injector = Injector.appInstance;
+  final audioHandler = injector.get<MusicHandler>();
   print("Ad availability: ${interstitialAd?.isAvailable}");
-  if(interstitialAd!.isAvailable && !audioHandler.playbackState.value.playing && MobileAds.isInitialized){
+  if(interstitialAd!.isAvailable && !audioHandler.audio.playbackState.value.playing && MobileAds.isInitialized){
     await interstitialAd?.show();
   }
 }
